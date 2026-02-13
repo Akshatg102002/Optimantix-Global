@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Star, ChevronDown, ChevronUp, Users, Trophy, Globe, Zap } from 'lucide-react';
 import { useData } from '../context/DataContext';
@@ -65,11 +65,35 @@ const FAQS = [
 export const Home: React.FC = () => {
   const { services } = useData();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const location = useLocation();
+
+  // Handle incoming navigation requesting scroll
+  useEffect(() => {
+    if (location.state && (location.state as any).scrollTo) {
+      const sectionId = (location.state as any).scrollTo;
+      const element = document.getElementById(sectionId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      // Scroll to top if no specific section is requested (standard navigation)
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
+
+  const scrollTo = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
-    <div className="overflow-x-hidden">
+    <div id="top" className="overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative bg-white pt-24 pb-16 lg:pt-32 lg:pb-24">
+      <section id="about" className="relative bg-white pt-24 pb-16 lg:pt-32 lg:pb-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -103,12 +127,18 @@ export const Home: React.FC = () => {
                 transition={{ delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-4"
               >
-                <a href="#services" className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-8 rounded-full transition shadow-lg shadow-red-200 text-center flex items-center justify-center gap-2">
+                <button 
+                  onClick={() => scrollTo('services')} 
+                  className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-8 rounded-full transition shadow-lg shadow-red-200 text-center flex items-center justify-center gap-2"
+                >
                   Explore Services <ArrowRight size={18} />
-                </a>
-                <a href="#contact" className="bg-white text-slate-700 hover:text-primary border-2 border-slate-200 hover:border-primary font-bold py-4 px-8 rounded-full transition text-center">
+                </button>
+                <button 
+                  onClick={() => scrollTo('contact')} 
+                  className="bg-white text-slate-700 hover:text-primary border-2 border-slate-200 hover:border-primary font-bold py-4 px-8 rounded-full transition text-center"
+                >
                   Talk to an Expert
-                </a>
+                </button>
               </motion.div>
               
               <motion.div 
@@ -308,9 +338,12 @@ export const Home: React.FC = () => {
                 Join hundreds of successful companies that trust Optimantix for their digital needs. Let's discuss your next big project.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                 <a href="#contact" className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-10 rounded-full transition shadow-lg shadow-primary/30">
+                 <button 
+                   onClick={() => scrollTo('contact')}
+                   className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-10 rounded-full transition shadow-lg shadow-primary/30"
+                 >
                    Get Your Free Quote
-                 </a>
+                 </button>
                  <a href="tel:+15551234567" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-4 px-10 rounded-full transition">
                    Call Us Now
                  </a>

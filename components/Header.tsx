@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Icon } from './Icon';
 
 export const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false); // Mobile toggle
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const { services } = useData();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -21,6 +22,21 @@ export const Header: React.FC = () => {
     setIsOpen(false);
     setIsServicesOpen(false);
   }, [location]);
+
+  // Handle navigation to sections like #contact
+  const handleSectionClick = (sectionId: string) => {
+    setIsOpen(false);
+    if (location.pathname !== '/') {
+      // If not on home, navigate to home and pass the section ID in state
+      navigate('/', { state: { scrollTo: sectionId } });
+    } else {
+      // If already on home, just scroll
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <header 
@@ -58,9 +74,12 @@ export const Header: React.FC = () => {
                       <p className="text-sm text-gray-500 mb-6 leading-relaxed">
                         Explore our comprehensive suite of digital services designed to scale your business.
                       </p>
-                      <Link to="/#contact" className="inline-flex items-center text-primary font-bold text-sm hover:underline">
+                      <button 
+                        onClick={() => handleSectionClick('contact')} 
+                        className="inline-flex items-center text-primary font-bold text-sm hover:underline"
+                      >
                         Book a Consultation <ArrowRight size={14} className="ml-1" />
-                      </Link>
+                      </button>
                     </div>
                     <div className="mt-8">
                       <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Featured</div>
@@ -102,12 +121,12 @@ export const Header: React.FC = () => {
         </nav>
 
         <div className="hidden lg:block">
-          <Link 
-            to="/#contact" 
+          <button 
+            onClick={() => handleSectionClick('contact')}
             className="bg-primary hover:bg-red-500 text-white px-6 py-2.5 rounded-full font-medium transition shadow-lg shadow-red-200 flex items-center gap-2"
           >
             Get Started <ArrowRight size={16} />
-          </Link>
+          </button>
         </div>
 
         {/* Mobile Toggle */}
@@ -153,12 +172,12 @@ export const Header: React.FC = () => {
             <Link to="/blog" className="text-lg font-medium text-gray-800 p-2 hover:bg-gray-50 rounded">Blog</Link>
             <Link to="/admin" className="text-lg font-medium text-gray-800 p-2 hover:bg-gray-50 rounded">Admin Panel</Link>
             
-            <Link 
-              to="/#contact" 
-              className="bg-primary text-white text-center py-4 rounded-xl font-bold mt-4 shadow-lg shadow-red-100"
+            <button 
+              onClick={() => handleSectionClick('contact')} 
+              className="bg-primary text-white text-center py-4 rounded-xl font-bold mt-4 shadow-lg shadow-red-100 w-full"
             >
               Get Started Now
-            </Link>
+            </button>
           </div>
         </div>
       )}
