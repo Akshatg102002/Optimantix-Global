@@ -1,10 +1,15 @@
 import React from 'react';
 import { Target, Lightbulb, Users, Trophy } from 'lucide-react';
 import { STATS } from '../constants';
+import { SEO } from '../components/SEO';
 
 export const About: React.FC = () => {
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
+      <SEO 
+        title="About Us" 
+        description="Learn about Optimantix Global's mission, vision, and our team of digital experts dedicated to growing your business online."
+      />
       {/* Header */}
       <div className="bg-secondary text-white py-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>

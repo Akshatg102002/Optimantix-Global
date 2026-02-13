@@ -6,6 +6,7 @@ import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { ContactForm } from '../components/ContactForm';
 import { LeadModal } from '../components/LeadModal';
+import { SEO } from '../components/SEO';
 import { TESTIMONIALS, STATS, WORK_PROCESS, INDUSTRIES } from '../constants';
 
 export const Home: React.FC = () => {
@@ -33,6 +34,10 @@ export const Home: React.FC = () => {
 
   return (
     <div id="top" className="overflow-x-hidden bg-light dark:bg-dark text-slate-900 dark:text-gray-100 transition-colors duration-300">
+      <SEO 
+        title="Home" 
+        description="Optimantix Global - Your partner for Digital Marketing, Marketplace Management, and Web Development. Driving growth through innovation."
+      />
       <LeadModal />
       
       {/* Hero Section */}

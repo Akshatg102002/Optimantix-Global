@@ -10,7 +10,7 @@ export const INITIAL_SERVICES: Service[] = [
     fullDescription: 'Our comprehensive digital marketing strategies are designed to increase online visibility, drive qualified traffic, and convert visitors into customers through data-driven campaigns. We specialize in Technical SEO audits, Social Media Strategy across major platforms, and high-ROI PPC campaigns on Google and Meta Ads.',
     iconName: 'Megaphone',
     features: ['Technical SEO & Audits', 'Social Media Strategy', 'PPC & Ads Management', 'Content Marketing', 'Local SEO'],
-    pricing: 'Starting at $500/mo'
+    pricing: 'Starting at ₹40,000/mo'
   },
   {
     id: '2',
@@ -20,7 +20,7 @@ export const INITIAL_SERVICES: Service[] = [
     fullDescription: 'Expert management of e-commerce marketplaces including Amazon, Flipkart, Nykaa, and Meesho. Services include listing optimization, inventory management, pricing strategies, and performance analytics to maximize sales and brand visibility.',
     iconName: 'ShoppingBag',
     features: ['Account Setup & Optimization', 'Inventory Sync', 'Pricing Strategies', 'Performance Reporting', 'A+ Content'],
-    pricing: 'Starting at $300/mo'
+    pricing: 'Starting at ₹25,000/mo'
   },
   {
     id: '3',
@@ -50,7 +50,7 @@ export const INITIAL_SERVICES: Service[] = [
     fullDescription: 'Keep your digital assets online 24/7 with our robust hosting solutions. Whether you need a simple Shared plan, a powerful VPS, or a Dedicated Server, we provide secure and high-performance environments tailored to your traffic needs.',
     iconName: 'Server',
     features: ['99.9% Uptime', 'SSL Certificates', 'Daily Backups', '24/7 Support', 'Dedicated & VPS'],
-    pricing: 'Starting at $10/mo'
+    pricing: 'Starting at ₹999/mo'
   },
   {
     id: '6',
@@ -60,7 +60,7 @@ export const INITIAL_SERVICES: Service[] = [
     fullDescription: 'Connect directly with your customers where they are. Our communication services cover strategic Email Marketing campaigns and personalized WhatsApp Marketing automation to drive engagement, retention, and sales.',
     iconName: 'MessageCircle',
     features: ['Email Automation', 'WhatsApp Business API', 'Campaign Analytics', 'Subscriber Management', 'Drip Campaigns'],
-    pricing: 'Starting at $200/mo'
+    pricing: 'Starting at ₹15,000/mo'
   }
 ];
 

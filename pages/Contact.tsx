@@ -1,10 +1,15 @@
 import React from 'react';
 import { ContactForm } from '../components/ContactForm';
 import { CheckCircle2, MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 export const Contact: React.FC = () => {
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
+      <SEO 
+        title="Contact Us" 
+        description="Get in touch with Optimantix Global for your digital marketing and development needs. Based in Noida, we serve clients globally."
+      />
       <div className="bg-gray-900 text-white py-20">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>

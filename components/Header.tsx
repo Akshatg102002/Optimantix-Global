@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
         {/* Logo - Left */}
         <Link to="/" className="flex items-center gap-2 z-50 shrink-0">
            <img 
-            src="https://optimantix.com/wp-content/uploads/2022/08/Untitled-200-x-100-px-1.png" 
+            src="https://i.ibb.co/ZphZDpdz/OS.png" 
             alt="Optimantix Global" 
             className="h-9 w-auto object-contain bg-white/10 rounded"
           />

@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
           {/* Brand */}
           <div className="space-y-6">
              <img 
-              src="https://optimantix.com/wp-content/uploads/2022/08/Untitled-200-x-100-px-1.png" 
+              src="https://i.ibb.co/ZphZDpdz/OS.png" 
               alt="Optimantix Global" 
               className="h-12 w-auto object-contain bg-white rounded-lg p-2"
             />

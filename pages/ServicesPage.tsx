@@ -3,12 +3,17 @@ import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { ArrowRight } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 export const ServicesPage: React.FC = () => {
   const { services } = useData();
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
+      <SEO 
+        title="Our Services" 
+        description="Explore our wide range of services including SEO, PPC, Marketplace Management, Web Development, and Branding."
+      />
       <div className="bg-white dark:bg-dark-card border-b border-gray-200 dark:border-gray-800 py-20">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Our Services</h1>

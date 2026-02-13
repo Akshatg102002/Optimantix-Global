@@ -5,6 +5,7 @@ import { Icon } from '../components/Icon';
 import { ContactForm } from '../components/ContactForm';
 import { Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { SEO } from '../components/SEO';
 
 export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -16,7 +17,11 @@ export const ServiceTemplate: React.FC = () => {
   }
 
   return (
-    <div className="bg-light">
+    <div className="bg-light dark:bg-dark min-h-screen">
+      <SEO 
+        title={service.title} 
+        description={service.shortDescription}
+      />
       {/* Header */}
       <div className="bg-secondary text-white py-20">
         <div className="container mx-auto px-4 md:px-6">
@@ -40,24 +45,24 @@ export const ServiceTemplate: React.FC = () => {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
+              className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-800"
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="bg-indigo-50 p-3 rounded-lg text-primary">
+                <div className="bg-indigo-50 dark:bg-slate-800 p-3 rounded-lg text-primary">
                   <Icon name={service.iconName} size={32} />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Overview</h2>
               </div>
-              <p className="text-gray-600 leading-relaxed text-lg mb-8">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg mb-8">
                 {service.fullDescription}
               </p>
 
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Key Features</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Key Features</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {service.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <Check className="text-green-500 shrink-0" size={18} />
-                    <span className="text-gray-700 font-medium">{feature}</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-medium">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -80,7 +85,7 @@ export const ServiceTemplate: React.FC = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
+              <div className="bg-white dark:bg-dark-card rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
                 <div className="bg-gray-900 text-white p-6 text-center">
                   <span className="block text-gray-400 text-sm mb-1">Pricing starts at</span>
                   <span className="text-3xl font-bold">{service.pricing}</span>
