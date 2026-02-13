@@ -17,7 +17,13 @@ export const AdminDashboard: React.FC = () => {
 
   // Simple state for forms (Service Edit & Blog Add)
   const [editingService, setEditingService] = useState<string | null>(null);
-  const [editServiceForm, setEditServiceForm] = useState<any>({});
+  
+  // Initialize with safe defaults
+  const [editServiceForm, setEditServiceForm] = useState<any>({
+    title: '',
+    shortDescription: '',
+    pricing: ''
+  });
   
   const [newBlogForm, setNewBlogForm] = useState({
     title: '',
@@ -62,7 +68,7 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-dark text-white flex flex-col">
+      <aside className="w-64 bg-dark text-white flex flex-col hidden md:flex">
         <div className="p-6 border-b border-gray-700">
           <div className="flex items-center gap-2 font-bold text-xl text-primary">
             <LayoutDashboard />
@@ -97,14 +103,24 @@ export const AdminDashboard: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8">
+      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        {/* Mobile Header */}
+        <div className="md:hidden flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
+           <span className="font-bold text-lg">Admin Panel</span>
+           <div className="flex gap-2">
+             <button onClick={() => setActiveTab(TABS.LEADS)} className={`p-2 rounded ${activeTab === TABS.LEADS ? 'bg-primary text-white' : 'bg-gray-100'}`}><MessageSquare size={20}/></button>
+             <button onClick={() => setActiveTab(TABS.SERVICES)} className={`p-2 rounded ${activeTab === TABS.SERVICES ? 'bg-primary text-white' : 'bg-gray-100'}`}><Settings size={20}/></button>
+             <button onClick={() => setActiveTab(TABS.BLOG)} className={`p-2 rounded ${activeTab === TABS.BLOG ? 'bg-primary text-white' : 'bg-gray-100'}`}><FileText size={20}/></button>
+             <Link to="/" className="p-2 bg-gray-100 rounded text-gray-700"><LogOut size={20}/></Link>
+           </div>
+        </div>
         
         {/* LEADS TAB */}
         {activeTab === TABS.LEADS && (
           <div>
             <h1 className="text-2xl font-bold text-gray-800 mb-6">Lead Management</h1>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <table className="w-full text-left">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+              <table className="w-full text-left min-w-[800px]">
                 <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 text-sm uppercase">
                   <tr>
                     <th className="p-4 font-semibold">Date</th>
@@ -167,17 +183,20 @@ export const AdminDashboard: React.FC = () => {
                         className="w-full border p-2 rounded" 
                         value={editServiceForm.title} 
                         onChange={e => setEditServiceForm({...editServiceForm, title: e.target.value})}
+                        placeholder="Service Title"
                       />
                       <textarea 
                         className="w-full border p-2 rounded" 
                         rows={3}
                         value={editServiceForm.shortDescription} 
                         onChange={e => setEditServiceForm({...editServiceForm, shortDescription: e.target.value})}
+                        placeholder="Short Description"
                       />
                       <input 
                         className="w-full border p-2 rounded" 
                         value={editServiceForm.pricing} 
                         onChange={e => setEditServiceForm({...editServiceForm, pricing: e.target.value})}
+                        placeholder="Pricing"
                       />
                       <div className="flex gap-2">
                         <button onClick={saveService} className="bg-green-500 text-white px-4 py-2 rounded">Save</button>
