@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, ArrowRight, Sun, Moon } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Icon } from './Icon';
@@ -11,7 +11,6 @@ export const Header: React.FC = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const { services, isDark, toggleTheme } = useData();
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -24,45 +23,34 @@ export const Header: React.FC = () => {
     setIsServicesOpen(false);
   }, [location]);
 
-  const handleSectionClick = (sectionId: string) => {
-    setIsOpen(false);
-    if (location.pathname !== '/') {
-      navigate('/', { state: { scrollTo: sectionId } });
-    } else {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-white/90 dark:bg-dark/90 backdrop-blur-md shadow-lg py-2' 
-          : 'bg-transparent py-4'
+          ? 'bg-white/95 dark:bg-dark/95 backdrop-blur-md shadow-lg py-3' 
+          : 'bg-transparent py-5'
       }`}
     >
-      <div className="container mx-auto px-4 md:px-6 flex justify-between items-center relative">
-        <Link to="/" className="flex items-center gap-2 z-50">
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between relative">
+        {/* Logo - Left */}
+        <Link to="/" className="flex items-center gap-2 z-50 shrink-0">
            <img 
             src="https://optimantix.com/wp-content/uploads/2022/08/Untitled-200-x-100-px-1.png" 
             alt="Optimantix Global" 
-            className="h-10 w-auto object-contain bg-white/10 rounded"
+            className="h-9 w-auto object-contain bg-white/10 rounded"
           />
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center space-x-8">
+        {/* Desktop Nav - Centered */}
+        <nav className="hidden lg:flex items-center space-x-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <Link to="/" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Home</Link>
           
           <div className="group static">
-            <button className="flex items-center gap-1 font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary transition py-4">
+            <Link to="/services" className="flex items-center gap-1 font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary transition py-4">
               Services <ChevronDown size={16} className="group-hover:rotate-180 transition-transform duration-300" />
-            </button>
+            </Link>
             
-            <div className="absolute top-full left-0 w-full bg-white dark:bg-dark-card shadow-2xl border-t border-gray-100 dark:border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top translate-y-2 group-hover:translate-y-0">
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-[90vw] max-w-5xl bg-white dark:bg-dark-card shadow-2xl border-t border-gray-100 dark:border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 rounded-xl mt-2 overflow-hidden">
               <div className="container mx-auto px-4 md:px-6 py-8">
                 <div className="grid grid-cols-12 gap-8">
                   <div className="col-span-3 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl flex flex-col justify-between">
@@ -71,12 +59,12 @@ export const Header: React.FC = () => {
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
                         Explore our comprehensive suite of digital services designed to scale your business.
                       </p>
-                      <button 
-                        onClick={() => handleSectionClick('contact')} 
+                      <Link 
+                        to="/contact"
                         className="inline-flex items-center text-primary font-bold text-sm hover:underline"
                       >
                         Book a Consultation <ArrowRight size={14} className="ml-1" />
-                      </button>
+                      </Link>
                     </div>
                   </div>
 
@@ -107,27 +95,28 @@ export const Header: React.FC = () => {
           </div>
 
           <Link to="/blog" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Blog</Link>
-          <button onClick={() => handleSectionClick('about')} className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">About</button>
-          <button onClick={() => handleSectionClick('contact')} className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Contact</button>
+          <Link to="/about" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">About</Link>
+          <Link to="/contact" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Contact</Link>
         </nav>
 
-        <div className="hidden lg:flex items-center gap-4">
+        {/* Actions - Right */}
+        <div className="hidden lg:flex items-center gap-4 shrink-0">
           <button 
             onClick={toggleTheme}
             className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
           >
             {isDark ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-          <button 
-            onClick={() => handleSectionClick('contact')}
+          <Link 
+            to="/contact"
             className="bg-primary hover:bg-red-500 text-white px-6 py-2.5 rounded-full font-medium transition shadow-lg shadow-red-200 dark:shadow-none flex items-center gap-2"
           >
             Get Started <ArrowRight size={16} />
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
-        <div className="lg:hidden flex items-center gap-4">
+        <div className="lg:hidden flex items-center gap-4 ml-auto">
           <button 
             onClick={toggleTheme}
             className="p-2 rounded-full text-gray-600 dark:text-gray-300"
@@ -165,6 +154,9 @@ export const Header: React.FC = () => {
                 
                 {isServicesOpen && (
                   <div className="pl-4 mt-2 space-y-2 border-l-2 border-gray-100 dark:border-gray-700 ml-4">
+                    <Link to="/services" className="flex items-center gap-3 p-2 text-primary font-semibold">
+                       <span className="text-sm">View All Services</span>
+                    </Link>
                     {services.map(service => (
                       <Link 
                         key={service.id} 
@@ -180,14 +172,14 @@ export const Header: React.FC = () => {
               </div>
 
               <Link to="/blog" className="text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">Blog</Link>
-              <button onClick={() => handleSectionClick('about')} className="text-left text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">About</button>
+              <Link to="/about" className="text-left text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">About</Link>
               
-              <button 
-                onClick={() => handleSectionClick('contact')} 
+              <Link 
+                to="/contact" 
                 className="bg-primary text-white text-center py-4 rounded-xl font-bold mt-4 w-full"
               >
                 Get Started Now
-              </button>
+              </Link>
             </div>
           </motion.div>
         )}

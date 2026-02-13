@@ -10,29 +10,11 @@ import { TESTIMONIALS, STATS, WORK_PROCESS, INDUSTRIES } from '../constants';
 
 export const Home: React.FC = () => {
   const { services } = useData();
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const location = useLocation();
 
   useEffect(() => {
-    if (location.state && (location.state as any).scrollTo) {
-      const sectionId = (location.state as any).scrollTo;
-      const element = document.getElementById(sectionId);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-    } else {
-      window.scrollTo(0, 0);
-    }
+    window.scrollTo(0, 0);
   }, [location]);
-
-  const scrollTo = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -54,7 +36,7 @@ export const Home: React.FC = () => {
       <LeadModal />
       
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
+      <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-20 overflow-hidden">
         {/* Abstract Background Shapes */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/10 to-transparent dark:from-primary/5 -z-10 rounded-l-[100px] transform skew-x-12"></div>
         
@@ -77,18 +59,18 @@ export const Home: React.FC = () => {
                 Optimantix Global empowers businesses with result-driven strategies in SEO, Marketplace Management, and Web Development. We don't just deliver services; we deliver measurable success.
               </motion.p>
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
-                <button 
-                  onClick={() => scrollTo('services')} 
+                <Link 
+                  to="/services" 
                   className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-8 rounded-full transition shadow-lg shadow-red-200 dark:shadow-none text-center flex items-center justify-center gap-2 group"
                 >
                   Our Services <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button 
-                  onClick={() => scrollTo('contact')} 
+                </Link>
+                <Link 
+                  to="/contact" 
                   className="bg-transparent text-slate-700 dark:text-white hover:text-primary dark:hover:text-primary border-2 border-slate-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary font-bold py-4 px-8 rounded-full transition text-center"
                 >
                   Get a Free Audit
-                </button>
+                </Link>
               </motion.div>
               
               <motion.div variants={fadeInUp} className="mt-10 flex items-center gap-4 text-sm text-slate-500 dark:text-gray-400">
@@ -165,56 +147,33 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* About / Mission Section */}
-      <section id="about" className="py-20 bg-light dark:bg-dark">
+      {/* About Section - Brief */}
+      <section className="py-20 bg-light dark:bg-dark">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
              <span className="text-primary font-bold uppercase tracking-wider text-sm">About Us</span>
              <h2 className="text-3xl md:text-4xl font-extrabold mt-2 mb-4">Empowering Digital Transformation</h2>
-             <p className="text-gray-600 dark:text-gray-400">Optimantix Global envisions becoming a global leader by helping brands adapt, compete, and thrive in the ever-changing digital landscape.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-             <div className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-                <Target className="text-secondary mb-4" size={40} />
-                <h3 className="text-xl font-bold mb-3">Our Mission</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  To empower businesses with innovative digital marketing and technology-driven solutions that deliver measurable growth and long-term success.
-                </p>
-             </div>
-             <div className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-                <Lightbulb className="text-primary mb-4" size={40} />
-                <h3 className="text-xl font-bold mb-3">Our Vision</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Becoming a global leader in digital transformation by creating impactful digital experiences that inspire growth and adapt to change.
-                </p>
-             </div>
-             <div className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-                <Users className="text-secondary mb-4" size={40} />
-                <h3 className="text-xl font-bold mb-3">Core Philosophy</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  We believe in results-driven strategies, client-first collaboration, and continuous innovation to solve complex business challenges.
-                </p>
-             </div>
+             <p className="text-gray-600 dark:text-gray-400 mb-8">Optimantix Global envisions becoming a global leader by helping brands adapt, compete, and thrive in the ever-changing digital landscape.</p>
+             <Link to="/about" className="text-primary font-bold hover:underline flex items-center justify-center gap-2">Read More About Us <ArrowRight size={16}/></Link>
           </div>
         </div>
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="py-20 bg-white dark:bg-dark-card">
+      <section className="py-20 bg-white dark:bg-dark-card">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="max-w-2xl">
               <span className="text-primary font-bold uppercase tracking-wider text-sm">Our Expertise</span>
               <h2 className="text-3xl md:text-4xl font-extrabold mt-2">Comprehensive Digital Solutions</h2>
             </div>
-            <Link to="/contact" className="hidden md:flex items-center gap-2 text-secondary dark:text-primary font-bold hover:underline">
+            <Link to="/services" className="hidden md:flex items-center gap-2 text-secondary dark:text-primary font-bold hover:underline">
               View All Services <ArrowRight size={16} />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
+            {services.slice(0, 3).map((service, index) => (
               <motion.div
                 key={service.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -238,6 +197,9 @@ export const Home: React.FC = () => {
                 </Link>
               </motion.div>
             ))}
+          </div>
+          <div className="mt-8 text-center md:hidden">
+             <Link to="/services" className="bg-white border border-gray-300 dark:bg-transparent dark:border-gray-600 px-6 py-3 rounded-full inline-block">View All Services</Link>
           </div>
         </div>
       </section>
@@ -322,63 +284,17 @@ export const Home: React.FC = () => {
                 Join hundreds of successful companies that trust Optimantix for their digital needs. Let's discuss your next big project.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                 <button 
-                   onClick={() => scrollTo('contact')}
-                   className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-10 rounded-full transition shadow-lg shadow-primary/30"
+                 <Link 
+                   to="/contact"
+                   className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-10 rounded-full transition shadow-lg shadow-primary/30 inline-block"
                  >
                    Get Your Free Quote
-                 </button>
-                 <a href="tel:+919910343016" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-4 px-10 rounded-full transition">
+                 </Link>
+                 <a href="tel:+919910343016" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-4 px-10 rounded-full transition inline-block">
                    Call Us Now
                  </a>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-24 bg-light dark:bg-dark">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <div>
-              <span className="text-primary font-bold uppercase tracking-wider text-sm">Contact Us</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold mt-2 mb-6">Let's Start a Conversation</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed">
-                Whether you have a question about features, pricing, or anything else, our team is ready to answer all your questions.
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm text-primary">
-                    <CheckCircle2 size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg">Expert Consultation</h4>
-                    <p className="text-gray-500 dark:text-gray-400">Free initial strategy session to understand your goals.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm text-primary">
-                    <CheckCircle2 size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg">Tailored Solutions</h4>
-                    <p className="text-gray-500 dark:text-gray-400">Custom packages designed for your specific business needs.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-12 bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-700 inline-block shadow-sm">
-                <h4 className="font-bold text-secondary dark:text-primary mb-1">Office Hours</h4>
-                <div className="flex justify-between gap-8 text-sm text-gray-600 dark:text-gray-300">
-                  <span>Mon - Fri</span>
-                  <span className="font-medium">9:00 AM - 6:00 PM IST</span>
-                </div>
-              </div>
-            </div>
-            
-            <ContactForm />
           </div>
         </div>
       </section>
