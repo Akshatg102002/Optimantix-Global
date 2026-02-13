@@ -6,6 +6,7 @@ import { ServiceTemplate } from './pages/ServiceTemplate';
 import { BlogList } from './pages/BlogList';
 import { BlogPost } from './pages/BlogPost';
 import { AdminDashboard } from './pages/Admin/Dashboard';
+import { AdminLogin } from './pages/Admin/Login';
 import { DataProvider } from './context/DataContext';
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>

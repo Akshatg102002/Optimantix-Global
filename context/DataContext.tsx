@@ -6,6 +6,11 @@ interface DataContextType {
   services: Service[];
   blogs: BlogPost[];
   leads: Lead[];
+  isDark: boolean;
+  toggleTheme: () => void;
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
   addLead: (lead: Omit<Lead, 'id' | 'date' | 'status'>) => void;
   updateService: (service: Service) => void;
   addBlogPost: (post: Omit<BlogPost, 'id'>) => void;
@@ -19,6 +24,46 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
   const [blogs, setBlogs] = useState<BlogPost[]>(INITIAL_BLOGS);
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  // Theme State
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('opt_theme') === 'dark';
+    }
+    return false;
+  });
+
+  // Apply Theme class to HTML element
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('opt_theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('opt_theme', 'light');
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => setIsDark(!isDark);
+
+  const login = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem('opt_auth', 'true');
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('opt_auth');
+  };
+
+  // Restore auth state
+  useEffect(() => {
+    if (localStorage.getItem('opt_auth') === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   // Load from local storage on mount (simulated persistence)
   useEffect(() => {
@@ -75,7 +120,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <DataContext.Provider value={{ services, blogs, leads, addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus }}>
+    <DataContext.Provider value={{ 
+      services, blogs, leads, 
+      isDark, toggleTheme,
+      isAuthenticated, login, logout,
+      addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus 
+    }}>
       {children}
     </DataContext.Provider>
   );

@@ -7,13 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             colors: {
               primary: '#FD766E',
               secondary: '#4C569A',
-              dark: '#1e293b',
+              dark: '#0f172a',
               light: '#f8fafc',
+              'dark-card': '#1e293b',
             },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
@@ -27,6 +29,10 @@
       body {
         font-family: 'Inter', sans-serif;
         background-color: #f8fafc;
+      }
+      .dark body {
+        background-color: #0f172a;
+        color: #f8fafc;
       }
     </style>
     <!-- Global Error Handler -->
@@ -58,12 +64,15 @@
     "lucide-react": "https://esm.sh/lucide-react@0.344.0?deps=react@18.2.0",
     "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?deps=react@18.2.0,react-dom@18.2.0",
     "framer-motion": "https://esm.sh/framer-motion@10.16.4?deps=react@18.2.0",
-    "react-hook-form": "https://esm.sh/react-hook-form@7.51.0?deps=react@18.2.0"
+    "react-hook-form": "https://esm.sh/react-hook-form@7.51.0?deps=react@18.2.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
+    "vite": "https://esm.sh/vite@^7.3.1"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
