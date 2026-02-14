@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { ContactForm } from '../components/ContactForm';
-import { Check, Star } from 'lucide-react';
+import { Check, Star, Settings, Package, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 
@@ -42,6 +43,8 @@ export const ServiceTemplate: React.FC = () => {
           
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-12">
+            
+            {/* Overview */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -68,6 +71,55 @@ export const ServiceTemplate: React.FC = () => {
               </div>
             </motion.div>
 
+            {/* Process Steps */}
+            <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-2">
+                    <Settings className="text-primary" />
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Our Process</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {service.processSteps?.map((step, idx) => (
+                        <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+                             <div className="absolute top-0 right-0 p-4 opacity-5 font-bold text-6xl text-primary">{idx + 1}</div>
+                             <h4 className="font-bold text-lg mb-2 relative z-10">{step.title}</h4>
+                             <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">{step.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Benefits & Deliverables */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                     <div className="flex items-center gap-2 mb-4">
+                        <TrendingUp className="text-green-500" />
+                        <h3 className="text-lg font-bold">Benefits</h3>
+                     </div>
+                     <ul className="space-y-3">
+                        {service.benefits?.map((item, idx) => (
+                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                 <Check className="text-green-500 shrink-0 mt-0.5" size={16} />
+                                 {item}
+                             </li>
+                        ))}
+                     </ul>
+                 </div>
+                 <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                     <div className="flex items-center gap-2 mb-4">
+                        <Package className="text-secondary" />
+                        <h3 className="text-lg font-bold">Deliverables</h3>
+                     </div>
+                     <ul className="space-y-3">
+                        {service.deliverables?.map((item, idx) => (
+                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                 <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
+                                 {item}
+                             </li>
+                        ))}
+                     </ul>
+                 </div>
+            </div>
+
             {/* Why Us Block */}
             <div className="bg-gradient-to-br from-primary to-orange-400 rounded-2xl p-8 text-white shadow-lg">
               <div className="flex items-start gap-4">
@@ -87,8 +139,8 @@ export const ServiceTemplate: React.FC = () => {
             <div className="sticky top-24">
               <div className="bg-white dark:bg-dark-card rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
                 <div className="bg-gray-900 text-white p-6 text-center">
-                  <span className="block text-gray-400 text-sm mb-1">Pricing starts at</span>
-                  <span className="text-3xl font-bold">{service.pricing}</span>
+                  <h3 className="text-xl font-bold">Ready to Start?</h3>
+                  <p className="text-gray-400 text-sm mt-1">Get a custom quote today.</p>
                 </div>
                 <div className="p-6">
                   <ContactForm defaultService={service.title} />

@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Star, ChevronDown, ChevronUp, Users, Trophy, Globe, Zap, Target, Lightbulb, TrendingUp } from 'lucide-react';
+import { ArrowRight, Star, TrendingUp } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
-import { ContactForm } from '../components/ContactForm';
 import { LeadModal } from '../components/LeadModal';
 import { SEO } from '../components/SEO';
+import { PortfolioSlider } from '../components/PortfolioSlider';
 import { TESTIMONIALS, STATS, WORK_PROCESS, INDUSTRIES } from '../constants';
 
 export const Home: React.FC = () => {
@@ -68,13 +69,13 @@ export const Home: React.FC = () => {
                   to="/services" 
                   className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-8 rounded-full transition shadow-lg shadow-red-200 dark:shadow-none text-center flex items-center justify-center gap-2 group"
                 >
-                  Our Services <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  Explore Services <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   to="/contact" 
                   className="bg-transparent text-slate-700 dark:text-white hover:text-primary dark:hover:text-primary border-2 border-slate-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary font-bold py-4 px-8 rounded-full transition text-center"
                 >
-                  Get a Free Audit
+                  Free Consultation
                 </Link>
               </motion.div>
               
@@ -185,18 +186,18 @@ export const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-8 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl dark:hover:shadow-2xl hover:shadow-indigo-100/50 dark:hover:shadow-none transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700 relative overflow-hidden"
+                className="group bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-8 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl dark:hover:shadow-2xl hover:shadow-indigo-100/50 dark:hover:shadow-none transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700 relative overflow-hidden flex flex-col"
               >
                 <div className="w-14 h-14 bg-white dark:bg-slate-700 text-primary rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                   <Icon name={service.iconName} size={28} />
                 </div>
                 
                 <h3 className="text-xl font-bold mb-3 group-hover:text-secondary dark:group-hover:text-primary transition-colors">{service.title}</h3>
-                <p className="text-slate-600 dark:text-gray-400 mb-6 line-clamp-3 leading-relaxed">{service.shortDescription}</p>
+                <p className="text-slate-600 dark:text-gray-400 mb-6 line-clamp-3 leading-relaxed flex-grow">{service.shortDescription}</p>
                 
                 <Link 
                   to={`/services/${service.slug}`} 
-                  className="inline-flex items-center text-slate-800 dark:text-white font-bold hover:text-primary transition"
+                  className="inline-flex items-center text-slate-800 dark:text-white font-bold hover:text-primary transition mt-auto"
                 >
                   Learn More <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -208,6 +209,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Portfolio Slider */}
+      <PortfolioSlider />
 
       {/* Process Section */}
       <section className="py-20 bg-light dark:bg-dark relative overflow-hidden">
@@ -293,7 +297,7 @@ export const Home: React.FC = () => {
                    to="/contact"
                    className="bg-primary hover:bg-red-500 text-white font-bold py-4 px-10 rounded-full transition shadow-lg shadow-primary/30 inline-block"
                  >
-                   Get Your Free Quote
+                   Request Free Quote
                  </Link>
                  <a href="tel:+919910343016" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-4 px-10 rounded-full transition inline-block">
                    Call Us Now

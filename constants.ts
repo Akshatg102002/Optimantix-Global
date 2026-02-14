@@ -1,66 +1,109 @@
-import { Service, BlogPost } from './types';
-import { Users, Trophy, Globe, Zap, BarChart, Smartphone, PenTool, ShoppingBag } from 'lucide-react';
+
+import { Service, BlogPost, Project } from './types';
+import { Users, Trophy, Globe, Zap, BarChart } from 'lucide-react';
 
 export const INITIAL_SERVICES: Service[] = [
   {
     id: '1',
     slug: 'digital-marketing',
     title: 'Digital Marketing',
-    shortDescription: 'SEO, SMM, and PPC strategies to increase visibility and traffic.',
-    fullDescription: 'Our comprehensive digital marketing strategies are designed to increase online visibility, drive qualified traffic, and convert visitors into customers through data-driven campaigns. We specialize in Technical SEO audits, Social Media Strategy across major platforms, and high-ROI PPC campaigns on Google and Meta Ads.',
+    shortDescription: 'Data-driven SEO, SMM, and PPC strategies to maximize ROI.',
+    fullDescription: 'Our comprehensive digital marketing framework is designed to dominate search results and social feeds. We do not just run ads; we build funnels that convert cold traffic into loyal customers using advanced analytics and A/B testing.',
     iconName: 'Megaphone',
     features: ['Technical SEO & Audits', 'Social Media Strategy', 'PPC & Ads Management', 'Content Marketing', 'Local SEO'],
-    pricing: 'Starting at ₹40,000/mo'
+    processSteps: [
+      { title: 'Audit & Analysis', description: 'We perform a deep-dive audit of your current digital presence, identifying gaps and opportunities.' },
+      { title: 'Strategy Development', description: 'Creating a tailored roadmap focusing on KPIs that matter to your business growth.' },
+      { title: 'Campaign Execution', description: 'Launching targeted campaigns across Google, Meta, and LinkedIn with continuous monitoring.' },
+      { title: 'Optimization & Scaling', description: 'Using data to refine targeting and creative assets to lower CPA and increase ROAS.' }
+    ],
+    benefits: ['Increased Organic Traffic', 'Higher Conversion Rates', 'Improved Brand Visibility', 'Measurable ROI'],
+    deliverables: ['Monthly Performance Reports', 'Competitor Analysis', 'Content Calendar', 'Optimized Ad Campaigns']
   },
   {
     id: '2',
     slug: 'marketplace-management',
     title: 'Marketplace Management',
-    shortDescription: 'Expert management for Amazon, Flipkart, Nykaa & Meesho.',
-    fullDescription: 'Expert management of e-commerce marketplaces including Amazon, Flipkart, Nykaa, and Meesho. Services include listing optimization, inventory management, pricing strategies, and performance analytics to maximize sales and brand visibility.',
+    shortDescription: 'Scale your brand on Amazon, Flipkart, Nykaa & Meesho.',
+    fullDescription: 'Navigating e-commerce marketplaces is complex. We handle everything from account health to advertising (AMS/PLA). Our team ensures your products rank high and win the Buy Box consistently.',
     iconName: 'ShoppingBag',
     features: ['Account Setup & Optimization', 'Inventory Sync', 'Pricing Strategies', 'Performance Reporting', 'A+ Content'],
-    pricing: 'Starting at ₹25,000/mo'
+    processSteps: [
+      { title: 'Listing Optimization', description: 'Keyword research and copywriting to ensure your products appear in search results.' },
+      { title: 'A+ Content Design', description: 'Designing premium visual content to enhance brand storytelling and conversion.' },
+      { title: 'Ads Management', description: 'Managing PPC campaigns within the marketplace ecosystem to drive sales velocity.' },
+      { title: 'Inventory Planning', description: 'Forecasting demand to prevent stockouts and minimize storage fees.' }
+    ],
+    benefits: ['Win the Buy Box', 'Lower ACOS', 'Protected Brand Identity', 'Streamlined Operations'],
+    deliverables: ['Listing Quality Audit', 'Sales & Inventory Reports', 'PPC Campaign Strategy', 'Customer Feedback Analysis']
   },
   {
     id: '3',
     slug: 'development',
     title: 'Web & App Development',
-    shortDescription: 'Custom websites and mobile apps tailored to your business.',
-    fullDescription: 'Custom website design and development services that create responsive, user-friendly, and conversion-optimized websites. We also offer native and cross-platform mobile application development for iOS and Android devices, delivering seamless user experiences.',
+    shortDescription: 'High-performance websites and scalable mobile applications.',
+    fullDescription: 'We build digital products that are fast, secure, and scalable. Whether it is a corporate website, an e-commerce store, or a custom mobile app, our code is clean and our designs are user-centric.',
     iconName: 'Code',
     features: ['Custom Web Development', 'iOS & Android Apps', 'E-commerce Solutions', 'API Integration', 'Responsive Design'],
-    pricing: 'Custom Quote'
+    processSteps: [
+      { title: 'Discovery & UX', description: 'Wireframing and prototyping to ensure the user journey is intuitive.' },
+      { title: 'Development', description: 'Agile development using modern stacks like React, Node.js, and Flutter.' },
+      { title: 'Testing (QA)', description: 'Rigorous testing for bugs, security vulnerabilities, and performance bottlenecks.' },
+      { title: 'Deployment & Support', description: 'Seamless launch and ongoing maintenance to ensure 99.9% uptime.' }
+    ],
+    benefits: ['Faster Load Times', 'Mobile-First Experience', 'Scalable Architecture', 'SEO-Friendly Structure'],
+    deliverables: ['Source Code', 'Design Assets (Figma)', 'Documentation', '1 Month Free Support']
   },
   {
     id: '4',
     slug: 'graphic-design',
     title: 'Branding & Creative',
-    shortDescription: 'Logo design, packaging, and visual identity solutions.',
-    fullDescription: 'Complete branding solutions including logo design, brand identity development, creative content creation, and visual communication strategies that resonate with target audiences. From packaging to product mockups, we make your brand stand out.',
+    shortDescription: 'Visual storytelling that defines your brand identity.',
+    fullDescription: 'Your brand is more than a logo. We create cohesive visual identities that communicate your values and resonate with your audience across all touchpoints, from packaging to digital assets.',
     iconName: 'Palette',
     features: ['Logo Design', 'Brand Identity', 'Packaging Design', 'Product Mockups', 'Visual Communication'],
-    pricing: 'Per Project Basis'
+    processSteps: [
+      { title: 'Brand Discovery', description: 'Understanding your ethos, target audience, and market positioning.' },
+      { title: 'Concept Creation', description: 'Developing multiple design directions and mood boards.' },
+      { title: 'Refinement', description: 'Iterating on the chosen direction based on your feedback.' },
+      { title: 'Brand Guidelines', description: 'Creating a rulebook for usage to ensure consistency.' }
+    ],
+    benefits: ['Consistent Brand Image', 'Professional Appeal', 'Emotional Connection', 'Market Differentiation'],
+    deliverables: ['Logo Pack (All Formats)', 'Brand Style Guide', 'Social Media Kit', 'Stationery Design']
   },
   {
     id: '5',
     slug: 'hosting',
     title: 'Hosting Solutions',
-    shortDescription: 'Reliable Dedicated, VPS, and Managed hosting services.',
-    fullDescription: 'Keep your digital assets online 24/7 with our robust hosting solutions. Whether you need a simple Shared plan, a powerful VPS, or a Dedicated Server, we provide secure and high-performance environments tailored to your traffic needs.',
+    shortDescription: 'Secure, high-speed hosting for mission-critical applications.',
+    fullDescription: 'Downtime is lost revenue. Our hosting solutions are built on enterprise-grade infrastructure, offering speed, security, and automated backups so you never have to worry about your site going down.',
     iconName: 'Server',
     features: ['99.9% Uptime', 'SSL Certificates', 'Daily Backups', '24/7 Support', 'Dedicated & VPS'],
-    pricing: 'Starting at ₹999/mo'
+    processSteps: [
+      { title: 'Needs Assessment', description: 'Evaluating your traffic and resource requirements.' },
+      { title: 'Migration', description: 'Zero-downtime migration of your existing assets to our servers.' },
+      { title: 'Security Hardening', description: 'Configuring firewalls and malware scanning.' },
+      { title: 'Monitoring', description: '24/7 proactive monitoring to prevent issues before they happen.' }
+    ],
+    benefits: ['Lightning Fast Speed', 'Bank-Grade Security', 'Automated Backups', 'Scalable Resources'],
+    deliverables: ['cPanel/Admin Access', 'SSL Certificate', 'Daily Backup Schedule', 'Quarterly Health Check']
   },
   {
     id: '6',
     slug: 'communications',
     title: 'Communications',
-    shortDescription: 'Effective Email and WhatsApp marketing campaigns.',
-    fullDescription: 'Connect directly with your customers where they are. Our communication services cover strategic Email Marketing campaigns and personalized WhatsApp Marketing automation to drive engagement, retention, and sales.',
+    shortDescription: 'Automated Email and WhatsApp marketing for higher retention.',
+    fullDescription: 'Engage your customers where they are. We set up automated workflows for Email and WhatsApp API to nurture leads, recover abandoned carts, and drive repeat purchases.',
     iconName: 'MessageCircle',
     features: ['Email Automation', 'WhatsApp Business API', 'Campaign Analytics', 'Subscriber Management', 'Drip Campaigns'],
-    pricing: 'Starting at ₹15,000/mo'
+    processSteps: [
+      { title: 'Audience Segmentation', description: 'Categorizing your list based on behavior and demographics.' },
+      { title: 'Copywriting & Design', description: 'Crafting high-converting messages and templates.' },
+      { title: 'Automation Setup', description: 'Building triggers and workflows for drip campaigns.' },
+      { title: 'Analysis', description: 'Tracking open rates, click rates, and conversions to optimize.' }
+    ],
+    benefits: ['High Open Rates', 'Personalized Customer Journey', 'Increased LTV', 'Reduced Churn'],
+    deliverables: ['Campaign Strategy Doc', 'Email/WhatsApp Templates', 'Automation Workflows', 'Performance Reports']
   }
 ];
 
@@ -85,6 +128,30 @@ export const INITIAL_BLOGS: BlogPost[] = [
     date: '2024-02-02',
     imageUrl: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=80&w=800'
   }
+];
+
+export const INITIAL_PROJECTS: Project[] = [
+    {
+        id: '1',
+        title: 'E-Commerce Redesign',
+        category: 'Development',
+        imageUrl: 'https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=800',
+        projectUrl: '#'
+    },
+    {
+        id: '2',
+        title: 'TechBrand SEO Campaign',
+        category: 'Marketing',
+        imageUrl: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&q=80&w=800',
+        projectUrl: '#'
+    },
+    {
+        id: '3',
+        title: 'Modern Brand Identity',
+        category: 'Design',
+        imageUrl: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800',
+        projectUrl: '#'
+    }
 ];
 
 export const TESTIMONIALS = [

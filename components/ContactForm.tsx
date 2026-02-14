@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useData } from '../context/DataContext';
@@ -10,6 +11,7 @@ interface FormData {
   name: string;
   email: string;
   phone: string;
+  company: string;
   serviceInterest: string;
   message: string;
 }
@@ -28,11 +30,11 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
 
   return (
     <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-      <h3 className="text-2xl font-bold text-gray-800 mb-6">Get in Touch</h3>
+      <h3 className="text-2xl font-bold text-gray-800 mb-6">Request a Quote</h3>
       
       {isSubmitted ? (
         <div className="p-4 bg-green-50 text-green-700 rounded-md border border-green-200">
-          Thank you! We received your inquiry and will contact you shortly.
+          Thank you! We received your inquiry and will contact you shortly to discuss your project.
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -62,14 +64,24 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
             {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-            <input 
-              {...register('phone', { required: 'Phone is required' })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="+1 (555) 000-0000"
-            />
-            {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <input 
+                {...register('phone', { required: 'Phone is required' })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+                placeholder="+91..."
+                />
+                {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
+            </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                <input 
+                {...register('company')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+                placeholder="Business Name"
+                />
+            </div>
           </div>
 
           <div>
@@ -90,12 +102,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Project Details</label>
             <textarea 
               {...register('message', { required: 'Message is required' })}
               rows={4}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="Tell us about your project..."
+              placeholder="Tell us about your goals and requirements..."
             />
             {errors.message && <span className="text-xs text-red-500">{errors.message.message}</span>}
           </div>
@@ -104,7 +116,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
             type="submit"
             className="w-full bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity shadow-md"
           >
-            Send Message
+            Request Free Quote
           </button>
         </form>
       )}

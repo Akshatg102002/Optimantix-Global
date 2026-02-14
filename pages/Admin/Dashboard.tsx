@@ -1,25 +1,28 @@
+
 import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, FileText, Settings, LogOut, CheckCircle, XCircle } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, FileText, Settings, LogOut, CheckCircle, XCircle, Briefcase, Plus } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 
 // Tabs
 const TABS = {
   LEADS: 'LEADS',
   SERVICES: 'SERVICES',
-  BLOG: 'BLOG'
+  BLOG: 'BLOG',
+  PORTFOLIO: 'PORTFOLIO'
 };
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TABS.LEADS);
-  const { leads, services, blogs, updateLeadStatus, updateService, addBlogPost, deleteBlogPost, isAuthenticated, logout } = useData();
+  const { leads, services, blogs, projects, updateLeadStatus, updateService, addBlogPost, deleteBlogPost, addProject, deleteProject, isAuthenticated, logout } = useData();
   const navigate = useNavigate();
 
-  // Simple state for forms (Service Edit & Blog Add)
+  // Forms
   const [editingService, setEditingService] = useState<string | null>(null);
-  const [editServiceForm, setEditServiceForm] = useState<any>({ title: '', shortDescription: '', pricing: '' });
-  const [newBlogForm, setNewBlogForm] = useState({ title: '', slug: '', excerpt: '', content: '', author: '', imageUrl: 'https://picsum.photos/800/400' });
+  const [editServiceForm, setEditServiceForm] = useState<any>({ title: '', shortDescription: '' });
+  const [newBlogForm, setNewBlogForm] = useState({ title: '', slug: '', excerpt: '', content: '', author: '', imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800' });
+  const [newProjectForm, setNewProjectForm] = useState({ title: '', category: '', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', projectUrl: '' });
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -52,8 +55,15 @@ export const AdminDashboard: React.FC = () => {
       ...newBlogForm,
       date: new Date().toISOString()
     });
-    setNewBlogForm({ title: '', slug: '', excerpt: '', content: '', author: '', imageUrl: 'https://picsum.photos/800/400' });
+    setNewBlogForm({ title: '', slug: '', excerpt: '', content: '', author: '', imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800' });
     alert("Blog Posted!");
+  };
+
+  const handleAddProject = (e: React.FormEvent) => {
+    e.preventDefault();
+    addProject(newProjectForm);
+    setNewProjectForm({ title: '', category: '', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', projectUrl: '' });
+    alert("Project Added!");
   };
 
   if (!isAuthenticated) return null;
@@ -77,6 +87,9 @@ export const AdminDashboard: React.FC = () => {
           </button>
           <button onClick={() => setActiveTab(TABS.BLOG)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${activeTab === TABS.BLOG ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <FileText size={20} /> Blog
+          </button>
+          <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+            <Briefcase size={20} /> Portfolio
           </button>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -107,7 +120,7 @@ export const AdminDashboard: React.FC = () => {
                     <th className="p-4 font-semibold">Date</th>
                     <th className="p-4 font-semibold">Name</th>
                     <th className="p-4 font-semibold">Contact</th>
-                    <th className="p-4 font-semibold">Interest</th>
+                    <th className="p-4 font-semibold">Details</th>
                     <th className="p-4 font-semibold">Status</th>
                     <th className="p-4 font-semibold">Actions</th>
                   </tr>
@@ -119,12 +132,18 @@ export const AdminDashboard: React.FC = () => {
                     leads.map(lead => (
                       <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                         <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(lead.date).toLocaleDateString()}</td>
-                        <td className="p-4 font-medium">{lead.name}</td>
+                        <td className="p-4 font-medium">
+                            {lead.name}
+                            {lead.company && <div className="text-xs text-gray-500">{lead.company}</div>}
+                        </td>
                         <td className="p-4 text-sm text-gray-600 dark:text-gray-400">
                           <div>{lead.email}</div>
                           <div className="text-xs opacity-75">{lead.phone}</div>
                         </td>
-                        <td className="p-4 text-sm">{lead.serviceInterest}</td>
+                        <td className="p-4 text-sm max-w-xs truncate" title={lead.message}>
+                            <div className="font-medium text-primary">{lead.serviceInterest}</div>
+                            <div className="text-gray-500 text-xs truncate">{lead.message}</div>
+                        </td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             lead.status === 'New' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
@@ -173,12 +192,6 @@ export const AdminDashboard: React.FC = () => {
                         onChange={e => setEditServiceForm({...editServiceForm, shortDescription: e.target.value})}
                         placeholder="Short Description"
                       />
-                      <input 
-                        className="w-full border p-2 rounded dark:bg-gray-800 dark:border-gray-700" 
-                        value={editServiceForm.pricing} 
-                        onChange={e => setEditServiceForm({...editServiceForm, pricing: e.target.value})}
-                        placeholder="Pricing"
-                      />
                       <div className="flex gap-2">
                         <button onClick={saveService} className="bg-green-500 text-white px-4 py-2 rounded">Save</button>
                         <button onClick={() => setEditingService(null)} className="bg-gray-300 dark:bg-gray-700 px-4 py-2 rounded">Cancel</button>
@@ -196,7 +209,6 @@ export const AdminDashboard: React.FC = () => {
                         <button onClick={() => handleEditService(service)} className="text-blue-600 dark:text-blue-400 text-sm hover:underline">Edit</button>
                       </div>
                       <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">{service.shortDescription}</p>
-                      <div className="text-sm font-semibold">Pricing: {service.pricing}</div>
                     </>
                   )}
                 </div>
@@ -261,6 +273,79 @@ export const AdminDashboard: React.FC = () => {
                     onChange={e => setNewBlogForm({...newBlogForm, content: e.target.value})}
                   />
                   <button type="submit" className="w-full bg-primary text-white py-2 rounded hover:opacity-90">Publish</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PORTFOLIO TAB */}
+        {activeTab === TABS.PORTFOLIO && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <h1 className="text-2xl font-bold mb-6">Portfolio Items</h1>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {projects.map(project => (
+                  <div key={project.id} className="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+                    <div className="h-40 overflow-hidden">
+                        <img src={project.imageUrl} className="w-full h-full object-cover" alt={project.title} />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-bold">{project.title}</h3>
+                          <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{project.category}</span>
+                      </div>
+                      <div className="flex justify-between items-center mt-4">
+                         {project.projectUrl ? <a href={project.projectUrl} target="_blank" className="text-sm text-blue-500 hover:underline">View Link</a> : <span className="text-sm text-gray-400">No Link</span>}
+                         <button onClick={() => deleteProject(project.id)} className="text-red-500 text-sm hover:text-red-700 flex items-center gap-1">
+                            <XCircle size={14} /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:col-span-1">
+              <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 sticky top-8">
+                <h2 className="text-xl font-bold mb-4">Add Project</h2>
+                <form onSubmit={handleAddProject} className="space-y-3">
+                  <input 
+                    required
+                    placeholder="Project Title" 
+                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                    value={newProjectForm.title}
+                    onChange={e => setNewProjectForm({...newProjectForm, title: e.target.value})}
+                  />
+                  <select
+                    required
+                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                    value={newProjectForm.category}
+                    onChange={e => setNewProjectForm({...newProjectForm, category: e.target.value})}
+                  >
+                      <option value="" disabled>Select Category</option>
+                      <option value="Marketing">Marketing</option>
+                      <option value="Development">Development</option>
+                      <option value="Design">Design</option>
+                      <option value="E-Commerce">E-Commerce</option>
+                  </select>
+                  <input 
+                    required
+                    placeholder="Image URL" 
+                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                    value={newProjectForm.imageUrl}
+                    onChange={e => setNewProjectForm({...newProjectForm, imageUrl: e.target.value})}
+                  />
+                  <input 
+                    placeholder="Project Link (Optional)" 
+                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                    value={newProjectForm.projectUrl}
+                    onChange={e => setNewProjectForm({...newProjectForm, projectUrl: e.target.value})}
+                  />
+                  <button type="submit" className="w-full bg-primary text-white py-2 rounded hover:opacity-90 flex items-center justify-center gap-2">
+                     <Plus size={16} /> Add Project
+                  </button>
                 </form>
               </div>
             </div>
