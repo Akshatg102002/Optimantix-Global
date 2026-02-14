@@ -7,6 +7,8 @@ export interface SubService {
   fullDescription: string;
   features: string[];
   benefits: string[];
+  phases?: { title: string; description: string }[];
+  stats?: { label: string; value: string; desc: string }[];
 }
 
 export interface Service {

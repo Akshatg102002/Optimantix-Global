@@ -25,9 +25,19 @@ export const INITIAL_SERVICES: Service[] = [
             slug: 'seo',
             title: 'Search Engine Optimization (SEO)',
             shortDescription: 'Rank higher on Google with white-hat SEO strategies.',
-            fullDescription: 'Our SEO services are designed to increase visibility within the algorithmic ("natural", "organic", or "free") search results to deliver high quality, targeted traffic to your website. We focus on On-page, Off-page, and Technical SEO.',
+            fullDescription: 'Our SEO services are designed to increase visibility within the algorithmic ("natural", "organic", or "free") search results to deliver high quality, targeted traffic to your website. We focus on On-page, Off-page, and Technical SEO to build long-term authority.',
             features: ['Keyword Research', 'On-Page Optimization', 'Backlink Building', 'Technical Audit'],
-            benefits: ['Long-term traffic growth', 'Lower cost per acquisition', 'Increased brand credibility']
+            benefits: ['Long-term traffic growth', 'Lower cost per acquisition', 'Increased brand credibility'],
+            phases: [
+                { title: 'Technical Audit', description: 'We fix crawling errors, broken links, and speed issues to build a solid foundation.' },
+                { title: 'Keyword Strategy', description: 'Identifying high-intent keywords that your competitors are missing.' },
+                { title: 'Content Optimization', description: 'Enhancing existing pages and creating new, value-rich content.' },
+                { title: 'Authority Building', description: 'Acquiring high-quality backlinks to boost domain authority and rankings.' }
+            ],
+            stats: [
+                { label: 'Traffic Increase', value: '150%', desc: 'Average growth in 6 months' },
+                { label: 'Page 1 Rankings', value: '35+', desc: 'Keywords ranked on top' }
+            ]
         },
         {
             id: 'dm-2',
@@ -36,7 +46,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Instant traffic and leads via Google & Meta Ads.',
             fullDescription: 'We manage your PPC campaigns to ensure you get the most out of your budget. Our certified experts create targeted ad campaigns on Google Ads, Facebook, and LinkedIn that drive immediate results.',
             features: ['Campaign Setup', 'Ad Copywriting', 'Bid Management', 'A/B Testing'],
-            benefits: ['Immediate visibility', 'Precise targeting', 'Measurable ROI']
+            benefits: ['Immediate visibility', 'Precise targeting', 'Measurable ROI'],
+            phases: [
+                { title: 'Account Setup', description: 'Structuring campaigns, ad groups, and keywords for maximum quality score.' },
+                { title: 'Creative Design', description: 'Designing high-converting ad creatives and compelling copy.' },
+                { title: 'Bid Management', description: 'Daily monitoring and adjustment of bids to optimize CPA.' },
+                { title: 'Scaling', description: 'Increasing budget on winning campaigns to maximize volume.' }
+            ],
+            stats: [
+                { label: 'ROAS', value: '4.5x', desc: 'Return on Ad Spend' },
+                { label: 'Lead Cost', value: '-30%', desc: 'Reduction in CPL' }
+            ]
         },
         {
             id: 'dm-3',
@@ -45,7 +65,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Engage your audience on Instagram, LinkedIn & Twitter.',
             fullDescription: 'Build a community around your brand. We create engaging content and manage your social media profiles to increase brand awareness and customer loyalty.',
             features: ['Content Creation', 'Community Management', 'Influencer Marketing', 'Analytics Reporting'],
-            benefits: ['Direct customer engagement', 'Brand loyalty', 'Viral potential']
+            benefits: ['Direct customer engagement', 'Brand loyalty', 'Viral potential'],
+            phases: [
+                { title: 'Brand Persona', description: 'Defining your brand voice and visual style.' },
+                { title: 'Content Calendar', description: 'Planning a mix of educational, entertaining, and promotional content.' },
+                { title: 'Engagement', description: 'Actively responding to comments and messages to build community.' },
+                { title: 'Analytics', description: 'Monthly reporting on reach, engagement, and follower growth.' }
+            ],
+            stats: [
+                { label: 'Engagement', value: '3x', desc: 'Higher interaction rate' },
+                { label: 'Reach', value: '1M+', desc: 'Monthly impressions managed' }
+            ]
         }
     ]
   },
@@ -73,7 +103,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'End-to-end Seller Central & AMS management.',
             fullDescription: 'Dominate the world’s largest marketplace. We handle Amazon SEO, A+ Content (EBC), Storefront design, and PPC (Sponsored Products, Brands, Display) to maximize your sales on Amazon.',
             features: ['Seller Central Management', 'Amazon Advertising (AMS)', 'FBA Consultation', 'Brand Registry'],
-            benefits: ['Global Reach', 'Prime eligibility consulting', 'Optimized ad spend']
+            benefits: ['Global Reach', 'Prime eligibility consulting', 'Optimized ad spend'],
+            phases: [
+                { title: 'Audit & Compliance', description: 'Ensuring your listings meet Amazon guidelines and fixing suppression issues.' },
+                { title: 'SEO & Content', description: 'Optimizing titles, bullets, and A+ content for high search ranking.' },
+                { title: 'PPC Launch', description: 'Running aggressive Sponsored Product campaigns to boost ranking.' },
+                { title: 'Brand Defense', description: 'Protecting your brand keywords and winning the Buy Box.' }
+            ],
+            stats: [
+                { label: 'Sales Growth', value: '200%', desc: 'Year-over-Year growth' },
+                { label: 'ACOS', value: '15%', desc: 'Targeted Advertising Cost' }
+            ]
         },
         {
             id: 'mm-2',
@@ -82,7 +122,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Grow your sales on India’s homegrown marketplace.',
             fullDescription: 'Expert management for Flipkart Sellers. From cataloging to Flipkart Ads (PLA/PCA), we help you capture the Indian market effectively.',
             features: ['Cataloging', 'Flipkart Ads', 'Smart Fulfillment', 'Promotions Participation'],
-            benefits: ['Access to Indian tier-2/3 cities', 'Big Billion Days strategy', 'Account Health Management']
+            benefits: ['Access to Indian tier-2/3 cities', 'Big Billion Days strategy', 'Account Health Management'],
+            phases: [
+                { title: 'Cataloging', description: 'Creating high-quality listings with detailed specifications.' },
+                { title: 'Stock Management', description: 'Advising on Flipkart Smart Fulfillment for faster delivery badges.' },
+                { title: 'PLA Campaigns', description: 'Managing Product Listing Ads to gain top visibility.' },
+                { title: 'Event Planning', description: 'Strategizing for Big Billion Days and other mega sales.' }
+            ],
+            stats: [
+                { label: 'Visibility', value: 'Top 3', desc: 'Rankings for primary keywords' },
+                { label: 'Returns', value: '-10%', desc: 'Reduction in returns' }
+            ]
         },
         {
             id: 'mm-3',
@@ -91,7 +141,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Tap into the reseller network and social commerce.',
             fullDescription: 'Leverage the power of social commerce with Meesho. We optimize your listings for the reseller model and manage pricing strategies for high volume sales.',
             features: ['Reseller Strategy', 'Pricing Optimization', 'Catalog Upload', 'Order Management'],
-            benefits: ['High volume low cost', 'Social reach', 'Zero commission strategy']
+            benefits: ['High volume low cost', 'Social reach', 'Zero commission strategy'],
+            phases: [
+                { title: 'Pricing Strategy', description: 'Setting competitive pricing for the reseller market.' },
+                { title: 'Bulk Upload', description: 'Efficiently managing large catalogs.' },
+                { title: 'Order Processing', description: 'Streamlining dispatch to avoid penalties.' },
+                { title: 'Performance Review', description: 'Analyzing returns and supplier rating.' }
+            ],
+            stats: [
+                { label: 'Volume', value: '500+', desc: 'Daily orders managed' },
+                { label: 'Rating', value: '4.2+', desc: 'Maintained Supplier Rating' }
+            ]
         },
         {
             id: 'mm-4',
@@ -100,7 +160,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Specialized management for Beauty & Quick Commerce.',
             fullDescription: 'Tailored strategies for niche marketplaces like Nykaa (Beauty/Fashion) and Quick Commerce platforms like Blinkit/Zepto.',
             features: ['Category Approval', 'Banner Ads', 'Inventory Stocking', 'Flash Sales'],
-            benefits: ['Niche targeting', 'Premium brand positioning', 'Instant delivery logistics']
+            benefits: ['Niche targeting', 'Premium brand positioning', 'Instant delivery logistics'],
+            phases: [
+                { title: 'Onboarding', description: 'Navigating complex category approval processes.' },
+                { title: 'Brand Store', description: 'Designing a premium brand store experience.' },
+                { title: 'Banner Ads', description: 'Booking high-visibility slots during sale events.' },
+                { title: 'Inventory Sync', description: 'Real-time stock updates for quick commerce.' }
+            ],
+            stats: [
+                { label: 'Conversion', value: '5%', desc: 'Above industry average' },
+                { label: 'Speed', value: '10min', desc: 'Delivery Optimization' }
+            ]
         }
     ]
   },
@@ -126,9 +196,19 @@ export const INITIAL_SERVICES: Service[] = [
             slug: 'frontend',
             title: 'Frontend Development',
             shortDescription: 'React, Vue, and Angular development.',
-            fullDescription: 'We create stunning, responsive, and interactive user interfaces using modern JavaScript frameworks like React.js, Vue.js, and Next.js.',
+            fullDescription: 'We create stunning, responsive, and interactive user interfaces using modern JavaScript frameworks like React.js, Vue.js, and Next.js. We prioritize performance (Core Web Vitals) and accessibility (WCAG).',
             features: ['SPA Development', 'PWA', 'Responsive Design', 'Animation Integration'],
-            benefits: ['Better User Experience', 'Faster Interactions', 'Modern UI']
+            benefits: ['Better User Experience', 'Faster Interactions', 'Modern UI'],
+            phases: [
+                { title: 'Component Design', description: 'Building a reusable design system/UI kit.' },
+                { title: 'Logic Integration', description: 'Connecting UI with APIs and state management (Redux/Zustand).' },
+                { title: 'Optimization', description: 'Code splitting, lazy loading, and image optimization.' },
+                { title: 'Cross-Browser QA', description: 'Ensuring consistency across Chrome, Safari, and Firefox.' }
+            ],
+            stats: [
+                { label: 'Load Time', value: '<1s', desc: 'First Contentful Paint' },
+                { label: 'SEO Score', value: '100', desc: 'Lighthouse Performance' }
+            ]
         },
         {
             id: 'dev-2',
@@ -137,7 +217,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Node.js, Python, and Database architecture.',
             fullDescription: 'Secure and scalable server-side solutions. We build robust APIs and handle database management using Node.js, Python (Django/FastAPI), and SQL/NoSQL databases.',
             features: ['API Development', 'Database Design', 'Cloud Integration', 'Security Implementation'],
-            benefits: ['Data Security', 'Scalability', 'High Availability']
+            benefits: ['Data Security', 'Scalability', 'High Availability'],
+            phases: [
+                { title: 'Schema Design', description: 'Designing normalized database schemas.' },
+                { title: 'API Architecture', description: 'Building RESTful or GraphQL endpoints.' },
+                { title: 'Security', description: 'Implementing JWT auth, rate limiting, and data encryption.' },
+                { title: 'Deployment', description: 'Setting up CI/CD pipelines and cloud infrastructure (AWS/Azure).' }
+            ],
+            stats: [
+                { label: 'Uptime', value: '99.99%', desc: 'Service Availability' },
+                { label: 'Response', value: '<50ms', desc: 'Average API latency' }
+            ]
         },
         {
             id: 'dev-3',
@@ -146,7 +236,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'iOS and Android apps using Flutter & React Native.',
             fullDescription: 'Reach customers on their phones with high-performance native and cross-platform mobile applications.',
             features: ['Cross-platform Dev', 'Native iOS/Android', 'App Store Submission', 'UI/UX Design'],
-            benefits: ['Wider Reach', 'Push Notifications', 'Offline Capabilities']
+            benefits: ['Wider Reach', 'Push Notifications', 'Offline Capabilities'],
+            phases: [
+                { title: 'Wireframing', description: 'Mapping out user flows and screens.' },
+                { title: 'Hybrid Dev', description: 'Coding in Flutter/React Native for dual-platform support.' },
+                { title: 'Native Bridge', description: 'Integrating device features like Camera, GPS, and Biometrics.' },
+                { title: 'Store Launch', description: 'Managing submission to Apple App Store and Google Play.' }
+            ],
+            stats: [
+                { label: 'Retention', value: '40%', desc: 'Day-30 User Retention' },
+                { label: 'Crash Rate', value: '<0.1%', desc: 'Stability metric' }
+            ]
         }
     ]
   },
@@ -174,7 +274,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Memorable logos and comprehensive brand guidelines.',
             fullDescription: 'We craft unique logos that encapsulate your brand’s essence. Complete with color palettes, typography, and usage guidelines.',
             features: ['Logo Design', 'Brand Book', 'Stationery', 'Iconography'],
-            benefits: ['Strong First Impression', 'Brand Recognition', 'Professionalism']
+            benefits: ['Strong First Impression', 'Brand Recognition', 'Professionalism'],
+            phases: [
+                { title: 'Discovery', description: 'Researching industry trends and competitor visuals.' },
+                { title: 'Sketching', description: 'Hand-drawn concepts and ideas.' },
+                { title: 'Digitization', description: 'Vectorizing selected concepts in Illustrator.' },
+                { title: 'Delivery', description: 'Providing source files (AI, EPS) and usage guide.' }
+            ],
+            stats: [
+                { label: 'Concepts', value: '3-5', desc: 'Initial unique options' },
+                { label: 'Satisfaction', value: '100%', desc: 'Unlimited revisions' }
+            ]
         },
         {
             id: 'gd-2',
@@ -183,7 +293,17 @@ export const INITIAL_SERVICES: Service[] = [
             shortDescription: 'Shelf-ready packaging that sells.',
             fullDescription: 'Stand out on the shelf (digital or physical) with creative packaging design that tells your product story and ensures unboxing delight.',
             features: ['Box Design', 'Label Design', '3D Mockups', 'Print-ready files'],
-            benefits: ['Shelf Impact', 'Customer Experience', 'Information Hierarchy']
+            benefits: ['Shelf Impact', 'Customer Experience', 'Information Hierarchy'],
+            phases: [
+                { title: 'Structural Design', description: 'Choosing the right box/label shape and material.' },
+                { title: 'Visual Design', description: 'Applying brand graphics and regulatory info.' },
+                { title: '3D Rendering', description: 'Visualizing the final look before printing.' },
+                { title: 'Print Prep', description: 'Setting bleeds, cut lines, and color profiles.' }
+            ],
+            stats: [
+                { label: 'Sales Lift', value: '30%', desc: 'After packaging redesign' },
+                { label: 'Unboxing', value: '5★', desc: 'Customer experience rating' }
+            ]
         }
     ]
   },
