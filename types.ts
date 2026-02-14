@@ -1,4 +1,14 @@
 
+export interface SubService {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  fullDescription: string;
+  features: string[];
+  benefits: string[];
+}
+
 export interface Service {
   id: string;
   slug: string;
@@ -11,6 +21,7 @@ export interface Service {
   processSteps: { title: string; description: string }[];
   benefits: string[];
   deliverables: string[];
+  subServices?: SubService[];
 }
 
 export interface BlogPost {

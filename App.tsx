@@ -13,6 +13,7 @@ const About = lazy(() => import('./pages/About').then(module => ({ default: modu
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
 const ServicesPage = lazy(() => import('./pages/ServicesPage').then(module => ({ default: module.ServicesPage })));
 const ServiceTemplate = lazy(() => import('./pages/ServiceTemplate').then(module => ({ default: module.ServiceTemplate })));
+const SubServiceTemplate = lazy(() => import('./pages/SubServiceTemplate').then(module => ({ default: module.SubServiceTemplate })));
 const BlogList = lazy(() => import('./pages/BlogList').then(module => ({ default: module.BlogList })));
 const BlogPost = lazy(() => import('./pages/BlogPost').then(module => ({ default: module.BlogPost })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
@@ -32,6 +33,7 @@ const App: React.FC = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/:slug" element={<ServiceTemplate />} />
+              <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:id" element={<BlogPost />} />
               

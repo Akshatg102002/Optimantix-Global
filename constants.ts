@@ -18,7 +18,36 @@ export const INITIAL_SERVICES: Service[] = [
       { title: 'Optimization & Scaling', description: 'Using data to refine targeting and creative assets to lower CPA and increase ROAS.' }
     ],
     benefits: ['Increased Organic Traffic', 'Higher Conversion Rates', 'Improved Brand Visibility', 'Measurable ROI'],
-    deliverables: ['Monthly Performance Reports', 'Competitor Analysis', 'Content Calendar', 'Optimized Ad Campaigns']
+    deliverables: ['Monthly Performance Reports', 'Competitor Analysis', 'Content Calendar', 'Optimized Ad Campaigns'],
+    subServices: [
+        {
+            id: 'dm-1',
+            slug: 'seo',
+            title: 'Search Engine Optimization (SEO)',
+            shortDescription: 'Rank higher on Google with white-hat SEO strategies.',
+            fullDescription: 'Our SEO services are designed to increase visibility within the algorithmic ("natural", "organic", or "free") search results to deliver high quality, targeted traffic to your website. We focus on On-page, Off-page, and Technical SEO.',
+            features: ['Keyword Research', 'On-Page Optimization', 'Backlink Building', 'Technical Audit'],
+            benefits: ['Long-term traffic growth', 'Lower cost per acquisition', 'Increased brand credibility']
+        },
+        {
+            id: 'dm-2',
+            slug: 'ppc',
+            title: 'Pay-Per-Click (PPC)',
+            shortDescription: 'Instant traffic and leads via Google & Meta Ads.',
+            fullDescription: 'We manage your PPC campaigns to ensure you get the most out of your budget. Our certified experts create targeted ad campaigns on Google Ads, Facebook, and LinkedIn that drive immediate results.',
+            features: ['Campaign Setup', 'Ad Copywriting', 'Bid Management', 'A/B Testing'],
+            benefits: ['Immediate visibility', 'Precise targeting', 'Measurable ROI']
+        },
+        {
+            id: 'dm-3',
+            slug: 'smm',
+            title: 'Social Media Marketing',
+            shortDescription: 'Engage your audience on Instagram, LinkedIn & Twitter.',
+            fullDescription: 'Build a community around your brand. We create engaging content and manage your social media profiles to increase brand awareness and customer loyalty.',
+            features: ['Content Creation', 'Community Management', 'Influencer Marketing', 'Analytics Reporting'],
+            benefits: ['Direct customer engagement', 'Brand loyalty', 'Viral potential']
+        }
+    ]
   },
   {
     id: '2',
@@ -35,7 +64,45 @@ export const INITIAL_SERVICES: Service[] = [
       { title: 'Inventory Planning', description: 'Forecasting demand to prevent stockouts and minimize storage fees.' }
     ],
     benefits: ['Win the Buy Box', 'Lower ACOS', 'Protected Brand Identity', 'Streamlined Operations'],
-    deliverables: ['Listing Quality Audit', 'Sales & Inventory Reports', 'PPC Campaign Strategy', 'Customer Feedback Analysis']
+    deliverables: ['Listing Quality Audit', 'Sales & Inventory Reports', 'PPC Campaign Strategy', 'Customer Feedback Analysis'],
+    subServices: [
+        {
+            id: 'mm-1',
+            slug: 'amazon',
+            title: 'Amazon Management',
+            shortDescription: 'End-to-end Seller Central & AMS management.',
+            fullDescription: 'Dominate the world’s largest marketplace. We handle Amazon SEO, A+ Content (EBC), Storefront design, and PPC (Sponsored Products, Brands, Display) to maximize your sales on Amazon.',
+            features: ['Seller Central Management', 'Amazon Advertising (AMS)', 'FBA Consultation', 'Brand Registry'],
+            benefits: ['Global Reach', 'Prime eligibility consulting', 'Optimized ad spend']
+        },
+        {
+            id: 'mm-2',
+            slug: 'flipkart',
+            title: 'Flipkart Management',
+            shortDescription: 'Grow your sales on India’s homegrown marketplace.',
+            fullDescription: 'Expert management for Flipkart Sellers. From cataloging to Flipkart Ads (PLA/PCA), we help you capture the Indian market effectively.',
+            features: ['Cataloging', 'Flipkart Ads', 'Smart Fulfillment', 'Promotions Participation'],
+            benefits: ['Access to Indian tier-2/3 cities', 'Big Billion Days strategy', 'Account Health Management']
+        },
+        {
+            id: 'mm-3',
+            slug: 'meesho',
+            title: 'Meesho Management',
+            shortDescription: 'Tap into the reseller network and social commerce.',
+            fullDescription: 'Leverage the power of social commerce with Meesho. We optimize your listings for the reseller model and manage pricing strategies for high volume sales.',
+            features: ['Reseller Strategy', 'Pricing Optimization', 'Catalog Upload', 'Order Management'],
+            benefits: ['High volume low cost', 'Social reach', 'Zero commission strategy']
+        },
+        {
+            id: 'mm-4',
+            slug: 'nykaa',
+            title: 'Nykaa & Blinkit',
+            shortDescription: 'Specialized management for Beauty & Quick Commerce.',
+            fullDescription: 'Tailored strategies for niche marketplaces like Nykaa (Beauty/Fashion) and Quick Commerce platforms like Blinkit/Zepto.',
+            features: ['Category Approval', 'Banner Ads', 'Inventory Stocking', 'Flash Sales'],
+            benefits: ['Niche targeting', 'Premium brand positioning', 'Instant delivery logistics']
+        }
+    ]
   },
   {
     id: '3',
@@ -52,7 +119,36 @@ export const INITIAL_SERVICES: Service[] = [
       { title: 'Deployment & Support', description: 'Seamless launch and ongoing maintenance to ensure 99.9% uptime.' }
     ],
     benefits: ['Faster Load Times', 'Mobile-First Experience', 'Scalable Architecture', 'SEO-Friendly Structure'],
-    deliverables: ['Source Code', 'Design Assets (Figma)', 'Documentation', '1 Month Free Support']
+    deliverables: ['Source Code', 'Design Assets (Figma)', 'Documentation', '1 Month Free Support'],
+    subServices: [
+        {
+            id: 'dev-1',
+            slug: 'frontend',
+            title: 'Frontend Development',
+            shortDescription: 'React, Vue, and Angular development.',
+            fullDescription: 'We create stunning, responsive, and interactive user interfaces using modern JavaScript frameworks like React.js, Vue.js, and Next.js.',
+            features: ['SPA Development', 'PWA', 'Responsive Design', 'Animation Integration'],
+            benefits: ['Better User Experience', 'Faster Interactions', 'Modern UI']
+        },
+        {
+            id: 'dev-2',
+            slug: 'backend',
+            title: 'Backend Development',
+            shortDescription: 'Node.js, Python, and Database architecture.',
+            fullDescription: 'Secure and scalable server-side solutions. We build robust APIs and handle database management using Node.js, Python (Django/FastAPI), and SQL/NoSQL databases.',
+            features: ['API Development', 'Database Design', 'Cloud Integration', 'Security Implementation'],
+            benefits: ['Data Security', 'Scalability', 'High Availability']
+        },
+        {
+            id: 'dev-3',
+            slug: 'mobile',
+            title: 'Mobile App Development',
+            shortDescription: 'iOS and Android apps using Flutter & React Native.',
+            fullDescription: 'Reach customers on their phones with high-performance native and cross-platform mobile applications.',
+            features: ['Cross-platform Dev', 'Native iOS/Android', 'App Store Submission', 'UI/UX Design'],
+            benefits: ['Wider Reach', 'Push Notifications', 'Offline Capabilities']
+        }
+    ]
   },
   {
     id: '4',
@@ -69,7 +165,27 @@ export const INITIAL_SERVICES: Service[] = [
       { title: 'Brand Guidelines', description: 'Creating a rulebook for usage to ensure consistency.' }
     ],
     benefits: ['Consistent Brand Image', 'Professional Appeal', 'Emotional Connection', 'Market Differentiation'],
-    deliverables: ['Logo Pack (All Formats)', 'Brand Style Guide', 'Social Media Kit', 'Stationery Design']
+    deliverables: ['Logo Pack (All Formats)', 'Brand Style Guide', 'Social Media Kit', 'Stationery Design'],
+    subServices: [
+        {
+            id: 'gd-1',
+            slug: 'logo-design',
+            title: 'Logo & Identity',
+            shortDescription: 'Memorable logos and comprehensive brand guidelines.',
+            fullDescription: 'We craft unique logos that encapsulate your brand’s essence. Complete with color palettes, typography, and usage guidelines.',
+            features: ['Logo Design', 'Brand Book', 'Stationery', 'Iconography'],
+            benefits: ['Strong First Impression', 'Brand Recognition', 'Professionalism']
+        },
+        {
+            id: 'gd-2',
+            slug: 'packaging',
+            title: 'Packaging Design',
+            shortDescription: 'Shelf-ready packaging that sells.',
+            fullDescription: 'Stand out on the shelf (digital or physical) with creative packaging design that tells your product story and ensures unboxing delight.',
+            features: ['Box Design', 'Label Design', '3D Mockups', 'Print-ready files'],
+            benefits: ['Shelf Impact', 'Customer Experience', 'Information Hierarchy']
+        }
+    ]
   },
   {
     id: '5',

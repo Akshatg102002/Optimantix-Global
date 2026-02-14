@@ -1,9 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Calendar } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useData } from '../context/DataContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SimpleCaptcha, CaptchaRef } from './SimpleCaptcha';
 
 export const LeadModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ export const LeadModal: React.FC = () => {
   const { addLead } = useData();
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [submitted, setSubmitted] = useState(false);
+  const captchaRef = useRef<CaptchaRef>(null);
 
   useEffect(() => {
     // Open modal after 15 seconds if not already opened in this session
@@ -29,6 +31,10 @@ export const LeadModal: React.FC = () => {
   const closeModal = () => setIsOpen(false);
 
   const onSubmit = (data: any) => {
+    if (captchaRef.current && !captchaRef.current.validate()) {
+      return;
+    }
+
     addLead({
       ...data,
       serviceInterest: 'Consultation Request',
@@ -58,7 +64,7 @@ export const LeadModal: React.FC = () => {
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-white dark:bg-dark-card w-full max-w-lg rounded-2xl shadow-2xl relative overflow-hidden flex flex-col"
+            className="bg-white dark:bg-dark-card w-full max-w-lg rounded-2xl shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh] overflow-y-auto"
           >
             <button 
                 onClick={closeModal}
@@ -122,9 +128,11 @@ export const LeadModal: React.FC = () => {
                         className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary dark:text-white text-sm resize-none"
                     />
 
+                    <SimpleCaptcha ref={captchaRef} />
+
                     <button 
                       type="submit"
-                      className="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-red-500 transition shadow-lg shadow-red-200 dark:shadow-none"
+                      className="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-secondary transition shadow-md"
                     >
                       Request Consultation
                     </button>
