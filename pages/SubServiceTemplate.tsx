@@ -15,6 +15,8 @@ export const SubServiceTemplate: React.FC = () => {
   const service = services.find(s => s.slug === slug);
   const subService = service?.subServices?.find(sub => sub.slug === subSlug);
 
+  const MotionDiv = motion.div as any;
+
   if (!service || !subService) {
     return <Navigate to="/404" replace />;
   }
@@ -56,7 +58,7 @@ export const SubServiceTemplate: React.FC = () => {
           <div className="lg:col-span-2 space-y-16">
             
             {/* Overview */}
-            <motion.div 
+            <MotionDiv 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-800"
@@ -94,7 +96,7 @@ export const SubServiceTemplate: React.FC = () => {
                     </ul>
                   </div>
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* Growth Roadmap */}
             {subService.phases && (

@@ -6,6 +6,7 @@ import { ExternalLink } from 'lucide-react';
 
 export const PortfolioSlider: React.FC = () => {
   const { projects } = useData();
+  const MotionDiv = motion.div as any;
 
   if (projects.length === 0) return null;
 
@@ -22,7 +23,7 @@ export const PortfolioSlider: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <motion.div
+            <MotionDiv
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -49,7 +50,7 @@ export const PortfolioSlider: React.FC = () => {
                   </a>
                 )}
               </div>
-            </motion.div>
+            </MotionDiv>
           ))}
         </div>
       </div>

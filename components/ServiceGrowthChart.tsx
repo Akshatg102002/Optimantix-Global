@@ -15,6 +15,9 @@ interface Props {
 }
 
 export const ServiceGrowthChart: React.FC<Props> = ({ stats, serviceName }) => {
+  const MotionPath = motion.path as any;
+  const MotionDiv = motion.div as any;
+
   return (
     <div className="space-y-12">
       {/* Growth Visualization */}
@@ -38,7 +41,7 @@ export const ServiceGrowthChart: React.FC<Props> = ({ stats, serviceName }) => {
 
                 {/* Growth Curve Line (SVG) */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
-                    <motion.path
+                    <MotionPath
                         d="M 30 200 Q 150 150, 350 20" 
                         fill="transparent"
                         stroke="#0056b3"
@@ -52,7 +55,7 @@ export const ServiceGrowthChart: React.FC<Props> = ({ stats, serviceName }) => {
 
             <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {stats?.map((stat, idx) => (
-                    <motion.div 
+                    <MotionDiv 
                         key={idx}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -62,7 +65,7 @@ export const ServiceGrowthChart: React.FC<Props> = ({ stats, serviceName }) => {
                         <div className="text-3xl font-extrabold text-gray-900 dark:text-white mb-1">{stat.value}</div>
                         <div className="text-sm font-bold text-gray-700 dark:text-gray-200">{stat.label}</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{stat.desc}</div>
-                    </motion.div>
+                    </MotionDiv>
                 ))}
             </div>
         </div>

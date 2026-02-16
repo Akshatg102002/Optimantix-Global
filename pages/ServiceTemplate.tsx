@@ -12,6 +12,8 @@ export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { services } = useData();
   const service = services.find(s => s.slug === slug);
+  
+  const MotionDiv = motion.div as any;
 
   if (!service) {
     return <Navigate to="/" replace />;
@@ -45,7 +47,7 @@ export const ServiceTemplate: React.FC = () => {
           <div className="lg:col-span-2 space-y-12">
             
             {/* Overview */}
-            <motion.div 
+            <MotionDiv 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-800"
@@ -69,7 +71,7 @@ export const ServiceTemplate: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* Process Steps */}
             <div className="space-y-6">

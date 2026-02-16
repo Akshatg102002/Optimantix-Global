@@ -15,6 +15,8 @@ export const Header: React.FC = () => {
   const { services, isDark, toggleTheme } = useData();
   const location = useLocation();
 
+  const MotionDiv = motion.div as any;
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
@@ -173,7 +175,7 @@ export const Header: React.FC = () => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -234,7 +236,7 @@ export const Header: React.FC = () => {
                 Get Started Now
               </Link>
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
     </header>

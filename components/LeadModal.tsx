@@ -14,6 +14,8 @@ export const LeadModal: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const captchaRef = useRef<CaptchaRef>(null);
 
+  const MotionDiv = motion.div as any;
+
   useEffect(() => {
     // Open modal after 15 seconds if not already opened in this session
     const timer = setTimeout(() => {
@@ -52,7 +54,7 @@ export const LeadModal: React.FC = () => {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -60,7 +62,7 @@ export const LeadModal: React.FC = () => {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
           
-          <motion.div 
+          <MotionDiv 
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -148,7 +150,7 @@ export const LeadModal: React.FC = () => {
                 </div>
               )}
             </div>
-          </motion.div>
+          </MotionDiv>
         </div>
       )}
     </AnimatePresence>
