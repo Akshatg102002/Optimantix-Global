@@ -1,13 +1,13 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Star } from 'lucide-react';
+import { ArrowRight, CheckCircle, Star, TrendingUp, Users, ShieldCheck, Clock, Plus, Minus, ChevronDown } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { LeadModal } from '../components/LeadModal';
 import { SEO } from '../components/SEO';
 import { PortfolioSlider } from '../components/PortfolioSlider';
 import { TESTIMONIALS, WORK_PROCESS, INDUSTRIES } from '../constants';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PARTNERS = [
   { name: "Google", color: "#4285F4" },
@@ -20,13 +20,37 @@ const PARTNERS = [
   { name: "Adobe", color: "#FF0000" },
 ];
 
+const FAQS = [
+    {
+        question: "How long does it take to see results from SEO?",
+        answer: "SEO is a long-term strategy. Typically, noticeable improvements in ranking and traffic can be seen within 3 to 6 months, depending on the competitiveness of your industry and the current state of your website."
+    },
+    {
+        question: "Do you offer custom development solutions?",
+        answer: "Yes, absolutely. We specialize in custom web and mobile app development tailored to your specific business requirements, rather than relying solely on templates."
+    },
+    {
+        question: "What platforms do you support for Marketplace Management?",
+        answer: "We provide end-to-end management for major platforms including Amazon (Global), Flipkart, Meesho, Nykaa, Blinkit, and Zepto."
+    },
+    {
+        question: "How do you handle project communication?",
+        answer: "We believe in transparency. You will be assigned a dedicated project manager and will receive weekly updates via email or Slack. We also schedule bi-weekly review calls."
+    }
+];
+
 export const Home: React.FC = () => {
   const { services } = useData();
   const MotionDiv = motion.div as any;
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const toggleFaq = (index: number) => {
+      setOpenFaqIndex(openFaqIndex === index ? null : index);
+  }
 
   return (
     <div className="bg-light dark:bg-dark text-slate-900 dark:text-gray-100 transition-colors duration-300">
@@ -37,7 +61,7 @@ export const Home: React.FC = () => {
       <LeadModal />
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-[#020617] text-white">
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-[#020617] text-white rounded-b-[3rem] md:rounded-b-[5rem] shadow-2xl z-10">
         <div className="absolute inset-0 z-0">
            <img 
              src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000" 
@@ -54,6 +78,9 @@ export const Home: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
+              <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-md text-blue-300 text-xs md:text-sm font-semibold tracking-wider uppercase">
+                🚀 #1 Digital Transformation Agency
+              </div>
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-8 tracking-tight">
                 Driving Growth Through <br />
                 <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Innovation</span>
@@ -65,13 +92,13 @@ export const Home: React.FC = () => {
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link 
                   to="/contact" 
-                  className="bg-primary hover:bg-secondary text-white font-bold py-4 px-10 rounded-full transition shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
+                  className="bg-primary hover:bg-secondary text-white font-bold py-4 px-10 rounded-full transition shadow-[0_0_20px_rgba(0,86,179,0.4)] flex items-center justify-center gap-2 hover:scale-105 active:scale-95 duration-200"
                 >
                   Get Started <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link 
                   to="/services"
-                  className="bg-transparent border border-gray-600 hover:border-white text-white font-medium py-4 px-10 rounded-full transition"
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 text-white font-medium py-4 px-10 rounded-full transition hover:scale-105 active:scale-95 duration-200"
                 >
                   View Solutions
                 </Link>
@@ -81,8 +108,30 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* Stats Counter Section */}
+      <section className="py-12 -mt-10 relative z-20 container mx-auto px-4">
+        <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100 dark:divide-gray-800">
+            <div>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">500+</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Projects Delivered</p>
+            </div>
+            <div>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">98%</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Client Retention</p>
+            </div>
+            <div>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">10+</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Years Experience</p>
+            </div>
+            <div className="border-none">
+                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">24/7</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Support Available</p>
+            </div>
+        </div>
+      </section>
+
       {/* Partner Marquee Section */}
-      <section className="py-10 bg-white dark:bg-[#0a0a0a] border-b border-gray-100 dark:border-gray-800 overflow-hidden">
+      <section className="py-10 bg-transparent overflow-hidden">
         <div className="container mx-auto px-4 mb-6 text-center">
            <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Our Technology Partners</p>
         </div>
@@ -93,20 +142,16 @@ export const Home: React.FC = () => {
              transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
            >
               {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, idx) => (
-                 <div key={idx} className="flex items-center gap-2 text-2xl font-bold text-gray-400 dark:text-gray-600 grayscale hover:grayscale-0 transition-all duration-300 cursor-default">
-                    {/* Simulated Logo Text */}
+                 <div key={idx} className="flex items-center gap-2 text-2xl font-bold text-gray-400 dark:text-gray-600 grayscale hover:grayscale-0 transition-all duration-300 cursor-default opacity-60 hover:opacity-100">
                     <span style={{ fontFamily: 'sans-serif' }}>{partner.name}</span>
                  </div>
               ))}
            </MotionDiv>
-           {/* Gradient Masks for smooth fade out */}
-           <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white dark:from-[#0a0a0a] to-transparent pointer-events-none"></div>
-           <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white dark:from-[#0a0a0a] to-transparent pointer-events-none"></div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-gray-800">
+      <section className="py-24 bg-white dark:bg-dark-card border-t border-b border-gray-100 dark:border-gray-800">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <span className="text-primary font-bold tracking-widest uppercase text-sm mb-2 block">Our Expertise</span>
@@ -121,16 +166,16 @@ export const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group bg-gray-50 dark:bg-[#111] hover:bg-white dark:hover:bg-gray-800 rounded-2xl p-8 transition-all duration-300 border border-gray-200 dark:border-gray-800 hover:shadow-xl hover:border-primary/30"
+                className="group bg-gray-50 dark:bg-[#151515] hover:bg-white dark:hover:bg-[#1a1a1a] rounded-3xl p-8 transition-all duration-300 border border-gray-200 dark:border-gray-800 hover:shadow-2xl hover:border-primary/30 flex flex-col h-full"
               >
                  <div className="text-xs font-bold text-primary uppercase mb-4 tracking-wider flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-primary"></span> Solution 0{index + 1}
                  </div>
                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{service.title}</h3>
-                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">{service.shortDescription}</p>
+                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 flex-grow">{service.shortDescription}</p>
                  <Link 
                    to={`/services/${service.slug}`}
-                   className="inline-flex items-center text-gray-900 dark:text-white font-semibold hover:text-primary transition-colors group-hover:translate-x-1 duration-200"
+                   className="mt-auto inline-flex items-center text-gray-900 dark:text-white font-bold hover:text-primary transition-colors group-hover:translate-x-1 duration-200"
                  >
                    Learn more <ArrowRight size={18} className="ml-2" />
                  </Link>
@@ -139,10 +184,47 @@ export const Home: React.FC = () => {
           </div>
           
           <div className="text-center mt-12">
-             <Link to="/services" className="inline-flex items-center justify-center px-8 py-3 font-medium text-primary hover:text-secondary hover:underline transition">
+             <Link to="/services" className="inline-flex items-center justify-center px-8 py-4 font-bold rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-primary hover:text-white transition-all duration-300">
                View All Solutions <ArrowRight size={18} className="ml-2" />
              </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section - Modern Grid */}
+      <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
+        <div className="container mx-auto px-4 md:px-6">
+            <div className="flex flex-col md:flex-row gap-16 items-center mb-16">
+                <div className="md:w-1/2">
+                    <span className="text-secondary dark:text-primary font-bold uppercase tracking-wider text-sm mb-2 block">Why Choose Us</span>
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">We don't just deliver.<br/> We outperform.</h2>
+                    <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+                        In a sea of agencies, Optimantix stands out by blending creative innovation with hard data. We build systems that scale as you grow.
+                    </p>
+                </div>
+                <div className="md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/50 transition-colors">
+                        <TrendingUp className="text-primary mb-4" size={32} />
+                        <h3 className="font-bold text-lg mb-2 dark:text-white">Data-Driven</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Every decision is backed by analytics and A/B testing.</p>
+                    </div>
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/50 transition-colors">
+                        <Users className="text-primary mb-4" size={32} />
+                        <h3 className="font-bold text-lg mb-2 dark:text-white">Dedicated Team</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Direct access to project managers and developers.</p>
+                    </div>
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/50 transition-colors">
+                        <ShieldCheck className="text-primary mb-4" size={32} />
+                        <h3 className="font-bold text-lg mb-2 dark:text-white">Enterprise Security</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Bank-grade security protocols for all web assets.</p>
+                    </div>
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/50 transition-colors">
+                        <Clock className="text-primary mb-4" size={32} />
+                        <h3 className="font-bold text-lg mb-2 dark:text-white">Fast Turnaround</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Agile sprints ensure we launch faster than the competition.</p>
+                    </div>
+                </div>
+            </div>
         </div>
       </section>
 
@@ -150,10 +232,18 @@ export const Home: React.FC = () => {
       <PortfolioSlider />
 
       {/* Process Section */}
-      <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
+      <section className="py-24 bg-white dark:bg-dark-card">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="order-2 lg:order-1 relative">
+               <div className="absolute inset-0 bg-primary/10 rounded-3xl transform -rotate-3 scale-105"></div>
+               <img 
+                 src="https://images.unsplash.com/photo-1553877615-30c7309dc584?auto=format&fit=crop&q=80&w=1000" 
+                 alt="Team working" 
+                 className="relative rounded-3xl shadow-2xl w-full h-auto object-cover border border-gray-200 dark:border-gray-700"
+               />
+            </div>
+            <div className="order-1 lg:order-2">
               <span className="text-secondary dark:text-primary font-bold uppercase tracking-wider text-sm mb-2 block">How We Work</span>
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Our Proven Process</h2>
               <p className="text-gray-600 dark:text-gray-400 text-lg mb-8 leading-relaxed">
@@ -162,37 +252,29 @@ export const Home: React.FC = () => {
               
               <div className="space-y-6">
                 {WORK_PROCESS.map((step, idx) => (
-                  <div key={idx} className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg">
+                  <div key={idx} className="flex gap-4 group">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 group-hover:bg-primary text-gray-500 group-hover:text-white flex items-center justify-center font-bold text-lg shadow-sm transition-colors duration-300">
                       {idx + 1}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{step.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="relative">
-               <div className="absolute inset-0 bg-primary/10 rounded-3xl transform rotate-3 scale-105"></div>
-               <img 
-                 src="https://images.unsplash.com/photo-1553877615-30c7309dc584?auto=format&fit=crop&q=80&w=1000" 
-                 alt="Team working" 
-                 className="relative rounded-3xl shadow-2xl w-full h-auto object-cover"
-               />
-            </div>
           </div>
         </div>
       </section>
       
       {/* Industries */}
-      <section className="py-20 bg-white dark:bg-dark-card">
+      <section className="py-20 bg-gray-50 dark:bg-[#0a0a0a]">
         <div className="container mx-auto px-4 text-center">
             <p className="text-center text-sm font-semibold text-gray-400 uppercase tracking-widest mb-10">Trusted Across Industries</p>
             <div className="flex flex-wrap justify-center gap-4">
             {INDUSTRIES.map((industry, idx) => (
-                <span key={idx} className="px-6 py-3 bg-gray-50 dark:bg-[#111] rounded-full text-gray-700 dark:text-gray-300 text-sm border border-gray-100 dark:border-gray-800 hover:border-primary hover:text-primary transition-colors cursor-default">
+                <span key={idx} className="px-6 py-3 bg-white dark:bg-dark-card rounded-full text-gray-700 dark:text-gray-300 text-sm border border-gray-200 dark:border-gray-800 hover:border-primary hover:text-primary transition-colors cursor-default shadow-sm">
                 {industry}
                 </span>
             ))}
@@ -201,7 +283,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
+      <section className="py-24 bg-white dark:bg-dark-card">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
              <span className="text-primary font-bold uppercase tracking-wider text-sm mb-2 block">Testimonials</span>
@@ -210,10 +292,10 @@ export const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t, idx) => (
-              <div key={idx} className="bg-white dark:bg-dark-card p-10 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-900 relative">
+              <div key={idx} className="bg-gray-50 dark:bg-[#111] p-10 rounded-3xl border border-gray-100 dark:border-gray-800 relative hover:shadow-xl transition-shadow">
                 <div className="text-primary mb-6"><Star className="fill-current" size={24} /></div>
-                <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed italic mb-8">"{t.content}"</p>
-                <div className="flex items-center gap-4">
+                <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed italic mb-8">"{t.content}"</p>
+                <div className="flex items-center gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
                   <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                   <div>
                     <div className="font-bold text-slate-900 dark:text-white">{t.name}</div>
@@ -226,10 +308,54 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+            <div className="text-center mb-16">
+                <span className="text-primary font-bold uppercase tracking-wider text-sm mb-2 block">FAQ</span>
+                <h2 className="text-3xl md:text-5xl font-bold mt-2 text-gray-900 dark:text-white">Common Questions</h2>
+            </div>
+            
+            <div className="space-y-4">
+                {FAQS.map((faq, idx) => (
+                    <div key={idx} className="bg-white dark:bg-dark-card rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                        <button 
+                            onClick={() => toggleFaq(idx)}
+                            className="w-full flex items-center justify-between p-6 text-left font-bold text-lg text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        >
+                            {faq.question}
+                            <span className={`p-2 rounded-full bg-gray-100 dark:bg-gray-800 transition-transform duration-300 ${openFaqIndex === idx ? 'rotate-180' : ''}`}>
+                                <ChevronDown size={20} className="text-primary" />
+                            </span>
+                        </button>
+                        <AnimatePresence>
+                            {openFaqIndex === idx && (
+                                <MotionDiv
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className="p-6 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-800">
+                                        {faq.answer}
+                                    </div>
+                                </MotionDiv>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-24 bg-white dark:bg-dark-card">
         <div className="container mx-auto px-4 md:px-6">
             <div className="bg-primary rounded-[3rem] p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl shadow-primary/20 mx-auto max-w-6xl">
+                {/* Abstract Shapes */}
+                <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute bottom-0 right-0 w-64 h-64 bg-black/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+                
                 <div className="relative z-10 max-w-3xl mx-auto">
                 <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight">Ready to scale your business?</h2>
                 <p className="text-white/90 text-xl mb-12 font-light">
@@ -238,11 +364,11 @@ export const Home: React.FC = () => {
                 <div className="flex flex-col sm:flex-row justify-center gap-6">
                     <Link 
                     to="/contact"
-                    className="bg-white text-primary hover:bg-gray-50 font-bold py-4 px-10 rounded-full transition inline-block shadow-xl text-lg"
+                    className="bg-white text-primary hover:bg-gray-50 font-bold py-4 px-10 rounded-full transition inline-block shadow-xl text-lg hover:scale-105 duration-200"
                     >
                     Request Free Quote
                     </Link>
-                    <a href="tel:+919910343016" className="border-2 border-white hover:bg-white/10 text-white font-bold py-4 px-10 rounded-full transition inline-block text-lg">
+                    <a href="tel:+919910343016" className="border-2 border-white hover:bg-white/10 text-white font-bold py-4 px-10 rounded-full transition inline-block text-lg hover:scale-105 duration-200">
                     Call Us Now
                     </a>
                 </div>
