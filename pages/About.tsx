@@ -1,9 +1,13 @@
 
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
 import { MessageSquare, User, CheckCircle, Sparkles, Linkedin } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const TEAM = [
   {
@@ -45,53 +49,67 @@ const TEAM = [
 ];
 
 export const About: React.FC = () => {
-  const { scrollY } = useScroll();
-  const yHero = useTransform(scrollY, [0, 500], [0, 200]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroBgRef = useRef<HTMLImageElement>(null);
+  const heroTextRef = useRef<HTMLDivElement>(null);
 
-  const MotionDiv = motion.div as any;
-  const MotionH1 = motion.h1 as any;
-  const MotionP = motion.p as any;
+  useGSAP(() => {
+    // Parallax Effect for Hero Background
+    if (heroBgRef.current && heroRef.current) {
+      gsap.to(heroBgRef.current, {
+        yPercent: 30, // Move image down by 30% of its height
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+    }
+
+    // Text Reveal Animation on Load
+    if (heroTextRef.current) {
+        gsap.from(heroTextRef.current.children, {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: "power3.out",
+            delay: 0.2
+        });
+    }
+  }, { scope: containerRef });
 
   return (
-    <div className="bg-light dark:bg-dark min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div ref={containerRef} className="bg-light dark:bg-dark min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <SEO 
         title="About Us" 
         description="Optimantix Global - Expert minds delivering enterprise solutions engineered for growth."
       />
 
-      {/* Parallax Hero Section */}
-      <div className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      {/* Parallax Hero Section (GSAP Powered) */}
+      <div ref={heroRef} className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Parallax Background */}
-        <MotionDiv 
-          style={{ y: yHero }}
-          className="absolute inset-0 z-0"
-        >
+        <div className="absolute inset-0 z-0 h-[120%] -top-[10%]">
            <img 
+             ref={heroBgRef}
              src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=2000" 
              alt="Office workspace" 
              className="w-full h-full object-cover"
            />
            <div className="absolute inset-0 bg-black/60"></div>
-        </MotionDiv>
+        </div>
 
-        <div className="container relative z-10 px-4 text-center text-white">
-          <MotionH1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-8"
-          >
+        <div ref={heroTextRef} className="container relative z-10 px-4 text-center text-white">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-8">
             Content that drives <br />
             business growth
-          </MotionH1>
-          <MotionP 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto font-light leading-relaxed"
-          >
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto font-light leading-relaxed">
             Explore our expertise in delivering intelligent digital solutions for modern enterprises. We help you scale with confidence.
-          </MotionP>
+          </p>
         </div>
       </div>
 
@@ -159,12 +177,8 @@ export const About: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {TEAM.map((member, idx) => (
-              <MotionDiv 
+              <div 
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
                 className="bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 group"
               >
                 <div className="w-32 h-32 mx-auto mb-6 relative">
@@ -176,7 +190,7 @@ export const About: React.FC = () => {
                 <a href={member.linkedin} className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-primary hover:text-white transition-colors">
                   <Linkedin size={18} />
                 </a>
-              </MotionDiv>
+              </div>
             ))}
           </div>
         </div>
