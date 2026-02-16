@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -46,6 +47,14 @@
         background-color: #121212;
         color: #f8fafc;
       }
+      /* Hide scrollbar for cleaner stacking effect if desired, optional */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
     </style>
     <!-- Global Error Handler -->
     <script>
@@ -78,7 +87,11 @@
     "framer-motion": "https://esm.sh/framer-motion@10.16.4?deps=react@18.2.0",
     "react-hook-form": "https://esm.sh/react-hook-form@7.51.0?deps=react@18.2.0",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
-    "vite": "https://esm.sh/vite@^7.3.1"
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "gsap": "https://esm.sh/gsap@3.12.5",
+    "gsap/ScrollTrigger": "https://esm.sh/gsap@3.12.5/ScrollTrigger",
+    "@gsap/react": "https://esm.sh/@gsap/react@2.1.0?deps=react@18.2.0,gsap@3.12.5",
+    "gsap/": "https://esm.sh/gsap@^3.14.2/"
   }
 }
 </script>
@@ -88,3 +101,4 @@
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
+    
