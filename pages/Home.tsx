@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Star, TrendingUp, Users, ShieldCheck, Clock, Plus, Minus, ChevronDown } from 'lucide-react';
+import { ArrowRight, CheckCircle, Star, TrendingUp, Users, ShieldCheck, Clock, Plus, Minus, ChevronDown, BarChart, Zap, Globe } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { LeadModal } from '../components/LeadModal';
 import { SEO } from '../components/SEO';
@@ -61,7 +61,7 @@ export const Home: React.FC = () => {
       <LeadModal />
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-[#020617] text-white rounded-b-[3rem] md:rounded-b-[5rem] shadow-2xl z-10">
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-24 overflow-hidden bg-[#020617] text-white rounded-b-[3rem] md:rounded-b-[5rem] shadow-2xl z-10">
         <div className="absolute inset-0 z-0">
            <img 
              src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000" 
@@ -89,7 +89,7 @@ export const Home: React.FC = () => {
                 Optimantix Global empowers businesses with result-driven strategies in SEO, Marketplace Management, and Web Development.
               </p>
               
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-20">
                 <Link 
                   to="/contact" 
                   className="bg-primary hover:bg-secondary text-white font-bold py-4 px-10 rounded-full transition shadow-[0_0_20px_rgba(0,86,179,0.4)] flex items-center justify-center gap-2 hover:scale-105 active:scale-95 duration-200"
@@ -103,36 +103,38 @@ export const Home: React.FC = () => {
                   View Solutions
                 </Link>
               </div>
+
+              {/* Stats Grid inside Hero */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition duration-300">
+                      <BarChart className="w-8 h-8 text-blue-400 mb-3 mx-auto" />
+                      <h3 className="text-3xl font-bold text-white mb-1">90%</h3>
+                      <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Lead Growth</p>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition duration-300">
+                      <Zap className="w-8 h-8 text-yellow-400 mb-3 mx-auto" />
+                      <h3 className="text-3xl font-bold text-white mb-1">167%</h3>
+                      <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Traffic Boost</p>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition duration-300">
+                      <Users className="w-8 h-8 text-green-400 mb-3 mx-auto" />
+                      <h3 className="text-3xl font-bold text-white mb-1">500+</h3>
+                      <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Happy Clients</p>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition duration-300">
+                      <Globe className="w-8 h-8 text-purple-400 mb-3 mx-auto" />
+                      <h3 className="text-3xl font-bold text-white mb-1">10+</h3>
+                      <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Countries Served</p>
+                  </div>
+              </div>
             </MotionDiv>
           </div>
         </div>
       </section>
 
-      {/* Stats Counter Section */}
-      <section className="py-12 -mt-10 relative z-20 container mx-auto px-4">
-        <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100 dark:divide-gray-800">
-            <div>
-                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">500+</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Projects Delivered</p>
-            </div>
-            <div>
-                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">98%</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Client Retention</p>
-            </div>
-            <div>
-                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">10+</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Years Experience</p>
-            </div>
-            <div className="border-none">
-                <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-1">24/7</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Support Available</p>
-            </div>
-        </div>
-      </section>
-
-      {/* Partner Marquee Section */}
-      <section className="py-10 bg-transparent overflow-hidden">
-        <div className="container mx-auto px-4 mb-6 text-center">
+      {/* Partner Marquee Section - Moved up slightly */}
+      <section className="py-12 bg-transparent overflow-hidden">
+        <div className="container mx-auto px-4 mb-8 text-center">
            <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Our Technology Partners</p>
         </div>
         <div className="relative flex overflow-x-hidden">
