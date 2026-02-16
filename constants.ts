@@ -322,7 +322,42 @@ export const INITIAL_SERVICES: Service[] = [
       { title: 'Monitoring', description: '24/7 proactive monitoring to prevent issues before they happen.' }
     ],
     benefits: ['Lightning Fast Speed', 'Bank-Grade Security', 'Automated Backups', 'Scalable Resources'],
-    deliverables: ['cPanel/Admin Access', 'SSL Certificate', 'Daily Backup Schedule', 'Quarterly Health Check']
+    deliverables: ['cPanel/Admin Access', 'SSL Certificate', 'Daily Backup Schedule', 'Quarterly Health Check'],
+    subServices: [
+        {
+            id: 'host-1',
+            slug: 'shared-hosting',
+            title: 'Shared Hosting',
+            shortDescription: 'Affordable and reliable hosting for small businesses.',
+            fullDescription: 'Perfect for startups and small business websites. Enjoy high performance at an affordable price point with our optimized shared hosting environments.',
+            features: ['Free SSL', 'One-Click Install', 'Email Accounts', 'cPanel Control'],
+            benefits: ['Cost Effective', 'Easy Management', '24/7 Support'],
+            phases: [],
+            stats: []
+        },
+        {
+            id: 'host-2',
+            slug: 'vps',
+            title: 'VPS Hosting',
+            shortDescription: 'Dedicated resources for scaling applications.',
+            fullDescription: 'Full root access and dedicated resources for growing applications that need more power and control.',
+            features: ['Root Access', 'SSD Storage', 'Dedicated IP', 'Scalable RAM'],
+            benefits: ['Performance', 'Isolation', 'Customizability'],
+            phases: [],
+            stats: []
+        },
+        {
+            id: 'host-3',
+            slug: 'cloud',
+            title: 'Cloud Solutions',
+            shortDescription: 'AWS & Azure management for enterprise needs.',
+            fullDescription: 'We manage your cloud infrastructure on AWS, Google Cloud, or Azure, ensuring high availability and auto-scaling.',
+            features: ['Auto-scaling', 'Load Balancing', 'CDN Setup', 'Disaster Recovery'],
+            benefits: ['Infinite Scale', 'Global Reach', 'Pay-as-you-go'],
+            phases: [],
+            stats: []
+        }
+    ]
   },
   {
     id: '6',
@@ -339,7 +374,31 @@ export const INITIAL_SERVICES: Service[] = [
       { title: 'Analysis', description: 'Tracking open rates, click rates, and conversions to optimize.' }
     ],
     benefits: ['High Open Rates', 'Personalized Customer Journey', 'Increased LTV', 'Reduced Churn'],
-    deliverables: ['Campaign Strategy Doc', 'Email/WhatsApp Templates', 'Automation Workflows', 'Performance Reports']
+    deliverables: ['Campaign Strategy Doc', 'Email/WhatsApp Templates', 'Automation Workflows', 'Performance Reports'],
+    subServices: [
+        {
+            id: 'comm-1',
+            slug: 'email-marketing',
+            title: 'Email Marketing',
+            shortDescription: 'Newsletters and automated flows that convert.',
+            fullDescription: 'From newsletter design to complex automation flows (welcome series, abandoned cart), we maximize your email ROI.',
+            features: ['Template Design', 'A/B Testing', 'List Cleaning', 'Flow Setup'],
+            benefits: ['High ROI', 'Owned Audience', 'Direct Communication'],
+            phases: [],
+            stats: []
+        },
+        {
+            id: 'comm-2',
+            slug: 'whatsapp-api',
+            title: 'WhatsApp Business API',
+            shortDescription: 'Automated notifications and chatbots.',
+            fullDescription: 'Leverage the most popular messaging app. Send order updates, promotional messages, and handle support via WhatsApp API.',
+            features: ['Green Tick Verification', 'Broadcast Messaging', 'Chatbot Logic', 'CRM Integration'],
+            benefits: ['98% Open Rate', 'Instant Engagement', 'Convenience'],
+            phases: [],
+            stats: []
+        }
+    ]
   }
 ];
 
