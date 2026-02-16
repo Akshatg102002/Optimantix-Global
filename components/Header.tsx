@@ -35,15 +35,33 @@ export const Header: React.FC = () => {
     }
   }, [services, activeServiceId]);
 
+  // Dynamic Text Color for Desktop: White when top (transparent), Dark when scrolled
+  const navLinkClass = `font-medium transition-colors duration-300 ${
+      scrolled 
+      ? 'text-gray-700 dark:text-gray-200 hover:text-primary' 
+      : 'text-gray-700 dark:text-gray-200 lg:text-white/90 lg:hover:text-white'
+  }`;
+
+  const iconClass = `transition-colors duration-300 ${
+      scrolled
+      ? 'text-gray-600 dark:text-gray-300'
+      : 'text-gray-600 dark:text-gray-300 lg:text-white/90'
+  }`;
+
   return (
     <>
       <header 
         className={`fixed z-50 transition-all duration-300 
-          /* Mobile: Full width, top 0 */
+          /* Mobile: Full width, top 0. Always keep background for readability on mobile. */
           w-full top-0 left-0 border-b border-gray-100 dark:border-gray-800 bg-white/90 dark:bg-dark/90 backdrop-blur-md py-4
-          /* Desktop: Floating Island */
-          lg:w-[95%] lg:max-w-7xl lg:left-1/2 lg:-translate-x-1/2 lg:top-6 lg:rounded-2xl lg:border lg:border-white/20 lg:dark:border-gray-700 lg:shadow-2xl lg:py-3
-          ${scrolled ? 'lg:bg-white/80 lg:dark:bg-[#111]/80 lg:backdrop-blur-xl' : 'lg:bg-white/90 lg:dark:bg-[#111]/90 lg:backdrop-blur-lg'}
+          
+          /* Desktop Override */
+          lg:w-[95%] lg:max-w-7xl lg:left-1/2 lg:-translate-x-1/2 lg:top-6 lg:rounded-2xl lg:border 
+          
+          ${scrolled 
+            ? 'lg:bg-white/80 lg:dark:bg-[#111]/80 lg:backdrop-blur-xl lg:py-3 lg:border-white/20 lg:dark:border-gray-700 lg:shadow-2xl' 
+            : 'lg:bg-transparent lg:backdrop-blur-none lg:py-5 lg:border-transparent lg:shadow-none'
+          }
         `}
       >
         <div className="container mx-auto px-4 md:px-6 flex items-center justify-between relative">
@@ -58,10 +76,10 @@ export const Header: React.FC = () => {
 
           {/* Desktop Nav - Centered */}
           <nav className="hidden lg:flex items-center space-x-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-full">
-            <Link to="/" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Home</Link>
+            <Link to="/" className={navLinkClass}>Home</Link>
             
             <div className="group static h-full flex items-center">
-              <Link to="/services" className="flex items-center gap-1 font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary transition py-4">
+              <Link to="/services" className={`flex items-center gap-1 ${navLinkClass} py-4`}>
                 Solutions <ChevronDown size={16} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               
@@ -137,16 +155,16 @@ export const Header: React.FC = () => {
               </div>
             </div>
 
-            <Link to="/blog" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Blog</Link>
-            <Link to="/about" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">About</Link>
-            <Link to="/contact" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition">Contact</Link>
+            <Link to="/blog" className={navLinkClass}>Blog</Link>
+            <Link to="/about" className={navLinkClass}>About</Link>
+            <Link to="/contact" className={navLinkClass}>Contact</Link>
           </nav>
 
           {/* Actions - Right */}
           <div className="hidden lg:flex items-center gap-4 shrink-0">
             <button 
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              className={`p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 lg:hover:bg-white/10 transition ${iconClass}`}
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
