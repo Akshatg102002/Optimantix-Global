@@ -7,6 +7,7 @@ import { ServiceGrowthChart } from '../components/ServiceGrowthChart';
 import { Check, ArrowLeft, Star, Zap, Map } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { ParallaxHero } from '../components/ParallaxHero';
 
 export const SubServiceTemplate: React.FC = () => {
   const { slug, subSlug } = useParams<{ slug: string; subSlug: string }>();
@@ -20,6 +21,19 @@ export const SubServiceTemplate: React.FC = () => {
   if (!service || !subService) {
     return <Navigate to="/404" replace />;
   }
+  
+  // Helper to get image based on slug
+  const getServiceImage = (slug: string) => {
+    switch(slug) {
+        case 'digital-marketing': return 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2000';
+        case 'marketplace-management': return 'https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=2000';
+        case 'development': return 'https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=2000';
+        case 'graphic-design': return 'https://images.unsplash.com/photo-1626785774573-4b799314346d?auto=format&fit=crop&q=80&w=2000';
+        case 'hosting': return 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=2000';
+        case 'communications': return 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&q=80&w=2000';
+        default: return 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2000';
+    }
+  };
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
@@ -28,24 +42,11 @@ export const SubServiceTemplate: React.FC = () => {
         description={subService.shortDescription}
       />
       
-      {/* Header */}
-      <div className="bg-secondary text-white py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          {/* Responsive Breadcrumb */}
-          <div className="flex flex-wrap items-center gap-2 mb-6 text-indigo-200 text-xs md:text-sm font-medium uppercase tracking-wider">
-            <Link to="/services" className="hover:text-white transition">Services</Link>
-            <span>/</span>
-            <Link to={`/services/${service.slug}`} className="hover:text-white transition">{service.title}</Link>
-            <span className="hidden md:inline">/</span>
-            <span className="w-full md:w-auto mt-1 md:mt-0 md:block block text-white font-bold">{subService.title}</span>
-          </div>
-          
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">{subService.title}</h1>
-          <p className="text-xl text-indigo-100 max-w-3xl leading-relaxed">
-            {subService.shortDescription}
-          </p>
-        </div>
-      </div>
+      <ParallaxHero 
+        title={subService.title}
+        subtitle={subService.shortDescription}
+        imageUrl={getServiceImage(service.slug)}
+      />
 
       <div className="container mx-auto px-4 md:px-6 py-16">
         <Link to={`/services/${service.slug}`} className="inline-flex items-center text-primary font-medium hover:underline mb-8">

@@ -9,6 +9,17 @@ import { PortfolioSlider } from '../components/PortfolioSlider';
 import { TESTIMONIALS, WORK_PROCESS, INDUSTRIES } from '../constants';
 import { motion } from 'framer-motion';
 
+const PARTNERS = [
+  { name: "Google", color: "#4285F4" },
+  { name: "Amazon", color: "#FF9900" },
+  { name: "Shopify", color: "#96BF48" },
+  { name: "Meta", color: "#0668E1" },
+  { name: "Microsoft", color: "#F25022" },
+  { name: "HubSpot", color: "#FF7A59" },
+  { name: "Salesforce", color: "#00A1E0" },
+  { name: "Adobe", color: "#FF0000" },
+];
+
 export const Home: React.FC = () => {
   const { services } = useData();
   const MotionDiv = motion.div as any;
@@ -62,11 +73,35 @@ export const Home: React.FC = () => {
                   to="/services"
                   className="bg-transparent border border-gray-600 hover:border-white text-white font-medium py-4 px-10 rounded-full transition"
                 >
-                  View Services
+                  View Solutions
                 </Link>
               </div>
             </MotionDiv>
           </div>
+        </div>
+      </section>
+
+      {/* Partner Marquee Section */}
+      <section className="py-10 bg-white dark:bg-[#0a0a0a] border-b border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div className="container mx-auto px-4 mb-6 text-center">
+           <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Our Technology Partners</p>
+        </div>
+        <div className="relative flex overflow-x-hidden">
+           <MotionDiv 
+             className="flex gap-16 min-w-max items-center"
+             animate={{ x: ["0%", "-50%"] }}
+             transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
+           >
+              {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, idx) => (
+                 <div key={idx} className="flex items-center gap-2 text-2xl font-bold text-gray-400 dark:text-gray-600 grayscale hover:grayscale-0 transition-all duration-300 cursor-default">
+                    {/* Simulated Logo Text */}
+                    <span style={{ fontFamily: 'sans-serif' }}>{partner.name}</span>
+                 </div>
+              ))}
+           </MotionDiv>
+           {/* Gradient Masks for smooth fade out */}
+           <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white dark:from-[#0a0a0a] to-transparent pointer-events-none"></div>
+           <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white dark:from-[#0a0a0a] to-transparent pointer-events-none"></div>
         </div>
       </section>
 
@@ -89,7 +124,7 @@ export const Home: React.FC = () => {
                 className="group bg-gray-50 dark:bg-[#111] hover:bg-white dark:hover:bg-gray-800 rounded-2xl p-8 transition-all duration-300 border border-gray-200 dark:border-gray-800 hover:shadow-xl hover:border-primary/30"
               >
                  <div className="text-xs font-bold text-primary uppercase mb-4 tracking-wider flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-primary"></span> Service 0{index + 1}
+                    <span className="w-2 h-2 rounded-full bg-primary"></span> Solution 0{index + 1}
                  </div>
                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{service.title}</h3>
                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">{service.shortDescription}</p>
@@ -105,7 +140,7 @@ export const Home: React.FC = () => {
           
           <div className="text-center mt-12">
              <Link to="/services" className="inline-flex items-center justify-center px-8 py-3 font-medium text-primary hover:text-secondary hover:underline transition">
-               View All Services <ArrowRight size={18} className="ml-2" />
+               View All Solutions <ArrowRight size={18} className="ml-2" />
              </Link>
           </div>
         </div>

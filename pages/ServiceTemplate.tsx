@@ -7,6 +7,7 @@ import { ContactForm } from '../components/ContactForm';
 import { Check, Star, Settings, Package, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { ParallaxHero } from '../components/ParallaxHero';
 
 export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -19,26 +20,31 @@ export const ServiceTemplate: React.FC = () => {
     return <Navigate to="/" replace />;
   }
 
+  // Helper to get image based on slug (fallback if not in data object)
+  const getServiceImage = (slug: string) => {
+    switch(slug) {
+        case 'digital-marketing': return 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2000';
+        case 'marketplace-management': return 'https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=2000';
+        case 'development': return 'https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=2000';
+        case 'graphic-design': return 'https://images.unsplash.com/photo-1626785774573-4b799314346d?auto=format&fit=crop&q=80&w=2000';
+        case 'hosting': return 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=2000';
+        case 'communications': return 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&q=80&w=2000';
+        default: return 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2000';
+    }
+  };
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
         title={service.title} 
         description={service.shortDescription}
       />
-      {/* Header */}
-      <div className="bg-secondary text-white py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex items-center gap-4 mb-4 text-indigo-200 text-sm font-medium uppercase tracking-wider">
-            <span>Services</span>
-            <span>/</span>
-            <span>{service.title}</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">{service.title}</h1>
-          <p className="text-xl text-indigo-100 max-w-3xl leading-relaxed">
-            {service.shortDescription}
-          </p>
-        </div>
-      </div>
+      
+      <ParallaxHero 
+        title={service.title}
+        subtitle={service.shortDescription}
+        imageUrl={getServiceImage(service.slug)}
+      />
 
       <div className="container mx-auto px-4 md:px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">

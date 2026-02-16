@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Calendar, User } from 'lucide-react';
 import { SEO } from '../components/SEO';
+import { ParallaxHero } from '../components/ParallaxHero';
 
 export const BlogList: React.FC = () => {
   const { blogs } = useData();
@@ -13,14 +15,13 @@ export const BlogList: React.FC = () => {
         title="Blog" 
         description="Latest insights, trends, and strategies in digital marketing and technology from the Optimantix Global team."
       />
-      <div className="bg-white dark:bg-dark-card border-b border-gray-200 dark:border-gray-800 py-16">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Our Blog</h1>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Insights, updates, and expert advice on digital marketing, development, and business growth.
-          </p>
-        </div>
-      </div>
+      
+      <ParallaxHero 
+         title="Our Blog"
+         subtitle="Insights, updates, and expert advice on digital marketing, development, and business growth."
+         imageUrl="https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=2000"
+         height="50vh"
+      />
 
       <div className="container mx-auto px-4 md:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

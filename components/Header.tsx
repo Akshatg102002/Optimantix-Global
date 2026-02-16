@@ -59,7 +59,7 @@ export const Header: React.FC = () => {
           
           <div className="group static h-full flex items-center">
             <Link to="/services" className="flex items-center gap-1 font-medium text-gray-700 dark:text-gray-200 group-hover:text-primary transition py-4">
-              Services <ChevronDown size={16} className="group-hover:rotate-180 transition-transform duration-300" />
+              Solutions <ChevronDown size={16} className="group-hover:rotate-180 transition-transform duration-300" />
             </Link>
             
             {/* Mega Menu Container */}
@@ -68,7 +68,7 @@ export const Header: React.FC = () => {
                 
                 {/* Left Sidebar: Service Categories */}
                 <div className="w-1/3 bg-gray-50 dark:bg-black/30 p-6 overflow-y-auto border-r border-gray-100 dark:border-gray-800">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">All Services</h3>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">All Solutions</h3>
                     <div className="space-y-1">
                         {services.map(service => (
                             <button
@@ -123,7 +123,7 @@ export const Header: React.FC = () => {
                                     ))
                                 ) : (
                                     <div className="col-span-2 text-center py-10 text-gray-400 text-sm">
-                                        No specific sub-services listed. Please view the main service page for details.
+                                        No specific sub-solutions listed. Please view the main page for details.
                                     </div>
                                 )}
                             </div>
@@ -189,13 +189,13 @@ export const Header: React.FC = () => {
                   onClick={() => setIsServicesOpen(!isServicesOpen)}
                   className="flex items-center justify-between w-full text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
                 >
-                  Services <ChevronDown size={20} className={`transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
+                  Solutions <ChevronDown size={20} className={`transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
                 {isServicesOpen && (
                   <div className="pl-4 mt-2 space-y-4 border-l-2 border-gray-100 dark:border-gray-700 ml-4">
                     <Link to="/services" className="flex items-center gap-3 p-2 text-primary font-bold border-b border-gray-100 dark:border-gray-800">
-                       <span className="text-sm">View All Services Main Page</span>
+                       <span className="text-sm">View All Solutions</span>
                     </Link>
                     {services.map(service => (
                       <div key={service.id} className="mb-4">

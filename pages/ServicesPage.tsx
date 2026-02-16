@@ -8,45 +8,16 @@ import { SEO } from '../components/SEO';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { ParallaxHero } from '../components/ParallaxHero';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const ServicesPage: React.FC = () => {
   const { services } = useData();
   const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroBgRef = useRef<HTMLImageElement>(null);
-  const heroTextRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Parallax Effect for Hero Background
-    if (heroBgRef.current && heroRef.current) {
-      gsap.to(heroBgRef.current, {
-        yPercent: 30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-    }
-
-    // Text Reveal Animation
-    if (heroTextRef.current) {
-        gsap.from(heroTextRef.current.children, {
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            stagger: 0.2,
-            ease: "power3.out",
-            delay: 0.2
-        });
-    }
-    
-    // Grid Stagger Animation - Fixed visibility
-    // Using a fromTo ensures explicit start/end states to prevent sticking at opacity 0
+    // Grid Stagger Animation
     const cards = gsap.utils.toArray('.service-card');
     if (cards.length > 0) {
         gsap.fromTo(cards, 
@@ -59,28 +30,15 @@ export const ServicesPage: React.FC = () => {
                 ease: "power2.out",
                 scrollTrigger: {
                     trigger: ".services-grid",
-                    start: "top 90%", // Trigger slightly earlier
+                    start: "top 90%",
                     toggleActions: "play none none reverse"
                 }
             }
         );
     }
-
   }, { scope: containerRef, dependencies: [services] });
 
-  // Layout Logic: 3 Column Grid for 6 items
-  // Index 0: Span 2 cols (Large)
-  // Index 3: Span 2 cols (Large)
-  // Index 5: Span 2 cols (Large)
-  // This creates a pattern: [2][1] / [1][2] / [1][2]... wait
-  
-  // Let's match the visual expectation for 6 items
-  // Row 1: [0-Wide] [1-Small]
-  // Row 2: [2-Small] [3-Wide]
-  // Row 3: [4-Small] [5-Wide]
-  
   const getBentoClass = (index: number) => {
-    // 0, 3, 5 are Wide
     if (index === 0 || index === 3 || index === 5) {
         return 'md:col-span-2';
     }
@@ -102,31 +60,15 @@ export const ServicesPage: React.FC = () => {
   return (
     <div ref={containerRef} className="bg-light dark:bg-dark min-h-screen">
       <SEO 
-        title="Our Services" 
+        title="Our Solutions" 
         description="Explore our wide range of services including SEO, PPC, Marketplace Management, Web Development, and Branding."
       />
       
-       {/* Parallax Hero Section */}
-       <div ref={heroRef} className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0 h-[120%] -top-[10%]">
-           <img 
-             ref={heroBgRef}
-             src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2000" 
-             alt="Services Hero" 
-             className="w-full h-full object-cover"
-           />
-           <div className="absolute inset-0 bg-black/60"></div>
-        </div>
-
-        <div ref={heroTextRef} className="container relative z-10 px-4 text-center text-white">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
-            Our Expertise
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto font-light leading-relaxed">
-            Comprehensive digital solutions tailored to drive growth and efficiency for your business.
-          </p>
-        </div>
-      </div>
+       <ParallaxHero 
+         title="Our Solutions"
+         subtitle="Comprehensive digital strategies tailored to drive growth and efficiency for your business."
+         imageUrl="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2000"
+       />
 
       <div className="container mx-auto px-4 md:px-6 py-24">
         {services.length > 0 ? (
