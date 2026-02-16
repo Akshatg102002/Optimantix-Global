@@ -25,6 +25,16 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Using v2 keys to invalidate old cache lacking subServices
+  const STORAGE_KEYS = {
+    SERVICES: 'opt_services_v2',
+    BLOGS: 'opt_blogs_v2',
+    LEADS: 'opt_leads_v2',
+    PROJECTS: 'opt_projects_v2',
+    THEME: 'opt_theme',
+    AUTH: 'opt_auth'
+  };
+
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
   const [blogs, setBlogs] = useState<BlogPost[]>(INITIAL_BLOGS);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -34,7 +44,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Theme State
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('opt_theme') === 'dark';
+      return localStorage.getItem(STORAGE_KEYS.THEME) === 'dark';
     }
     return false;
   });
@@ -43,10 +53,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const root = window.document.documentElement;
     if (isDark) {
       root.classList.add('dark');
-      localStorage.setItem('opt_theme', 'dark');
+      localStorage.setItem(STORAGE_KEYS.THEME, 'dark');
     } else {
       root.classList.remove('dark');
-      localStorage.setItem('opt_theme', 'light');
+      localStorage.setItem(STORAGE_KEYS.THEME, 'light');
     }
   }, [isDark]);
 
@@ -54,25 +64,25 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = () => {
     setIsAuthenticated(true);
-    localStorage.setItem('opt_auth', 'true');
+    localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('opt_auth');
+    localStorage.removeItem(STORAGE_KEYS.AUTH);
   };
 
   useEffect(() => {
-    if (localStorage.getItem('opt_auth') === 'true') {
+    if (localStorage.getItem(STORAGE_KEYS.AUTH) === 'true') {
       setIsAuthenticated(true);
     }
   }, []);
 
   useEffect(() => {
-    const storedServices = localStorage.getItem('opt_services');
-    const storedBlogs = localStorage.getItem('opt_blogs');
-    const storedLeads = localStorage.getItem('opt_leads');
-    const storedProjects = localStorage.getItem('opt_projects');
+    const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
+    const storedBlogs = localStorage.getItem(STORAGE_KEYS.BLOGS);
+    const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
+    const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
 
     if (storedServices) setServices(JSON.parse(storedServices));
     if (storedBlogs) setBlogs(JSON.parse(storedBlogs));
@@ -80,10 +90,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (storedProjects) setProjects(JSON.parse(storedProjects));
   }, []);
 
-  useEffect(() => { localStorage.setItem('opt_services', JSON.stringify(services)); }, [services]);
-  useEffect(() => { localStorage.setItem('opt_blogs', JSON.stringify(blogs)); }, [blogs]);
-  useEffect(() => { localStorage.setItem('opt_leads', JSON.stringify(leads)); }, [leads]);
-  useEffect(() => { localStorage.setItem('opt_projects', JSON.stringify(projects)); }, [projects]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services)); }, [services]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.BLOGS, JSON.stringify(blogs)); }, [blogs]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads)); }, [leads]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects)); }, [projects]);
 
   const addLead = (leadData: Omit<Lead, 'id' | 'date' | 'status'>) => {
     const newLead: Lead = {

@@ -67,7 +67,7 @@ export const Header: React.FC = () => {
               <div className="flex h-[450px]">
                 
                 {/* Left Sidebar: Service Categories */}
-                <div className="w-1/3 bg-gray-50 dark:bg-black/30 p-6 overflow-y-auto border-r border-gray-100 dark:border-gray-800">
+                <div className="w-1/3 bg-gray-50 dark:bg-black/30 p-6 overflow-y-auto border-r border-gray-100 dark:border-gray-800 custom-scrollbar">
                     <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">All Solutions</h3>
                     <div className="space-y-1">
                         {services.map(service => (
@@ -89,7 +89,7 @@ export const Header: React.FC = () => {
                 </div>
 
                 {/* Right Content: Sub Services */}
-                <div className="w-2/3 p-8 bg-white dark:bg-dark-card overflow-y-auto">
+                <div className="w-2/3 p-8 bg-white dark:bg-dark-card overflow-y-auto custom-scrollbar">
                     {services.map(service => (
                         <div key={service.id} className={activeServiceId === service.id ? 'block' : 'hidden'}>
                             <div className="flex justify-between items-end mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">
