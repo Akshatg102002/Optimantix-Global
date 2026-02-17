@@ -64,7 +64,7 @@ const CLIENTS = [
   {
     name: "Divit Nutraceuticals Pvt. Ltd.",
     url: "https://divitnutrition.com/",
-    logo: "https://divitnutrition.com/wp-content/uploads/2025/12/Logo_Divit-e1768212437521.png"
+    logo: "https://medhospafrica.com/wp-content/uploads/2025/09/Divit-Abdas.jpg"
   },
   {
     name: "Huda Beauty",
@@ -89,7 +89,7 @@ const CLIENTS = [
   {
     name: "Loni Mobility",
     url: "https://lonimobillity.com",
-    logo: "blob:https://web.whatsapp.com/5dc8e522-7e57-4067-81e6-87ec2e4800ce"
+    logo: null // Blob URL removed as it won't work for others
   },
   {
     name: "Onestop",
@@ -119,7 +119,7 @@ const CLIENTS = [
   {
     name: "Formost UAE",
     url: "https://www.amazon.ae/s?k=FORMOST&ref=bl_dp_s_web_0",
-    logo: "https://images.aasaan.shop/stores/enhancedessentials/social_post/images/social_post_1767049242444.png"
+    logo: "https://formost.ae/cdn/shop/files/formost-logo.png?v=1728651545&width=105"
   },
   {
     name: "Eskag Pharma",
@@ -146,6 +146,31 @@ const FAQS = [
     answer: "We believe in transparency. You will be assigned a dedicated project manager and will receive weekly updates via email or Slack. We also schedule bi-weekly review calls."
   }
 ];
+
+// Helper Component for Logos with Error Handling
+const ClientLogo: React.FC<{ client: { name: string; logo: string | null } }> = ({ client }) => {
+    const [error, setError] = useState(false);
+
+    if (client.logo && !error) {
+        return (
+            <img
+                src={client.logo}
+                alt={client.name}
+                onError={() => setError(true)}
+                className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
+            />
+        );
+    }
+
+    return (
+        <div className="flex flex-col items-center justify-center text-gray-400 group-hover:text-primary transition-colors">
+            <Building size={32} strokeWidth={1.5} className="mb-2" />
+            <span className="text-[10px] font-semibold text-center uppercase tracking-wider leading-tight px-1 line-clamp-2">
+                {client.name}
+            </span>
+        </div>
+    );
+};
 
 export const Home: React.FC = () => {
   const { services } = useData();
@@ -471,22 +496,9 @@ export const Home: React.FC = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
                 whileHover={{ scale: 1.05 }}
-                className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 w-40 h-28 group"
+                className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 w-40 h-28 group relative"
               >
-                {client.logo ? (
-                  <img
-                    src={client.logo}
-                    alt={client.name}
-                    className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-gray-400 group-hover:text-primary transition-colors">
-                    <Building size={32} strokeWidth={1.5} className="mb-2" />
-                    <span className="text-[10px] font-semibold text-center uppercase tracking-wider leading-tight px-1">
-                      {client.name}
-                    </span>
-                  </div>
-                )}
+                 <ClientLogo client={client} />
               </motion.a>
             ))}
           </motion.div>

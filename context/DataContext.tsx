@@ -25,12 +25,12 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Using v2 keys to invalidate old cache lacking subServices
+  // Using v3 keys to invalidate old cache and ensure slugs are present
   const STORAGE_KEYS = {
-    SERVICES: 'opt_services_v2',
-    BLOGS: 'opt_blogs_v2',
-    LEADS: 'opt_leads_v2',
-    PROJECTS: 'opt_projects_v2',
+    SERVICES: 'opt_services_v3',
+    BLOGS: 'opt_blogs_v3',
+    LEADS: 'opt_leads_v3',
+    PROJECTS: 'opt_projects_v3',
     THEME: 'opt_theme',
     AUTH: 'opt_auth'
   };
@@ -84,10 +84,25 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
     const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
 
-    if (storedServices) setServices(JSON.parse(storedServices));
-    if (storedBlogs) setBlogs(JSON.parse(storedBlogs));
-    if (storedLeads) setLeads(JSON.parse(storedLeads));
-    if (storedProjects) setProjects(JSON.parse(storedProjects));
+    // Only load if valid JSON and not empty, otherwise fallback to initial
+    if (storedServices) {
+        try {
+            const parsed = JSON.parse(storedServices);
+            if (Array.isArray(parsed) && parsed.length > 0) setServices(parsed);
+        } catch (e) { console.error("Failed to parse services", e); }
+    }
+    
+    if (storedBlogs) {
+        try { setBlogs(JSON.parse(storedBlogs)); } catch (e) { console.error(e); }
+    }
+    
+    if (storedLeads) {
+        try { setLeads(JSON.parse(storedLeads)); } catch (e) { console.error(e); }
+    }
+    
+    if (storedProjects) {
+        try { setProjects(JSON.parse(storedProjects)); } catch (e) { console.error(e); }
+    }
   }, []);
 
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services)); }, [services]);
