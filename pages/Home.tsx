@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Star, TrendingUp, Users, ShieldCheck, Clock, Plus, Minus, ChevronDown, BarChart, Zap, Globe } from 'lucide-react';
+import { ArrowRight, CheckCircle, Star, TrendingUp, Users, ShieldCheck, Clock, Plus, Minus, ChevronDown, BarChart, Zap, Globe, Building } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { LeadModal } from '../components/LeadModal';
 import { SEO } from '../components/SEO';
@@ -18,6 +18,114 @@ const PARTNERS = [
   { name: "HubSpot", color: "#FF7A59" },
   { name: "Salesforce", color: "#00A1E0" },
   { name: "Adobe", color: "#FF0000" },
+];
+
+const CLIENTS = [
+  {
+    name: "iExplain Education",
+    url: "https://www.iexplaineducation.com",
+    logo: "https://www.iexplaineducation.com/wp-content/uploads/2023/04/Logo-2-scaled-e1684926432756-1024x410.jpg"
+  },
+  {
+    name: "MyProtein",
+    url: "https://www.myprotein.com",
+    logo: null
+  },
+  {
+    name: "Jaimcord Healthcare",
+    url: "https://jaimcordhealthcare.com/",
+    logo: "https://jaimcordhealthcare.com/cdn/shop/files/JCL-removebg-preview.png"
+  },
+  {
+    name: "Vitabiotics",
+    url: "https://www.vitabiotics.com",
+    logo: null
+  },
+  {
+    name: "Moon Aesthetic",
+    url: "https://moonaesthetic.in/",
+    logo: "https://moonaesthetic.in/wp-content/uploads/2025/10/44-removebg-preview-1.png"
+  },
+  {
+    name: "Blackmores",
+    url: "https://www.blackmores.com.au",
+    logo: "https://www.blackmores.com.au/-/media/project/blackmores-group/au/logo/blackmroes-logo.svg"
+  },
+  {
+    name: "Nutrevvo",
+    url: "https://nutrevvo.com/",
+    logo: null
+  },
+  {
+    name: "Nature's Way",
+    url: "https://www.naturesway.com",
+    logo: null
+  },
+  {
+    name: "Divit Nutraceuticals Pvt. Ltd.",
+    url: "https://divitnutrition.com/",
+    logo: "https://divitnutrition.com/wp-content/uploads/2025/12/Logo_Divit-e1768212437521.png"
+  },
+  {
+    name: "Huda Beauty",
+    url: "https://hudabeauty.com",
+    logo: null
+  },
+  {
+    name: "Dipak Studios",
+    url: "https://www.dipakstudios.com",
+    logo: "https://www.dipakstudios.com/gallery/logo-dipakstudio.png"
+  },
+  {
+    name: "Plushy",
+    url: "https://plushy.in",
+    logo: "https://plushy.in/cdn/shop/files/Plushy_Log.png"
+  },
+  {
+    name: "Kyptec LifeStyle®",
+    url: "https://kyptec-lifestyle.com",
+    logo: null
+  },
+  {
+    name: "Loni Mobility",
+    url: "https://lonimobillity.com",
+    logo: "https://www.karmisalon.com/wp-content/uploads/2026/01/LoniM.png"
+  },
+  {
+    name: "Onestop",
+    url: "https://onestopretail.in",
+    logo: "https://onestopretail.in/cdn/shop/files/Onestop-logo_142x74.png"
+  },
+  {
+    name: "Able Landscape",
+    url: "https://www.indiamart.com/able-landscape/profile.html",
+    logo: null
+  },
+  {
+    name: "Gift by Category",
+    url: "https://giftsomatic.in",
+    logo: "https://giftsomatic.in/wp-content/uploads/2023/02/cropped-Giftsomatic.jpg"
+  },
+  {
+    name: "KRS Textiles",
+    url: "https://www.krstextiles.in",
+    logo: "https://www.krstextiles.in/images/logo.png"
+  },
+  {
+    name: "Enhanced Essentials",
+    url: "https://www.indiamart.com/shreesundram-agencies-indore",
+    logo: null
+  },
+  {
+    name: "Foremost UAE",
+    url: "https://www.amazon.ae/s?k=FORMOST&ref=bl_dp_s_web_0",
+    logo: null
+  },
+  {
+    name: "Eskag Pharma",
+    url: "https://www.eskag.in/",
+    logo: "https://www.eskag.in/wp-content/uploads/2024/01/eskag-pharma-private-limited-logo-3.webp"
+  }
 ];
 
 const FAQS = [
@@ -284,32 +392,6 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      {/* <section className="py-24 bg-white dark:bg-dark-card">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-             <span className="text-primary font-bold uppercase tracking-wider text-sm mb-2 block">Testimonials</span>
-            <h2 className="text-3xl md:text-5xl font-bold mt-2 text-gray-900 dark:text-white">What Our Clients Say</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((t, idx) => (
-              <div key={idx} className="bg-gray-50 dark:bg-[#111] p-10 rounded-3xl border border-gray-100 dark:border-gray-800 relative hover:shadow-xl transition-shadow">
-                <div className="text-primary mb-6"><Star className="fill-current" size={24} /></div>
-                <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed italic mb-8">"{t.content}"</p>
-                <div className="flex items-center gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
-                  <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white">{t.name}</div>
-                    <div className="text-sm text-gray-500">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* FAQ Section */}
       <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl">
@@ -354,7 +436,7 @@ export const Home: React.FC = () => {
       <section className="py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-8 md:mb-12">
+          <div className="text-center mb-10 md:mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -376,43 +458,36 @@ export const Home: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center"
+            className="flex flex-wrap justify-center gap-8 md:gap-12"
           >
-            {[
-              { id: '1', name: 'Client 1' },
-              { id: '2', name: 'Client 2' },
-              { id: '3', name: 'Client 3' },
-              { id: '4', name: 'Client 4' },
-              { id: '5', name: 'Client 5' },
-              { id: '6', name: 'Client 6' },
-              { id: '7', name: 'Client 7' },
-              { id: '8', name: 'Client 8' },
-            ].map((client, index) => (
-              <motion.div
-                key={client.id}
+            {CLIENTS.map((client, index) => (
+              <motion.a
+                key={index}
+                href={client.url}
+                target="_blank"
+                rel="noreferrer"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
                 whileHover={{ scale: 1.05 }}
-                className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group"
+                className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 w-40 h-28 group"
               >
-                <div className="w-full h-16 flex items-center justify-center">
-                  {/* Placeholder - Replace with actual logo images */}
-                  <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg flex items-center justify-center group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300">
-                    <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 group-hover:text-primary transition-colors">
+                {client.logo ? (
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-gray-400 group-hover:text-primary transition-colors">
+                    <Building size={32} strokeWidth={1.5} className="mb-2" />
+                    <span className="text-[10px] font-semibold text-center uppercase tracking-wider leading-tight px-1">
                       {client.name}
                     </span>
                   </div>
-                  {/* Uncomment when you have logos:
-            <img 
-              src={`/clients/${client.id}.png`}
-              alt={client.name}
-              className="w-full h-full object-contain filter grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
-            />
-            */}
-                </div>
-              </motion.div>
+                )}
+              </motion.a>
             ))}
           </motion.div>
         </div>
