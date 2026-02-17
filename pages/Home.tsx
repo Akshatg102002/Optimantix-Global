@@ -29,7 +29,7 @@ const CLIENTS = [
   {
     name: "MyProtein",
     url: "https://www.myprotein.com",
-    logo: null
+    logo: "https://consumersiteimages.trustpilot.net/business-units/5797619e0000ff000592c200-198x149-1x.jpg"
   },
   {
     name: "Jaimcord Healthcare",
@@ -39,7 +39,7 @@ const CLIENTS = [
   {
     name: "Vitabiotics",
     url: "https://www.vitabiotics.com",
-    logo: null
+    logo: "https://upload.wikimedia.org/wikipedia/en/9/97/Vitabiotics_Logo.png"
   },
   {
     name: "Moon Aesthetic",
@@ -54,12 +54,12 @@ const CLIENTS = [
   {
     name: "Nutrevvo",
     url: "https://nutrevvo.com/",
-    logo: null
+    logo: "https://nutrevvo.com/cdn/shop/files/Nutrevvo_WLog.png?height=36&v=1768802777"
   },
   {
     name: "Nature's Way",
     url: "https://www.naturesway.com",
-    logo: null
+    logo: "https://tukuz.com/wp-content/uploads/2021/05/natures-way-logo-vector.png"
   },
   {
     name: "Divit Nutraceuticals Pvt. Ltd.",
@@ -69,7 +69,7 @@ const CLIENTS = [
   {
     name: "Huda Beauty",
     url: "https://hudabeauty.com",
-    logo: null
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgOk7t8Q0LHWFcQBBy9tqzV91mLfVEm7s_Gw&s"
   },
   {
     name: "Dipak Studios",
@@ -84,12 +84,12 @@ const CLIENTS = [
   {
     name: "Kyptec LifeStyle®",
     url: "https://kyptec-lifestyle.com",
-    logo: null
+    logo: "https://kyptec-lifestyle.com/cdn/shop/files/kyptec-lifestyle-logo.png"
   },
   {
     name: "Loni Mobility",
     url: "https://lonimobillity.com",
-    logo: "https://www.karmisalon.com/wp-content/uploads/2026/01/LoniM.png"
+    logo: "blob:https://web.whatsapp.com/5dc8e522-7e57-4067-81e6-87ec2e4800ce"
   },
   {
     name: "Onestop",
@@ -99,7 +99,7 @@ const CLIENTS = [
   {
     name: "Able Landscape",
     url: "https://www.indiamart.com/able-landscape/profile.html",
-    logo: null
+    logo: "https://5.imimg.com/data5/SELLER/Logo/2025/12/569746941/BD/NK/BH/131787160/be06081f-9c9f-4f9f-a967-6fcadce9d571-120x120.jpeg"
   },
   {
     name: "Gift by Category",
@@ -114,12 +114,12 @@ const CLIENTS = [
   {
     name: "Enhanced Essentials",
     url: "https://www.indiamart.com/shreesundram-agencies-indore",
-    logo: null
+    logo: "https://images.aasaan.shop/stores/enhancedessentials/social_post/images/social_post_1767049242444.png"
   },
   {
-    name: "Foremost UAE",
+    name: "Formost UAE",
     url: "https://www.amazon.ae/s?k=FORMOST&ref=bl_dp_s_web_0",
-    logo: null
+    logo: "https://images.aasaan.shop/stores/enhancedessentials/social_post/images/social_post_1767049242444.png"
   },
   {
     name: "Eskag Pharma",
