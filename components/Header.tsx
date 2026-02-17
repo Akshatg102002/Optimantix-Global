@@ -52,8 +52,9 @@ export const Header: React.FC = () => {
                 Home
               </Link>
 
+              {/* Wrapper without relative so absolute children align to nav */}
               <div
-                className="relative group"
+                className="group h-full flex items-center"
                 onMouseEnter={() => setIsServicesOpen(true)}
                 onMouseLeave={() => setIsServicesOpen(false)}
               >
@@ -63,11 +64,8 @@ export const Header: React.FC = () => {
                   <span>Solutions</span>
                   <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isServicesOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
-                {/* Bridge to connect button and menu */}
-                <div className="absolute top-full left-0 w-full h-6 bg-transparent" />
 
-                {/* Mega Menu Container - Fixed Position for Perfect Centering */}
+                {/* Mega Menu Container - Absolute to nav */}
                 <AnimatePresence>
                   {isServicesOpen && (
                     <MotionDiv
@@ -75,100 +73,101 @@ export const Header: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.2 }}
-                      className="fixed left-1/2 transform -translate-x-1/2 top-[84px] w-full max-w-6xl px-4 z-50 pointer-events-none"
+                      className="absolute left-0 top-full w-full z-50 pt-4 px-4"
                     >
-                      {/* Inner Card - Enable pointer events here */}
-                      <div className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800 flex h-[450px] pointer-events-auto">
-                        {/* Left Sidebar: Service Categories */}
-                        <div className="w-64 bg-gray-50 dark:bg-gray-800 p-3 overflow-y-auto border-r border-gray-200 dark:border-gray-700 custom-scrollbar">
-                          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-3 pt-2">
-                            All Solutions
-                          </h3>
-                          {services.map(service => (
-                            <button
-                              key={service.id}
-                              onMouseEnter={() => setActiveServiceId(service.id)}
-                              onClick={() => {
-                                  setActiveServiceId(service.id);
-                                  // Optional: Navigate to main service page if clicked? 
-                                  // Currently it just selects the tab.
-                              }}
-                              className={`w-full text-left text-sm px-3 py-3 mb-1 rounded-lg flex items-center justify-between transition-all duration-200 ${activeServiceId === service.id
-                                  ? 'bg-primary text-white font-medium shadow-md'
-                                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
-                                }`}
-                            >
-                              <span className="truncate">{service.title}</span>
-                              {activeServiceId === service.id && <ChevronRightIcon className="h-4 w-4 flex-shrink-0" />}
-                            </button>
-                          ))}
-                        </div>
-
-                        {/* Right Content: Sub Services */}
-                        <div className="flex-1 p-8 overflow-y-auto bg-white dark:bg-gray-900 custom-scrollbar">
-                          {services.map(service => (
-                            <div
-                              key={service.id}
-                              className={activeServiceId === service.id ? 'block animate-fadeIn h-full flex flex-col' : 'hidden'}
-                            >
-                              <div className="flex items-start justify-between mb-6">
-                                <div>
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-                                        <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                            <Icon name={service.iconName} size={24} />
-                                        </div>
-                                        {service.title}
-                                    </h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
-                                        {service.shortDescription}
-                                    </p>
-                                </div>
-                                <Link
-                                    to={`/services/${service.slug}`}
-                                    onClick={closeMenu}
-                                    className="text-sm font-bold text-primary hover:text-secondary flex items-center gap-1 bg-primary/5 px-4 py-2 rounded-lg transition-colors hover:bg-primary/10"
+                      {/* Inner Centered Container */}
+                      <div className="max-w-6xl mx-auto">
+                        {/* Inner Card - Enable pointer events here */}
+                        <div className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800 flex h-[450px]">
+                            {/* Left Sidebar: Service Categories */}
+                            <div className="w-64 bg-gray-50 dark:bg-gray-800 p-3 overflow-y-auto border-r border-gray-200 dark:border-gray-700 custom-scrollbar">
+                            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-3 pt-2">
+                                All Solutions
+                            </h3>
+                            {services.map(service => (
+                                <button
+                                key={service.id}
+                                onMouseEnter={() => setActiveServiceId(service.id)}
+                                onClick={() => {
+                                    setActiveServiceId(service.id);
+                                }}
+                                className={`w-full text-left text-sm px-3 py-3 mb-1 rounded-lg flex items-center justify-between transition-all duration-200 ${activeServiceId === service.id
+                                    ? 'bg-primary text-white font-medium shadow-md'
+                                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                    }`}
                                 >
-                                    Main Page <ArrowRight size={16} />
-                                </Link>
-                              </div>
+                                <span className="truncate">{service.title}</span>
+                                {activeServiceId === service.id && <ChevronRightIcon className="h-4 w-4 flex-shrink-0" />}
+                                </button>
+                            ))}
+                            </div>
 
-                              <div className="h-px bg-gray-100 dark:bg-gray-800 w-full mb-6"></div>
-
-                              {service.subServices && service.subServices.length > 0 ? (
-                                <div className="grid grid-cols-2 gap-4 overflow-y-auto pr-2">
-                                  {service.subServices.map(sub => (
-                                    <Link
-                                      key={sub.id}
-                                      to={`/services/${service.slug}/${sub.slug}`}
-                                      onClick={closeMenu}
-                                      className="group block p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all shadow-sm hover:shadow-md"
-                                    >
-                                      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors flex items-center justify-between">
-                                        {sub.title}
-                                        <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
-                                      </h4>
-                                      <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
-                                        {sub.shortDescription}
-                                      </p>
-                                    </Link>
-                                  ))}
-                                </div>
-                              ) : (
-                                <div className="flex flex-col items-center justify-center flex-grow text-center bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-8">
-                                    <p className="text-gray-500 dark:text-gray-400 italic mb-4">
-                                        Explore our comprehensive services on the main page.
-                                    </p>
+                            {/* Right Content: Sub Services */}
+                            <div className="flex-1 p-8 overflow-y-auto bg-white dark:bg-gray-900 custom-scrollbar">
+                            {services.map(service => (
+                                <div
+                                key={service.id}
+                                className={activeServiceId === service.id ? 'block animate-fadeIn h-full flex flex-col' : 'hidden'}
+                                >
+                                <div className="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                                                <Icon name={service.iconName} size={24} />
+                                            </div>
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
+                                            {service.shortDescription}
+                                        </p>
+                                    </div>
                                     <Link
                                         to={`/services/${service.slug}`}
                                         onClick={closeMenu}
-                                        className="bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary transition-colors shadow-lg shadow-primary/20"
+                                        className="text-sm font-bold text-primary hover:text-secondary flex items-center gap-1 bg-primary/5 px-4 py-2 rounded-lg transition-colors hover:bg-primary/10"
                                     >
-                                        Visit {service.title}
+                                        Main Page <ArrowRight size={16} />
                                     </Link>
                                 </div>
-                              )}
+
+                                <div className="h-px bg-gray-100 dark:bg-gray-800 w-full mb-6"></div>
+
+                                {service.subServices && service.subServices.length > 0 ? (
+                                    <div className="grid grid-cols-2 gap-4 overflow-y-auto pr-2">
+                                    {service.subServices.map(sub => (
+                                        <Link
+                                        key={sub.id}
+                                        to={`/services/${service.slug}/${sub.slug}`}
+                                        onClick={closeMenu}
+                                        className="group block p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all shadow-sm hover:shadow-md"
+                                        >
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors flex items-center justify-between">
+                                            {sub.title}
+                                            <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
+                                        </h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                                            {sub.shortDescription}
+                                        </p>
+                                        </Link>
+                                    ))}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center flex-grow text-center bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-8">
+                                        <p className="text-gray-500 dark:text-gray-400 italic mb-4">
+                                            Explore our comprehensive services on the main page.
+                                        </p>
+                                        <Link
+                                            to={`/services/${service.slug}`}
+                                            onClick={closeMenu}
+                                            className="bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary transition-colors shadow-lg shadow-primary/20"
+                                        >
+                                            Visit {service.title}
+                                        </Link>
+                                    </div>
+                                )}
+                                </div>
+                            ))}
                             </div>
-                          ))}
                         </div>
                       </div>
                     </MotionDiv>

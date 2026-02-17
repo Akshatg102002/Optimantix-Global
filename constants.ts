@@ -422,6 +422,16 @@ export const INITIAL_BLOGS: BlogPost[] = [
     author: 'Sarah Jenkins',
     date: '2024-02-02',
     imageUrl: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=80&w=800'
+  },
+  {
+    id: '3',
+    title: 'The Future of AI in E-commerce',
+    slug: 'ai-in-ecommerce',
+    excerpt: 'Artificial Intelligence is revolutionizing how we shop online. From personalized recommendations to automated customer support, learn how AI can boost your sales.',
+    content: 'Artificial Intelligence is no longer just a buzzword; it is a fundamental driver of e-commerce growth. From predictive analytics that forecast inventory needs to chatbots that provide 24/7 customer service, AI is streamlining operations and enhancing the user experience. In this article, we dive into practical applications of AI for small to medium-sized e-commerce businesses.',
+    author: 'David Ross',
+    date: '2024-02-20',
+    imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800'
   }
 ];
 

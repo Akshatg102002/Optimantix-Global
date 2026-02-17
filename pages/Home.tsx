@@ -173,7 +173,7 @@ const ClientLogo: React.FC<{ client: { name: string; logo: string | null } }> = 
 };
 
 export const Home: React.FC = () => {
-  const { services } = useData();
+  const { services, blogs } = useData();
   const MotionDiv = motion.div as any;
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
@@ -399,6 +399,60 @@ export const Home: React.FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section className="py-24 bg-light dark:bg-dark border-t border-gray-200 dark:border-gray-800">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div className="max-w-2xl">
+              <span className="text-primary font-bold uppercase tracking-wider text-sm mb-2 block">Latest Insights</span>
+              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">Trends & Strategies</h2>
+            </div>
+            <Link to="/blog" className="hidden md:inline-flex items-center font-bold text-gray-900 dark:text-white hover:text-primary transition-colors group">
+              View All Articles <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogs.slice(0, 3).map(blog => (
+              <Link key={blog.id} to={`/blog/${blog.id}`} className="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 flex flex-col h-full">
+                <div className="h-56 overflow-hidden relative">
+                  <img 
+                    src={blog.imageUrl} 
+                    alt={blog.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 left-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">
+                     Blog
+                  </div>
+                </div>
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
+                     <span>{new Date(blog.date).toLocaleDateString()}</span>
+                     <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                     <span>{blog.author}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-6 flex-grow leading-relaxed">
+                    {blog.excerpt}
+                  </p>
+                  <div className="flex items-center text-primary font-bold text-sm mt-auto">
+                    Read More <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center md:hidden">
+              <Link to="/blog" className="inline-flex items-center font-bold text-gray-900 dark:text-white hover:text-primary transition-colors">
+                  View All Articles <ArrowRight className="ml-2" />
+              </Link>
           </div>
         </div>
       </section>
