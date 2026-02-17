@@ -1,6 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/analytics";
+import "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAAkkYGflaBbPyR6teV9fXEsf-JuoUibYE",
@@ -13,8 +14,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const analytics = getAnalytics(app);
+// Check if apps already initialized to prevent re-initialization error in HMR or re-renders
+const app = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
+const db = firebase.firestore();
+const analytics = firebase.analytics();
+const auth = firebase.auth();
 
-export { db, analytics };
+export { db, analytics, auth };

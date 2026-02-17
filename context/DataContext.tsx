@@ -1,9 +1,8 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Service, BlogPost, Lead, Project, BlogCategory } from '../types';
 import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
-import { db } from '../lib/firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
+import { db, auth } from '../lib/firebase';
+import firebase from 'firebase/app';
 
 interface DataContextType {
   services: Service[];
@@ -14,8 +13,10 @@ interface DataContextType {
   isDark: boolean;
   toggleTheme: () => void;
   isAuthenticated: boolean;
-  login: () => void;
-  logout: () => void;
+  currentUser: firebase.User | null;
+  login: (email: string, pass: string) => Promise<void>;
+  register: (email: string, pass: string) => Promise<void>;
+  logout: () => Promise<void>;
   addLead: (lead: Omit<Lead, 'id' | 'date' | 'status'>) => void;
   updateService: (service: Service) => void;
   // Blog Actions
@@ -39,7 +40,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     LEADS: 'opt_leads_v5',
     PROJECTS: 'opt_projects_v5',
     THEME: 'opt_theme',
-    AUTH: 'opt_auth'
   };
 
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
@@ -47,7 +47,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  // Auth State
+  const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   
   // Theme State
   const [isDark, setIsDark] = useState(() => {
@@ -70,41 +73,59 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  const login = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+  // --- FIREBASE AUTH ---
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+      setAuthLoading(false);
+      if (user) {
+        // Retry fetching protected data if needed, or rely on component mount
+        fetchBlogs(); 
+        fetchCategories();
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  const login = async (email: string, pass: string) => {
+    await auth.signInWithEmailAndPassword(email, pass);
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem(STORAGE_KEYS.AUTH);
+  const register = async (email: string, pass: string) => {
+    await auth.createUserWithEmailAndPassword(email, pass);
+  };
+
+  const logout = async () => {
+    await auth.signOut();
   };
 
   // --- FIREBASE FETCHING ---
   const fetchBlogs = async () => {
     try {
-      const q = query(collection(db, "blogs"), orderBy("date", "desc"));
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await db.collection("blogs").orderBy("date", "desc").get();
       const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       } as BlogPost));
       setBlogs(fetchedBlogs);
     } catch (error) {
-      console.error("Error fetching blogs:", error);
+      console.error("Error fetching blogs (Check Firestore Rules):", error);
+      // Fallback to empty if permission denied
+      setBlogs([]); 
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "blog_categories"));
+      const querySnapshot = await db.collection("blog_categories").get();
       const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       } as BlogCategory));
       setBlogCategories(fetchedCategories);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Error fetching categories (Check Firestore Rules):", error);
+      setBlogCategories([]);
     }
   }
 
@@ -112,10 +133,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Initial Fetch
     fetchBlogs();
     fetchCategories();
-
-    if (localStorage.getItem(STORAGE_KEYS.AUTH) === 'true') {
-      setIsAuthenticated(true);
-    }
 
     // Local Storage Hydration for non-firebase items
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
@@ -162,7 +179,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Blog Firebase Actions
   const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
     try {
-      await addDoc(collection(db, "blogs"), postData);
+      await db.collection("blogs").add(postData);
       await fetchBlogs(); // Refresh list
     } catch (e) {
       console.error("Error adding blog: ", e);
@@ -172,7 +189,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const deleteBlogPost = async (id: string) => {
     try {
-      await deleteDoc(doc(db, "blogs", id));
+      await db.collection("blogs").doc(id).delete();
       setBlogs(prev => prev.filter(b => b.id !== id));
     } catch (e) {
       console.error("Error deleting blog: ", e);
@@ -183,7 +200,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Category Firebase Actions
   const addBlogCategory = async (categoryData: Omit<BlogCategory, 'id'>) => {
     try {
-      await addDoc(collection(db, "blog_categories"), categoryData);
+      await db.collection("blog_categories").add(categoryData);
       await fetchCategories();
     } catch (e) {
       console.error("Error adding category: ", e);
@@ -193,7 +210,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const deleteBlogCategory = async (id: string) => {
     try {
-        await deleteDoc(doc(db, "blog_categories", id));
+        await db.collection("blog_categories").doc(id).delete();
         setBlogCategories(prev => prev.filter(c => c.id !== id));
     } catch (e) {
         console.error("Error deleting category: ", e);
@@ -217,7 +234,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <DataContext.Provider value={{ 
       services, blogs, blogCategories, leads, projects,
       isDark, toggleTheme,
-      isAuthenticated, login, logout,
+      isAuthenticated: !!currentUser, 
+      currentUser,
+      login, register, logout,
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus,
       addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory
     }}>
