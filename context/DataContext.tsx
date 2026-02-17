@@ -1,8 +1,9 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Service, BlogPost, Lead, Project, BlogCategory } from '../types';
 import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
 import { db, auth } from '../lib/firebase';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
 interface DataContextType {
   services: Service[];
