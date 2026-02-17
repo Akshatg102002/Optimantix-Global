@@ -157,7 +157,8 @@ const ClientLogo: React.FC<{ client: { name: string; logo: string | null } }> = 
                 src={client.logo}
                 alt={client.name}
                 onError={() => setError(true)}
-                className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
+                // Removed filter grayscale and opacity-70 to show original colors
+                className="max-w-full max-h-full object-contain transition-all duration-300 hover:scale-110"
             />
         );
     }

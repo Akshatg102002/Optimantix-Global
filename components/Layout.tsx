@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { BottomNav } from './BottomNav';
+import { FloatingContact } from './FloatingContact';
 import { useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -25,6 +26,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
       <Footer />
       <BottomNav />
+      <FloatingContact />
     </div>
   );
 };
