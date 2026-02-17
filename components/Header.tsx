@@ -8,20 +8,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [activeServiceId, setActiveServiceId] = useState<string | null>(null);
-  
   const { services, isDark, toggleTheme } = useData();
   const location = useLocation();
 
   const MotionDiv = motion.div as any;
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -31,235 +23,241 @@ export const Header: React.FC = () => {
   // Set initial active service for Mega Menu
   useEffect(() => {
     if (services.length > 0 && !activeServiceId) {
-        setActiveServiceId(services[0].id);
+      setActiveServiceId(services[0].id);
     }
   }, [services, activeServiceId]);
 
-  // Dynamic Text Color for Desktop: White when top (transparent), Dark when scrolled
-  const navLinkClass = `font-medium transition-colors duration-300 ${
-      scrolled 
-      ? 'text-gray-700 dark:text-gray-200 hover:text-primary' 
-      : 'text-gray-700 dark:text-gray-200 lg:text-white/90 lg:hover:text-white'
-  }`;
-
-  const iconClass = `transition-colors duration-300 ${
-      scrolled
-      ? 'text-gray-600 dark:text-gray-300'
-      : 'text-gray-600 dark:text-gray-300 lg:text-white/90'
-  }`;
-
   return (
     <>
-      <header 
-        className={`fixed z-50 transition-all duration-300 
-          /* Mobile: Full width, top 0. Always keep background for readability on mobile. */
-          w-full top-0 left-0 border-b border-gray-100 dark:border-gray-800 bg-white/90 dark:bg-dark/90 backdrop-blur-md py-4
-          
-          /* Desktop Override */
-          lg:w-[95%] lg:max-w-7xl lg:left-1/2 lg:-translate-x-1/2 lg:top-6 lg:rounded-2xl lg:border 
-          
-          ${scrolled 
-            ? 'lg:bg-white/80 lg:dark:bg-[#111]/80 lg:backdrop-blur-xl lg:py-3 lg:border-white/20 lg:dark:border-gray-700 lg:shadow-2xl' 
-            : 'lg:bg-transparent lg:backdrop-blur-none lg:py-5 lg:border-transparent lg:shadow-none'
-          }
-        `}
-      >
-        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between relative">
-          {/* Logo - Left */}
-          <Link to="/" className="flex items-center gap-2 z-50 shrink-0">
-             <img 
-              src="https://i.ibb.co/ZphZDpdz/OS.png" 
-              alt="Optimantix Global" 
-              className="h-9 w-auto object-contain bg-white rounded p-1"
-            />
-          </Link>
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pb-4 bg-[#020514]">
+        <nav className="max-w-7xl mx-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
+          <div className="flex justify-between items-center h-16 px-6">
+            {/* Logo - Left */}
+            <Link to="/" className="flex items-center space-x-2 z-10">
+              <img
+                src="https://optimantix.com/wp-content/uploads/2022/08/Untitled-200-x-100-px-1.png"
+                alt="Optimantix Logo"
+                className="h-12 w-auto"
+              />
+            </Link>
 
-          {/* Desktop Nav - Centered */}
-          <nav className="hidden lg:flex items-center space-x-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-full">
-            <Link to="/" className={navLinkClass}>Home</Link>
-            
-            <div className="group static h-full flex items-center">
-              <Link to="/services" className={`flex items-center gap-1 ${navLinkClass} py-4`}>
-                Solutions <ChevronDown size={16} className="group-hover:rotate-180 transition-transform duration-300" />
+            {/* Desktop Nav - Centered */}
+            <div className="hidden lg:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
+              <Link to="/" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+                Home
               </Link>
-              
-              {/* Mega Menu Container - Adjusted top offset for floating header */}
-              <div className="absolute top-[calc(100%+0.5rem)] left-1/2 transform -translate-x-1/2 w-[85vw] max-w-5xl bg-white dark:bg-dark-card shadow-2xl border border-gray-100 dark:border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 rounded-xl overflow-hidden z-50 origin-top">
-                <div className="flex h-[450px]">
-                  
-                  {/* Left Sidebar: Service Categories */}
-                  <div className="w-1/3 bg-gray-50 dark:bg-black/30 p-6 overflow-y-auto border-r border-gray-100 dark:border-gray-800 custom-scrollbar">
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">All Solutions</h3>
-                      <div className="space-y-1">
+
+              <div
+                className="relative group"
+                onMouseEnter={() => setIsServicesOpen(true)}
+                onMouseLeave={() => setIsServicesOpen(false)}
+              >
+                <button className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors flex items-center space-x-1">
+                  <span>Solutions</span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {/* Mega Menu Container */}
+                <AnimatePresence>
+                  {isServicesOpen && (
+                    <MotionDiv
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-[800px] bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800"
+                    >
+                      <div className="flex h-[400px]">
+                        {/* Left Sidebar: Service Categories */}
+                        <div className="w-56 bg-gray-50 dark:bg-gray-800 p-3 overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+                          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-3">
+                            All Solutions
+                          </h3>
                           {services.map(service => (
-                              <button
-                                  key={service.id}
-                                  onMouseEnter={() => setActiveServiceId(service.id)}
-                                  onClick={() => setActiveServiceId(service.id)}
-                                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between transition-all duration-200 ${
-                                      activeServiceId === service.id 
-                                      ? 'bg-primary text-white shadow-md' 
-                                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800'
-                                  }`}
-                              >
-                                  <span className="font-medium text-sm">{service.title}</span>
-                                  {activeServiceId === service.id && <ChevronRightIcon size={14} />}
-                              </button>
+                            <button
+                              key={service.id}
+                              onMouseEnter={() => setActiveServiceId(service.id)}
+                              onClick={() => setActiveServiceId(service.id)}
+                              className={`w-full text-left text-sm px-3 py-2 rounded-lg flex items-center justify-between transition-all duration-200 ${activeServiceId === service.id
+                                  ? 'bg-primary text-white'
+                                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                }`}
+                            >
+                              <span>{service.title}</span>
+                              {activeServiceId === service.id && <ChevronRightIcon className="h-4 w-4" />}
+                            </button>
                           ))}
+                        </div>
+
+                        {/* Right Content: Sub Services */}
+                        <div className="flex-1 p-4 overflow-y-auto">
+                          {services.map(service => (
+                            <div
+                              key={service.id}
+                              className={activeServiceId === service.id ? 'block' : 'hidden'}
+                            >
+                              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                                {service.title}
+                              </h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                {service.shortDescription}
+                              </p>
+
+                              <Link
+                                to={`/services/${service.slug}`}
+                                className="inline-flex items-center space-x-2 text-sm font-medium text-primary hover:text-primary-dark mb-4"
+                              >
+                                <span>View Main Page</span>
+                                <ArrowRight className="h-4 w-4" />
+                              </Link>
+
+                              {service.subServices && service.subServices.length > 0 ? (
+                                <div className="grid grid-cols-2 gap-3">
+                                  {service.subServices.map(sub => (
+                                    <Link
+                                      key={sub.id}
+                                      to={`/services/${service.slug}/${sub.slug}`}
+                                      className="block p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
+                                    >
+                                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary">
+                                        {sub.title}
+                                      </h4>
+                                      <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                                        {sub.shortDescription}
+                                      </p>
+                                    </Link>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                                  No specific sub-solutions listed. Please view the main page for details.
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                  </div>
-
-                  {/* Right Content: Sub Services */}
-                  <div className="w-2/3 p-8 bg-white dark:bg-dark-card overflow-y-auto custom-scrollbar">
-                      {services.map(service => (
-                          <div key={service.id} className={activeServiceId === service.id ? 'block' : 'hidden'}>
-                              <div className="flex justify-between items-end mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">
-                                  <div>
-                                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{service.title}</h3>
-                                      <p className="text-sm text-gray-500 dark:text-gray-400">{service.shortDescription}</p>
-                                  </div>
-                                  <Link to={`/services/${service.slug}`} className="text-primary text-sm font-bold hover:underline flex items-center">
-                                      Main Page <ArrowRight size={14} className="ml-1" />
-                                  </Link>
-                              </div>
-
-                              <div className="grid grid-cols-2 gap-4">
-                                  {service.subServices && service.subServices.length > 0 ? (
-                                      service.subServices.map(sub => (
-                                          <Link 
-                                              key={sub.id} 
-                                              to={`/services/${service.slug}/${sub.slug}`}
-                                              className="group/item p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-200"
-                                          >
-                                              <div className="flex items-center gap-2 mb-2">
-                                                  <div className="w-1 h-4 bg-primary rounded-full"></div>
-                                                  <h4 className="font-bold text-gray-800 dark:text-gray-200 text-sm group-hover/item:text-primary transition-colors">
-                                                      {sub.title}
-                                                  </h4>
-                                              </div>
-                                              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 pl-3">
-                                                  {sub.shortDescription}
-                                              </p>
-                                          </Link>
-                                      ))
-                                  ) : (
-                                      <div className="col-span-2 text-center py-10 text-gray-400 text-sm">
-                                          No specific sub-solutions listed. Please view the main page for details.
-                                      </div>
-                                  )}
-                              </div>
-                          </div>
-                      ))}
-                  </div>
-                </div>
+                    </MotionDiv>
+                  )}
+                </AnimatePresence>
               </div>
+
+              <Link to="/blog" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+                Blog
+              </Link>
+              <Link to="/about" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+                About
+              </Link>
+              <Link to="/contact" className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+                Contact
+              </Link>
             </div>
 
-            <Link to="/blog" className={navLinkClass}>Blog</Link>
-            <Link to="/about" className={navLinkClass}>About</Link>
-            <Link to="/contact" className={navLinkClass}>Contact</Link>
-          </nav>
+            {/* Actions - Right */}
+            <div className="hidden lg:flex items-center space-x-4">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+              <Link
+                to="/contact"
+                className="bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition-colors flex items-center space-x-2"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
 
-          {/* Actions - Right */}
-          <div className="hidden lg:flex items-center gap-4 shrink-0">
-            <button 
-              onClick={toggleTheme}
-              className={`p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 lg:hover:bg-white/10 transition ${iconClass}`}
-            >
-              {isDark ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <Link 
-              to="/contact"
-              className="bg-primary hover:bg-secondary text-white px-6 py-2.5 rounded-full font-medium transition shadow-lg shadow-blue-200 dark:shadow-none flex items-center gap-2 text-sm"
-            >
-              Get Started <ArrowRight size={16} />
-            </Link>
+            {/* Mobile Toggle */}
+            <div className="lg:hidden flex items-center space-x-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
           </div>
-
-          {/* Mobile Toggle */}
-          <div className="lg:hidden flex items-center gap-4 ml-auto">
-            <button 
-              onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-600 dark:text-gray-300"
-            >
-              {isDark ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <button 
-              className="text-gray-700 dark:text-white"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
-        </div>
+        </nav>
 
         {/* Mobile Menu */}
-        <AnimatePresence>
-          {isOpen && (
-            <MotionDiv 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-dark-card shadow-xl border-t border-gray-100 dark:border-gray-800 overflow-hidden max-h-[80vh] overflow-y-auto"
-            >
-              <div className="flex flex-col p-4 gap-4">
-                <Link to="/" className="text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">Home</Link>
-                
-                <div>
-                  <button 
-                    onClick={() => setIsServicesOpen(!isServicesOpen)}
-                    className="flex items-center justify-between w-full text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
-                  >
-                    Solutions <ChevronDown size={20} className={`transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  
-                  {isServicesOpen && (
-                    <div className="pl-4 mt-2 space-y-4 border-l-2 border-gray-100 dark:border-gray-700 ml-4">
-                      <Link to="/services" className="flex items-center gap-3 p-2 text-primary font-bold border-b border-gray-100 dark:border-gray-800">
-                         <span className="text-sm">View All Solutions</span>
-                      </Link>
-                      {services.map(service => (
-                        <div key={service.id} className="mb-4">
-                           <Link 
-                              to={`/services/${service.slug}`}
-                              className="flex items-center gap-2 p-2 text-gray-800 dark:text-white font-semibold hover:text-primary"
-                            >
-                               <Icon name={service.iconName} size={16} />
-                               <span className="text-sm">{service.title}</span>
-                            </Link>
-                            {/* Sub Services in Mobile */}
-                            {service.subServices && (
-                                <div className="pl-8 mt-1 space-y-1">
-                                    {service.subServices.map(sub => (
-                                        <Link
-                                          key={sub.id}
-                                          to={`/services/${service.slug}/${sub.slug}`}
-                                          className="block p-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary"
-                                        >
-                                            {sub.title}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+        {isOpen && (
+          <div className="lg:hidden mt-2 bg-white dark:bg-gray-900 rounded-3xl shadow-lg overflow-hidden">
+            <div className="px-4 py-4 space-y-3">
+              <Link to="/" className="block text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
+                Home
+              </Link>
 
-                <Link to="/blog" className="text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">Blog</Link>
-                <Link to="/about" className="text-left text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">About</Link>
-                
-                <Link 
-                  to="/contact" 
-                  className="bg-primary text-white text-center py-4 rounded-xl font-bold mt-4 w-full"
+              <div>
+                <button
+                  onClick={() => setIsServicesOpen(!isServicesOpen)}
+                  className="flex items-center justify-between w-full text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
                 >
-                  Get Started Now
-                </Link>
+                  <span>Solutions</span>
+                  <ChevronDown className={`h-5 w-5 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isServicesOpen && (
+                  <div className="mt-2 ml-4 space-y-2 border-l-2 border-gray-200 dark:border-gray-700 pl-4">
+                    <Link
+                      to="/services"
+                      className="block text-sm font-medium text-primary hover:text-primary-dark p-2"
+                    >
+                      View All Solutions
+                    </Link>
+
+                    {services.map(service => (
+                      <div key={service.id} className="space-y-1">
+                        <Link
+                          to={`/services/${service.slug}`}
+                          className="block text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary p-2"
+                        >
+                          {service.title}
+                        </Link>
+
+                        {/* Sub Services in Mobile */}
+                        {service.subServices && (
+                          <div className="ml-3 space-y-1">
+                            {service.subServices.map(sub => (
+                              <Link
+                                key={sub.id}
+                                to={`/services/${service.slug}/${sub.slug}`}
+                                className="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary p-2"
+                              >
+                                {sub.title}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </MotionDiv>
-          )}
-        </AnimatePresence>
+
+              <Link to="/blog" className="block text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
+                Blog
+              </Link>
+              <Link to="/about" className="block text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
+                About
+              </Link>
+              <Link
+                to="/contact"
+                className="block bg-primary text-white px-4 py-3 rounded-lg font-medium text-center hover:bg-primary-dark transition-colors"
+              >
+                Get Started Now
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
     </>
   );
