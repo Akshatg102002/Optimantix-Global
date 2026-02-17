@@ -18,8 +18,8 @@ export const BlogPost: React.FC = () => {
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
-        title={blog.title} 
-        description={blog.excerpt}
+        title={blog.metaTitle || blog.title} 
+        description={blog.metaDescription || blog.excerpt}
       />
 
       <ParallaxHero 
@@ -39,7 +39,7 @@ export const BlogPost: React.FC = () => {
           
           <div className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
             {blog.content.split('\n').map((paragraph, idx) => (
-              <p key={idx} className="mb-4">{paragraph}</p>
+              <p key={idx} className="mb-4 whitespace-pre-line">{paragraph}</p>
             ))}
           </div>
 

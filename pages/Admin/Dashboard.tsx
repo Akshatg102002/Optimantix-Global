@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, FileText, Settings, LogOut, CheckCircle, XCircle, Briefcase, Plus } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, FileText, Settings, LogOut, CheckCircle, XCircle, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save } from 'lucide-react';
 import { Icon } from '../../components/Icon';
+import { BlogPost, BlogCategory } from '../../types';
 
 // Tabs
 const TABS = {
@@ -13,15 +14,44 @@ const TABS = {
   PORTFOLIO: 'PORTFOLIO'
 };
 
+const BLOG_VIEWS = {
+  LIST: 'LIST',
+  EDIT: 'EDIT',
+  CATEGORIES: 'CATEGORIES'
+};
+
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TABS.LEADS);
-  const { leads, services, blogs, projects, updateLeadStatus, updateService, addBlogPost, deleteBlogPost, addProject, deleteProject, isAuthenticated, logout } = useData();
+  const [blogView, setBlogView] = useState(BLOG_VIEWS.LIST);
+
+  const { 
+    leads, services, blogs, blogCategories, projects, 
+    updateLeadStatus, updateService, 
+    addBlogPost, deleteBlogPost, 
+    addBlogCategory, deleteBlogCategory,
+    addProject, deleteProject, 
+    isAuthenticated, logout 
+  } = useData();
+
   const navigate = useNavigate();
 
-  // Forms
+  // Service Edit Form
   const [editingService, setEditingService] = useState<string | null>(null);
   const [editServiceForm, setEditServiceForm] = useState<any>({ title: '', shortDescription: '' });
-  const [newBlogForm, setNewBlogForm] = useState({ title: '', slug: '', excerpt: '', content: '', author: '', imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800' });
+
+  // Blog Form
+  const initialBlogForm: Partial<BlogPost> = { 
+    title: '', slug: '', excerpt: '', content: '', author: '', 
+    imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800',
+    categoryId: '', metaTitle: '', metaDescription: '', isPublished: true 
+  };
+  const [blogForm, setBlogForm] = useState<Partial<BlogPost>>(initialBlogForm);
+  const [isSubmittingBlog, setIsSubmittingBlog] = useState(false);
+
+  // Category Form
+  const [newCategoryName, setNewCategoryName] = useState('');
+
+  // Project Form
   const [newProjectForm, setNewProjectForm] = useState({ title: '', category: '', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', projectUrl: '' });
 
   useEffect(() => {
@@ -35,10 +65,12 @@ export const AdminDashboard: React.FC = () => {
     navigate('/admin/login');
   };
 
+  // --- Lead Handlers ---
   const handleStatusUpdate = (id: string, status: 'Contacted' | 'Closed') => {
     updateLeadStatus(id, status);
   };
 
+  // --- Service Handlers ---
   const handleEditService = (service: any) => {
     setEditingService(service.id);
     setEditServiceForm(service);
@@ -49,21 +81,47 @@ export const AdminDashboard: React.FC = () => {
     setEditingService(null);
   };
 
-  const handlePublishBlog = (e: React.FormEvent) => {
+  // --- Blog Handlers ---
+  const handlePublishBlog = async (e: React.FormEvent) => {
     e.preventDefault();
-    addBlogPost({
-      ...newBlogForm,
-      date: new Date().toISOString()
-    });
-    setNewBlogForm({ title: '', slug: '', excerpt: '', content: '', author: '', imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800' });
-    alert("Blog Posted!");
+    setIsSubmittingBlog(true);
+    try {
+        await addBlogPost({
+            ...blogForm as BlogPost,
+            date: new Date().toISOString()
+        });
+        alert("Blog Posted Successfully!");
+        setBlogForm(initialBlogForm);
+        setBlogView(BLOG_VIEWS.LIST);
+    } catch (error) {
+        alert("Failed to post blog");
+    } finally {
+        setIsSubmittingBlog(false);
+    }
   };
 
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName) return;
+    const slug = newCategoryName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    try {
+        await addBlogCategory({ name: newCategoryName, slug });
+        setNewCategoryName('');
+    } catch (error) {
+        alert("Failed to create category");
+    }
+  };
+
+  // --- Project Handlers ---
   const handleAddProject = (e: React.FormEvent) => {
     e.preventDefault();
     addProject(newProjectForm);
     setNewProjectForm({ title: '', category: '', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', projectUrl: '' });
     alert("Project Added!");
+  };
+
+  const generateSlug = (text: string) => {
+      return text.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
   };
 
   if (!isAuthenticated) return null;
@@ -85,7 +143,7 @@ export const AdminDashboard: React.FC = () => {
           <button onClick={() => setActiveTab(TABS.SERVICES)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${activeTab === TABS.SERVICES ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <Settings size={20} /> Services
           </button>
-          <button onClick={() => setActiveTab(TABS.BLOG)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${activeTab === TABS.BLOG ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+          <button onClick={() => { setActiveTab(TABS.BLOG); setBlogView(BLOG_VIEWS.LIST); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${activeTab === TABS.BLOG ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <FileText size={20} /> Blog
           </button>
           <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
@@ -219,63 +277,237 @@ export const AdminDashboard: React.FC = () => {
 
         {/* BLOG TAB */}
         {activeTab === TABS.BLOG && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <h1 className="text-2xl font-bold mb-6">Published Posts</h1>
-              <div className="space-y-4">
-                {blogs.map(blog => (
-                  <div key={blog.id} className="bg-white dark:bg-dark-card p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 flex gap-4">
-                    <img src={blog.imageUrl} className="w-24 h-24 object-cover rounded-lg" alt={blog.title} />
-                    <div className="flex-1">
-                      <h3 className="font-bold">{blog.title}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{new Date(blog.date).toLocaleDateString()} by {blog.author}</p>
-                      <button onClick={() => deleteBlogPost(blog.id)} className="text-red-500 text-sm hover:text-red-700 flex items-center gap-1">
-                        <XCircle size={14} /> Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div>
+            {/* Header / Navigation for Blog Tab */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+               <h1 className="text-2xl font-bold">
+                  {blogView === BLOG_VIEWS.LIST && "Manage Blogs"}
+                  {blogView === BLOG_VIEWS.EDIT && "Create New Blog"}
+                  {blogView === BLOG_VIEWS.CATEGORIES && "Blog Categories"}
+               </h1>
+               <div className="flex gap-3">
+                   {blogView !== BLOG_VIEWS.LIST && (
+                        <button onClick={() => setBlogView(BLOG_VIEWS.LIST)} className="bg-gray-200 dark:bg-gray-800 px-4 py-2 rounded text-sm font-medium hover:bg-gray-300 transition flex items-center gap-2">
+                            <ArrowLeft size={16} /> Back to List
+                        </button>
+                   )}
+                   {blogView === BLOG_VIEWS.LIST && (
+                       <>
+                        <button onClick={() => setBlogView(BLOG_VIEWS.CATEGORIES)} className="bg-white dark:bg-dark-card border border-gray-300 dark:border-gray-700 px-4 py-2 rounded text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                            Manage Categories
+                        </button>
+                        <button onClick={() => setBlogView(BLOG_VIEWS.EDIT)} className="bg-primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-secondary transition flex items-center gap-2">
+                            <Plus size={16} /> New Blog
+                        </button>
+                       </>
+                   )}
+               </div>
             </div>
 
-            <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 sticky top-8">
-                <h2 className="text-xl font-bold mb-4">Write New Post</h2>
-                <form onSubmit={handlePublishBlog} className="space-y-3">
-                  <input 
-                    required
-                    placeholder="Title" 
-                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
-                    value={newBlogForm.title}
-                    onChange={e => setNewBlogForm({...newBlogForm, title: e.target.value})}
-                  />
-                  <input 
-                    required
-                    placeholder="Author" 
-                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
-                    value={newBlogForm.author}
-                    onChange={e => setNewBlogForm({...newBlogForm, author: e.target.value})}
-                  />
-                  <textarea 
-                    required
-                    placeholder="Excerpt" 
-                    rows={2}
-                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
-                    value={newBlogForm.excerpt}
-                    onChange={e => setNewBlogForm({...newBlogForm, excerpt: e.target.value})}
-                  />
-                  <textarea 
-                    required
-                    placeholder="Content" 
-                    rows={6}
-                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
-                    value={newBlogForm.content}
-                    onChange={e => setNewBlogForm({...newBlogForm, content: e.target.value})}
-                  />
-                  <button type="submit" className="w-full bg-primary text-white py-2 rounded hover:opacity-90">Publish</button>
+            {/* BLOG VIEW: LIST */}
+            {blogView === BLOG_VIEWS.LIST && (
+                <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+                    <div className="p-1 min-w-[800px] overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-xs uppercase text-gray-500">
+                                <tr>
+                                    <th className="p-4">Title</th>
+                                    <th className="p-4">Category</th>
+                                    <th className="p-4">Author</th>
+                                    <th className="p-4">Date</th>
+                                    <th className="p-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                                {blogs.length === 0 ? (
+                                    <tr><td colSpan={5} className="p-8 text-center text-gray-500">No blogs posted yet.</td></tr>
+                                ) : (
+                                    blogs.map(blog => {
+                                        const cat = blogCategories.find(c => c.id === blog.categoryId);
+                                        return (
+                                            <tr key={blog.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                                <td className="p-4 font-medium max-w-xs truncate">{blog.title}</td>
+                                                <td className="p-4 text-sm">
+                                                    {cat ? <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-bold">{cat.name}</span> : <span className="text-gray-400 italic">Uncategorized</span>}
+                                                </td>
+                                                <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{blog.author}</td>
+                                                <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(blog.date).toLocaleDateString()}</td>
+                                                <td className="p-4 text-right">
+                                                    <button onClick={() => deleteBlogPost(blog.id)} className="text-red-500 hover:bg-red-50 p-2 rounded transition"><XCircle size={18} /></button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+
+            {/* BLOG VIEW: CATEGORIES */}
+            {blogView === BLOG_VIEWS.CATEGORIES && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800">
+                        <h2 className="text-lg font-bold mb-4">Create Category</h2>
+                        <form onSubmit={handleCreateCategory} className="flex gap-2">
+                            <input 
+                                className="flex-1 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                placeholder="Category Name"
+                                value={newCategoryName}
+                                onChange={e => setNewCategoryName(e.target.value)}
+                            />
+                            <button type="submit" className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary">Add</button>
+                        </form>
+                    </div>
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800">
+                        <h2 className="text-lg font-bold mb-4">Existing Categories</h2>
+                        <ul className="space-y-2">
+                            {blogCategories.length === 0 && <li className="text-gray-500 italic">No categories created.</li>}
+                            {blogCategories.map(cat => (
+                                <li key={cat.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                                    <span>{cat.name}</span>
+                                    <button onClick={() => deleteBlogCategory(cat.id)} className="text-red-500 text-sm hover:underline">Delete</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            )}
+
+            {/* BLOG VIEW: EDIT (NEW BLOG) */}
+            {blogView === BLOG_VIEWS.EDIT && (
+                <form onSubmit={handlePublishBlog} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
+                            <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Content</h2>
+                            
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Blog Title</label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none text-lg"
+                                    placeholder="Enter blog title..."
+                                    value={blogForm.title}
+                                    onChange={e => setBlogForm({...blogForm, title: e.target.value, slug: generateSlug(e.target.value)})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Slug (URL)</label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none text-sm text-gray-500"
+                                    value={blogForm.slug}
+                                    onChange={e => setBlogForm({...blogForm, slug: generateSlug(e.target.value)})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Blog Content</label>
+                                <textarea 
+                                    required
+                                    rows={12}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="Write your article content here..."
+                                    value={blogForm.content}
+                                    onChange={e => setBlogForm({...blogForm, content: e.target.value})}
+                                />
+                                <p className="text-xs text-gray-400 mt-1">Basic text formatting. New lines create paragraphs.</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Short Excerpt</label>
+                                <textarea 
+                                    required
+                                    rows={3}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="Summary for the card view..."
+                                    value={blogForm.excerpt}
+                                    onChange={e => setBlogForm({...blogForm, excerpt: e.target.value})}
+                                />
+                            </div>
+                        </div>
+
+                        {/* SEO Section */}
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
+                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 flex items-center gap-2"><Tag size={18} /> SEO Settings</h2>
+                             <div>
+                                <label className="block text-sm font-medium mb-1">Meta Title</label>
+                                <input 
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="SEO Title (defaults to blog title)"
+                                    value={blogForm.metaTitle}
+                                    onChange={e => setBlogForm({...blogForm, metaTitle: e.target.value})}
+                                />
+                             </div>
+                             <div>
+                                <label className="block text-sm font-medium mb-1">Meta Description</label>
+                                <textarea 
+                                    rows={2}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="SEO Description (defaults to excerpt)"
+                                    value={blogForm.metaDescription}
+                                    onChange={e => setBlogForm({...blogForm, metaDescription: e.target.value})}
+                                />
+                             </div>
+                        </div>
+                    </div>
+
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4 sticky top-6">
+                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Publishing</h2>
+                             
+                             <div>
+                                <label className="block text-sm font-medium mb-1">Author</label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                    value={blogForm.author}
+                                    onChange={e => setBlogForm({...blogForm, author: e.target.value})}
+                                />
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-medium mb-1">Category</label>
+                                <select 
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none"
+                                    value={blogForm.categoryId}
+                                    onChange={e => setBlogForm({...blogForm, categoryId: e.target.value})}
+                                >
+                                    <option value="">Select Category</option>
+                                    {blogCategories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-medium mb-1 flex items-center gap-2"><ImageIcon size={16}/> Featured Image URL</label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded focus:ring-2 focus:ring-primary outline-none text-sm"
+                                    value={blogForm.imageUrl}
+                                    onChange={e => setBlogForm({...blogForm, imageUrl: e.target.value})}
+                                />
+                                {blogForm.imageUrl && (
+                                    <div className="mt-2 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                                        <img src={blogForm.imageUrl} className="w-full h-full object-cover" alt="Preview" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                    </div>
+                                )}
+                             </div>
+
+                             <button 
+                                type="submit" 
+                                disabled={isSubmittingBlog}
+                                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-secondary transition flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {isSubmittingBlog ? "Publishing..." : <><Save size={18} /> Publish Blog</>}
+                             </button>
+                        </div>
+                    </div>
                 </form>
-              </div>
-            </div>
+            )}
           </div>
         )}
 

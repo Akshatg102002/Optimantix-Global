@@ -1,11 +1,14 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Service, BlogPost, Lead, Project } from '../types';
-import { INITIAL_SERVICES, INITIAL_BLOGS, INITIAL_PROJECTS } from '../constants';
+import { Service, BlogPost, Lead, Project, BlogCategory } from '../types';
+import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
+import { db } from '../lib/firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 
 interface DataContextType {
   services: Service[];
   blogs: BlogPost[];
+  blogCategories: BlogCategory[];
   leads: Lead[];
   projects: Project[];
   isDark: boolean;
@@ -15,8 +18,14 @@ interface DataContextType {
   logout: () => void;
   addLead: (lead: Omit<Lead, 'id' | 'date' | 'status'>) => void;
   updateService: (service: Service) => void;
-  addBlogPost: (post: Omit<BlogPost, 'id'>) => void;
-  deleteBlogPost: (id: string) => void;
+  // Blog Actions
+  fetchBlogs: () => Promise<void>;
+  addBlogPost: (post: Omit<BlogPost, 'id'>) => Promise<void>;
+  deleteBlogPost: (id: string) => Promise<void>;
+  // Category Actions
+  addBlogCategory: (category: Omit<BlogCategory, 'id'>) => Promise<void>;
+  deleteBlogCategory: (id: string) => Promise<void>;
+  // Project Actions
   addProject: (project: Omit<Project, 'id'>) => void;
   deleteProject: (id: string) => void;
   updateLeadStatus: (id: string, status: Lead['status']) => void;
@@ -25,10 +34,8 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Using v5 keys to invalidate old cache and ensure slugs are present
   const STORAGE_KEYS = {
     SERVICES: 'opt_services_v5',
-    BLOGS: 'opt_blogs_v5',
     LEADS: 'opt_leads_v5',
     PROJECTS: 'opt_projects_v5',
     THEME: 'opt_theme',
@@ -36,7 +43,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
-  const [blogs, setBlogs] = useState<BlogPost[]>(INITIAL_BLOGS);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -72,28 +80,53 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem(STORAGE_KEYS.AUTH);
   };
 
+  // --- FIREBASE FETCHING ---
+  const fetchBlogs = async () => {
+    try {
+      const q = query(collection(db, "blogs"), orderBy("date", "desc"));
+      const querySnapshot = await getDocs(q);
+      const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as BlogPost));
+      setBlogs(fetchedBlogs);
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "blog_categories"));
+      const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as BlogCategory));
+      setBlogCategories(fetchedCategories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  }
+
   useEffect(() => {
+    // Initial Fetch
+    fetchBlogs();
+    fetchCategories();
+
     if (localStorage.getItem(STORAGE_KEYS.AUTH) === 'true') {
       setIsAuthenticated(true);
     }
-  }, []);
 
-  useEffect(() => {
+    // Local Storage Hydration for non-firebase items
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
-    const storedBlogs = localStorage.getItem(STORAGE_KEYS.BLOGS);
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
     const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
 
-    // Only load if valid JSON and not empty, otherwise fallback to initial
     if (storedServices) {
         try {
             const parsed = JSON.parse(storedServices);
             if (Array.isArray(parsed) && parsed.length > 0) setServices(parsed);
         } catch (e) { console.error("Failed to parse services", e); }
-    }
-    
-    if (storedBlogs) {
-        try { setBlogs(JSON.parse(storedBlogs)); } catch (e) { console.error(e); }
     }
     
     if (storedLeads) {
@@ -105,10 +138,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
+  // Sync Local Storage
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services)); }, [services]);
-  useEffect(() => { localStorage.setItem(STORAGE_KEYS.BLOGS, JSON.stringify(blogs)); }, [blogs]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads)); }, [leads]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects)); }, [projects]);
+
+  // --- ACTION HANDLERS ---
 
   const addLead = (leadData: Omit<Lead, 'id' | 'date' | 'status'>) => {
     const newLead: Lead = {
@@ -124,16 +159,45 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setServices(prev => prev.map(s => s.id === updatedService.id ? updatedService : s));
   };
 
-  const addBlogPost = (postData: Omit<BlogPost, 'id'>) => {
-    const newPost: BlogPost = {
-      ...postData,
-      id: Date.now().toString()
-    };
-    setBlogs(prev => [newPost, ...prev]);
+  // Blog Firebase Actions
+  const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
+    try {
+      await addDoc(collection(db, "blogs"), postData);
+      await fetchBlogs(); // Refresh list
+    } catch (e) {
+      console.error("Error adding blog: ", e);
+      throw e;
+    }
   };
 
-  const deleteBlogPost = (id: string) => {
-    setBlogs(prev => prev.filter(b => b.id !== id));
+  const deleteBlogPost = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "blogs", id));
+      setBlogs(prev => prev.filter(b => b.id !== id));
+    } catch (e) {
+      console.error("Error deleting blog: ", e);
+      throw e;
+    }
+  };
+
+  // Category Firebase Actions
+  const addBlogCategory = async (categoryData: Omit<BlogCategory, 'id'>) => {
+    try {
+      await addDoc(collection(db, "blog_categories"), categoryData);
+      await fetchCategories();
+    } catch (e) {
+      console.error("Error adding category: ", e);
+      throw e;
+    }
+  };
+
+  const deleteBlogCategory = async (id: string) => {
+    try {
+        await deleteDoc(doc(db, "blog_categories", id));
+        setBlogCategories(prev => prev.filter(c => c.id !== id));
+    } catch (e) {
+        console.error("Error deleting category: ", e);
+    }
   };
 
   const addProject = (projectData: Omit<Project, 'id'>) => {
@@ -151,11 +215,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <DataContext.Provider value={{ 
-      services, blogs, leads, projects,
+      services, blogs, blogCategories, leads, projects,
       isDark, toggleTheme,
       isAuthenticated, login, logout,
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus,
-      addProject, deleteProject
+      addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory
     }}>
       {children}
     </DataContext.Provider>

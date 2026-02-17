@@ -26,6 +26,12 @@ export interface Service {
   subServices?: SubService[];
 }
 
+export interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -35,6 +41,11 @@ export interface BlogPost {
   author: string;
   date: string;
   imageUrl: string;
+  // New fields
+  categoryId?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  isPublished?: boolean;
 }
 
 export interface Project {
