@@ -89,7 +89,7 @@ const CLIENTS = [
   {
     name: "Loni Mobility",
     url: "https://lonimobillity.com",
-    logo: null // Blob URL removed as it won't work for others
+    logo: "https://i.ibb.co/GfNjH1Dd/LONI.jpg"
   },
   {
     name: "Onestop",

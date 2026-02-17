@@ -25,12 +25,12 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Using v3 keys to invalidate old cache and ensure slugs are present
+  // Using v4 keys to invalidate old cache and ensure slugs are present
   const STORAGE_KEYS = {
-    SERVICES: 'opt_services_v3',
-    BLOGS: 'opt_blogs_v3',
-    LEADS: 'opt_leads_v3',
-    PROJECTS: 'opt_projects_v3',
+    SERVICES: 'opt_services_v4',
+    BLOGS: 'opt_blogs_v4',
+    LEADS: 'opt_leads_v4',
+    PROJECTS: 'opt_projects_v4',
     THEME: 'opt_theme',
     AUTH: 'opt_auth'
   };
