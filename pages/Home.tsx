@@ -10,14 +10,14 @@ import { TESTIMONIALS, WORK_PROCESS, INDUSTRIES } from '../constants';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PARTNERS = [
-  { name: "Google", color: "#4285F4" },
-  { name: "Amazon", color: "#FF9900" },
-  { name: "Shopify", color: "#96BF48" },
-  { name: "Meta", color: "#0668E1" },
-  { name: "Microsoft", color: "#F25022" },
-  { name: "HubSpot", color: "#FF7A59" },
-  { name: "Salesforce", color: "#00A1E0" },
-  { name: "Adobe", color: "#FF0000" },
+  { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
+  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" },
+  { name: "Shopify", logo: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg" },
+  { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" },
+  { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" },
+  { name: "HubSpot", logo: "https://upload.wikimedia.org/wikipedia/commons/1/15/HubSpot_Logo.svg" },
+  { name: "Salesforce", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" },
+  { name: "Adobe", logo: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Adobe_Corporate_Logo.svg" },
 ];
 
 const CLIENTS = [
@@ -266,7 +266,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Partner Marquee Section - Moved up slightly */}
+      {/* Partner Marquee Section - Logos */}
       <section className="py-12 bg-transparent overflow-hidden">
         <div className="container mx-auto px-4 mb-8 text-center">
           <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Our Technology Partners</p>
@@ -278,8 +278,12 @@ export const Home: React.FC = () => {
             transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
           >
             {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-2xl font-bold text-gray-400 dark:text-gray-600 grayscale hover:grayscale-0 transition-all duration-300 cursor-default opacity-60 hover:opacity-100">
-                <span style={{ fontFamily: 'sans-serif' }}>{partner.name}</span>
+              <div key={idx} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-center min-w-[140px] h-[70px]">
+                <img 
+                    src={partner.logo} 
+                    alt={partner.name} 
+                    className="h-8 md:h-10 w-auto object-contain hover:scale-105 transition-transform duration-300"
+                />
               </div>
             ))}
           </MotionDiv>
@@ -376,7 +380,7 @@ export const Home: React.FC = () => {
               <img
                 src="https://images.unsplash.com/photo-1762341114530-a0c54d8cc18b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Team working"
-                className="relative rounded-3xl shadow-2xl w-full h-auto object-cover border border-gray-200 dark:border-gray-700"
+                className="relative rounded-3xl shadow-2xl w-full h-auto object-cover border border-gray-200 dark:border-gray-700 max-h-[500px]"
               />
             </div>
             <div className="order-1 lg:order-2">
@@ -389,12 +393,12 @@ export const Home: React.FC = () => {
               <div className="space-y-6">
                 {WORK_PROCESS.map((step, idx) => (
                   <div key={idx} className="flex gap-4 group">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 group-hover:bg-primary text-gray-500 group-hover:text-white flex items-center justify-center font-bold text-lg shadow-sm transition-colors duration-300">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 group-hover:bg-primary text-gray-500 group-hover:text-white flex items-center justify-center font-bold text-lg shadow-sm transition-colors duration-300">
                       {idx + 1}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{step.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{step.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed max-w-sm">{step.description}</p>
                     </div>
                   </div>
                 ))}

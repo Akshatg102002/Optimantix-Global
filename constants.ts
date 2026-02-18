@@ -490,19 +490,19 @@ export const STATS = [
 export const WORK_PROCESS = [
   {
     title: 'Research & Strategy',
-    description: 'We conduct comprehensive research on client goals, target audience, and industry landscape to develop data-driven strategies.'
+    description: 'Deep research on goals and audience to build data-driven strategies.'
   },
   {
     title: 'Planning & Design',
-    description: 'Creation of detailed roadmaps, design mockups, and content strategies that align with brand identity and business goals.'
+    description: 'Detailed roadmaps and designs aligning with your brand identity.'
   },
   {
     title: 'Execution & Launch',
-    description: 'Development and deployment of campaigns, websites, or digital platforms with seamless implementation and QA.'
+    description: 'Seamless development, QA testing, and deployment of your digital assets.'
   },
   {
     title: 'Optimization & Growth',
-    description: 'Continuous performance tracking, data analysis, and strategic optimization to improve results and maximize ROI.'
+    description: 'Continuous tracking and optimization to maximize ROI.'
   }
 ];
 
