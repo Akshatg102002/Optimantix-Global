@@ -15,8 +15,7 @@ interface DataContextType {
   toggleTheme: () => void;
   isAuthenticated: boolean;
   currentUser: firebase.User | null;
-  login: (email: string, pass: string) => Promise<void>;
-  register: (email: string, pass: string) => Promise<void>;
+  login: (pass: string) => Promise<void>;
   logout: () => Promise<void>;
   addLead: (lead: Omit<Lead, 'id' | 'date' | 'status'>) => void;
   updateService: (service: Service) => void;
@@ -41,6 +40,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     LEADS: 'opt_leads_v5',
     PROJECTS: 'opt_projects_v5',
     THEME: 'opt_theme',
+    AUTH: 'opt_admin_auth'
   };
 
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
@@ -50,8 +50,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   
   // Auth State
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
   
   // Theme State
   const [isDark, setIsDark] = useState(() => {
@@ -74,30 +74,51 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const toggleTheme = () => setIsDark(!isDark);
 
-  // --- FIREBASE AUTH ---
+  // --- FIREBASE AUTH LISTENER ---
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
-      setAuthLoading(false);
       if (user) {
-        // Retry fetching protected data if needed, or rely on component mount
+        // If firebase user exists, we are "connected" to DB
         fetchBlogs(); 
         fetchCategories();
       }
     });
+    
+    // Check Local Storage for Admin Session
+    const localAuth = localStorage.getItem(STORAGE_KEYS.AUTH);
+    if (localAuth === 'true') {
+        setIsAuthenticated(true);
+        // Ensure we have a firebase session for writing
+        if (!auth.currentUser) {
+            auth.signInAnonymously().catch(e => console.error("Anon auth failed", e));
+        }
+    }
+
     return unsubscribe;
   }, []);
 
-  const login = async (email: string, pass: string) => {
-    await auth.signInWithEmailAndPassword(email, pass);
-  };
-
-  const register = async (email: string, pass: string) => {
-    await auth.createUserWithEmailAndPassword(email, pass);
+  // --- LOGIN LOGIC ---
+  const login = async (pass: string) => {
+    if (pass === 'admin999') {
+        try {
+            // Sign in anonymously to satisfy Firestore rules (request.auth != null)
+            await auth.signInAnonymously();
+            setIsAuthenticated(true);
+            localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        } catch (error) {
+            console.error("Login Error", error);
+            throw new Error("Database connection failed.");
+        }
+    } else {
+        throw new Error("Invalid Password");
+    }
   };
 
   const logout = async () => {
     await auth.signOut();
+    setIsAuthenticated(false);
+    localStorage.removeItem(STORAGE_KEYS.AUTH);
   };
 
   // --- FIREBASE FETCHING ---
@@ -111,7 +132,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setBlogs(fetchedBlogs);
     } catch (error) {
       console.error("Error fetching blogs (Check Firestore Rules):", error);
-      // Fallback to empty if permission denied
       setBlogs([]); 
     }
   };
@@ -125,7 +145,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } as BlogCategory));
       setBlogCategories(fetchedCategories);
     } catch (error) {
-      console.error("Error fetching categories (Check Firestore Rules):", error);
+      console.error("Error fetching categories:", error);
       setBlogCategories([]);
     }
   }
@@ -135,7 +155,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchBlogs();
     fetchCategories();
 
-    // Local Storage Hydration for non-firebase items
+    // Local Storage Hydration
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
     const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
@@ -177,11 +197,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setServices(prev => prev.map(s => s.id === updatedService.id ? updatedService : s));
   };
 
-  // Blog Firebase Actions
   const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
     try {
       await db.collection("blogs").add(postData);
-      await fetchBlogs(); // Refresh list
+      await fetchBlogs();
     } catch (e) {
       console.error("Error adding blog: ", e);
       throw e;
@@ -198,7 +217,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Category Firebase Actions
   const addBlogCategory = async (categoryData: Omit<BlogCategory, 'id'>) => {
     try {
       await db.collection("blog_categories").add(categoryData);
@@ -235,9 +253,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <DataContext.Provider value={{ 
       services, blogs, blogCategories, leads, projects,
       isDark, toggleTheme,
-      isAuthenticated: !!currentUser, 
+      isAuthenticated, 
       currentUser,
-      login, register, logout,
+      login, logout,
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus,
       addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory
     }}>
