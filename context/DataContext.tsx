@@ -30,6 +30,9 @@ interface DataContextType {
   addProject: (project: Omit<Project, 'id'>) => void;
   deleteProject: (id: string) => void;
   updateLeadStatus: (id: string, status: Lead['status']) => void;
+  // UI State
+  globalLoading: boolean;
+  setGlobalLoading: (loading: boolean) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -48,6 +51,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [globalLoading, setGlobalLoading] = useState(false);
   
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -105,11 +109,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // --- LOGIN LOGIC ---
   const login = async (pass: string) => {
     if (pass === 'admin999') {
-        // 1. Set Local State Immediately (Hardcoded access)
         setIsAuthenticated(true);
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
-
-        // 2. Try to get Database Permissions (Anonymous Auth)
         try {
             await auth.signInAnonymously();
         } catch (error) {
@@ -162,7 +163,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   useEffect(() => {
-    // Local Storage Hydration for non-firebase data
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
     const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
@@ -183,12 +183,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
-  // Sync Local Storage
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services)); }, [services]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads)); }, [leads]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects)); }, [projects]);
 
-  // --- ACTION HANDLERS (Optimistic Updates) ---
+  // --- ACTION HANDLERS ---
 
   const addLead = (leadData: Omit<Lead, 'id' | 'date' | 'status'>) => {
     const newLead: Lead = {
@@ -205,40 +204,32 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
-    // Optimistic Update
     const tempId = 'temp-' + Date.now();
     const newPost = { ...postData, id: tempId } as BlogPost;
     setBlogs(prev => [newPost, ...prev]);
 
     try {
       const docRef = await db.collection("blogs").add(postData);
-      // Update with real ID
       setBlogs(prev => prev.map(b => b.id === tempId ? { ...b, id: docRef.id } : b));
     } catch (e) {
       console.error("Error adding blog: ", e);
-      // We don't revert state to allow "offline/demo" usage, but we warn the user
       alert("Note: Database write failed (Permissions). Blog saved locally for this session.");
     }
   };
 
   const deleteBlogPost = async (id: string) => {
-    // Optimistic Update
-    const prevBlogs = [...blogs];
     setBlogs(prev => prev.filter(b => b.id !== id));
-
     try {
       if (!id.startsWith('temp-')) {
          await db.collection("blogs").doc(id).delete();
       }
     } catch (e) {
       console.error("Error deleting blog: ", e);
-      // Revert if critical, or just warn
       alert("Note: Database delete failed. Item removed locally.");
     }
   };
 
   const addBlogCategory = async (categoryData: Omit<BlogCategory, 'id'>) => {
-    // Optimistic Update
     const tempId = 'temp-cat-' + Date.now();
     const newCat = { ...categoryData, id: tempId };
     setBlogCategories(prev => [...prev, newCat]);
@@ -284,7 +275,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentUser,
       login, logout,
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus,
-      addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory
+      addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
+      globalLoading, setGlobalLoading
     }}>
       {children}
     </DataContext.Provider>

@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useData } from '../context/DataContext';
 import { SimpleCaptcha, CaptchaRef } from './SimpleCaptcha';
+import { checkRateLimit, sanitizeInput } from '../utils/security';
 
 interface ContactFormProps {
   defaultService?: string;
@@ -21,18 +22,37 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
   const { addLead } = useData();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [securityError, setSecurityError] = useState('');
   const captchaRef = useRef<CaptchaRef>(null);
 
   const onSubmit = (data: FormData) => {
+    setSecurityError('');
+
+    // 1. Check Captcha
     if (captchaRef.current && !captchaRef.current.validate()) {
       return;
     }
 
-    addLead(data);
+    // 2. Check Rate Limit (Client Side Security)
+    const rateLimit = checkRateLimit();
+    if (!rateLimit.allowed) {
+        setSecurityError(rateLimit.message || "Please wait before sending another request.");
+        return;
+    }
+
+    // 3. Sanitize Data
+    const cleanData = {
+        ...data,
+        name: sanitizeInput(data.name),
+        message: sanitizeInput(data.message),
+        company: sanitizeInput(data.company)
+    };
+
+    addLead(cleanData);
     setIsSubmitted(true);
     reset();
     captchaRef.current?.reset();
-    setTimeout(() => setIsSubmitted(false), 5000);
+    setTimeout(() => setIsSubmitted(false), 8000);
   };
 
   return (
@@ -120,6 +140,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
           </div>
           
           <SimpleCaptcha ref={captchaRef} />
+          {securityError && <div className="text-red-500 text-sm font-medium p-2 bg-red-50 rounded border border-red-200">{securityError}</div>}
 
           <button 
             type="submit"
