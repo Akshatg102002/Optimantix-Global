@@ -1,3 +1,4 @@
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -7,10 +8,7 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
     host: true,
-    hmr: {
-      clientPort: 443,
-      overlay: false
-    }
+    // Removed specific HMR clientPort to allow auto-detection which works better for mixed environments
   },
   resolve: {
     alias: {

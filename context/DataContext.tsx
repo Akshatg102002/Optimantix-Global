@@ -89,9 +89,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const localAuth = localStorage.getItem(STORAGE_KEYS.AUTH);
     if (localAuth === 'true') {
         setIsAuthenticated(true);
-        // Ensure we have a firebase session for writing
+        // Try to establish firebase connection silently if needed
         if (!auth.currentUser) {
-            auth.signInAnonymously().catch(e => console.error("Anon auth failed", e));
+            auth.signInAnonymously().catch(e => console.warn("Background auth failed", e));
         }
     }
 
@@ -101,14 +101,16 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // --- LOGIN LOGIC ---
   const login = async (pass: string) => {
     if (pass === 'admin999') {
+        // 1. Set Local State Immediately (Hardcoded access)
+        setIsAuthenticated(true);
+        localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+
+        // 2. Try to get Database Permissions (Anonymous Auth)
+        // We catch the error so it doesn't block the UI login if Auth is not enabled in Console
         try {
-            // Sign in anonymously to satisfy Firestore rules (request.auth != null)
             await auth.signInAnonymously();
-            setIsAuthenticated(true);
-            localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
         } catch (error) {
-            console.error("Login Error", error);
-            throw new Error("Database connection failed.");
+            console.warn("Login successful locally, but Firebase Auth failed. Database writes may fail if rules require auth.", error);
         }
     } else {
         throw new Error("Invalid Password");
@@ -116,7 +118,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = async () => {
-    await auth.signOut();
+    try {
+        await auth.signOut();
+    } catch (e) {
+        console.warn("Sign out error", e);
+    }
     setIsAuthenticated(false);
     localStorage.removeItem(STORAGE_KEYS.AUTH);
   };
@@ -132,7 +138,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setBlogs(fetchedBlogs);
     } catch (error) {
       console.error("Error fetching blogs (Check Firestore Rules):", error);
-      setBlogs([]); 
+      // Don't clear blogs on error to keep UI stable if previously loaded or fallback needed
     }
   };
 
@@ -146,7 +152,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setBlogCategories(fetchedCategories);
     } catch (error) {
       console.error("Error fetching categories:", error);
-      setBlogCategories([]);
     }
   }
 
@@ -203,6 +208,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await fetchBlogs();
     } catch (e) {
       console.error("Error adding blog: ", e);
+      alert("Failed to save to database. Check permissions.");
       throw e;
     }
   };
@@ -213,6 +219,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setBlogs(prev => prev.filter(b => b.id !== id));
     } catch (e) {
       console.error("Error deleting blog: ", e);
+      alert("Failed to delete. Check permissions.");
       throw e;
     }
   };
