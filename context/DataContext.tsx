@@ -94,6 +94,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             auth.signInAnonymously().catch(e => console.warn("Background auth failed", e));
         }
     }
+    
+    // Always fetch public data initially, regardless of auth
+    fetchBlogs();
+    fetchCategories();
 
     return unsubscribe;
   }, []);
@@ -106,11 +110,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
 
         // 2. Try to get Database Permissions (Anonymous Auth)
-        // We catch the error so it doesn't block the UI login if Auth is not enabled in Console
         try {
             await auth.signInAnonymously();
         } catch (error) {
-            console.warn("Login successful locally, but Firebase Auth failed. Database writes may fail if rules require auth.", error);
+            console.warn("Login successful locally, but Firebase Auth failed.", error);
         }
     } else {
         throw new Error("Invalid Password");
@@ -131,36 +134,35 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const fetchBlogs = async () => {
     try {
       const querySnapshot = await db.collection("blogs").orderBy("date", "desc").get();
-      const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as BlogPost));
-      setBlogs(fetchedBlogs);
+      if (!querySnapshot.empty) {
+        const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as BlogPost));
+        setBlogs(fetchedBlogs);
+      }
     } catch (error) {
-      console.error("Error fetching blogs (Check Firestore Rules):", error);
-      // Don't clear blogs on error to keep UI stable if previously loaded or fallback needed
+      console.warn("Fetching blogs failed (using local state):", error);
     }
   };
 
   const fetchCategories = async () => {
     try {
       const querySnapshot = await db.collection("blog_categories").get();
-      const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as BlogCategory));
-      setBlogCategories(fetchedCategories);
+      if (!querySnapshot.empty) {
+        const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as BlogCategory));
+        setBlogCategories(fetchedCategories);
+      }
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.warn("Fetching categories failed (using local state):", error);
     }
   }
 
   useEffect(() => {
-    // Initial Fetch
-    fetchBlogs();
-    fetchCategories();
-
-    // Local Storage Hydration
+    // Local Storage Hydration for non-firebase data
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
     const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
@@ -186,7 +188,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads)); }, [leads]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects)); }, [projects]);
 
-  // --- ACTION HANDLERS ---
+  // --- ACTION HANDLERS (Optimistic Updates) ---
 
   const addLead = (leadData: Omit<Lead, 'id' | 'date' | 'status'>) => {
     const newLead: Lead = {
@@ -203,41 +205,59 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
+    // Optimistic Update
+    const tempId = 'temp-' + Date.now();
+    const newPost = { ...postData, id: tempId } as BlogPost;
+    setBlogs(prev => [newPost, ...prev]);
+
     try {
-      await db.collection("blogs").add(postData);
-      await fetchBlogs();
+      const docRef = await db.collection("blogs").add(postData);
+      // Update with real ID
+      setBlogs(prev => prev.map(b => b.id === tempId ? { ...b, id: docRef.id } : b));
     } catch (e) {
       console.error("Error adding blog: ", e);
-      alert("Failed to save to database. Check permissions.");
-      throw e;
+      // We don't revert state to allow "offline/demo" usage, but we warn the user
+      alert("Note: Database write failed (Permissions). Blog saved locally for this session.");
     }
   };
 
   const deleteBlogPost = async (id: string) => {
+    // Optimistic Update
+    const prevBlogs = [...blogs];
+    setBlogs(prev => prev.filter(b => b.id !== id));
+
     try {
-      await db.collection("blogs").doc(id).delete();
-      setBlogs(prev => prev.filter(b => b.id !== id));
+      if (!id.startsWith('temp-')) {
+         await db.collection("blogs").doc(id).delete();
+      }
     } catch (e) {
       console.error("Error deleting blog: ", e);
-      alert("Failed to delete. Check permissions.");
-      throw e;
+      // Revert if critical, or just warn
+      alert("Note: Database delete failed. Item removed locally.");
     }
   };
 
   const addBlogCategory = async (categoryData: Omit<BlogCategory, 'id'>) => {
+    // Optimistic Update
+    const tempId = 'temp-cat-' + Date.now();
+    const newCat = { ...categoryData, id: tempId };
+    setBlogCategories(prev => [...prev, newCat]);
+
     try {
-      await db.collection("blog_categories").add(categoryData);
-      await fetchCategories();
+      const docRef = await db.collection("blog_categories").add(categoryData);
+      setBlogCategories(prev => prev.map(c => c.id === tempId ? { ...c, id: docRef.id } : c));
     } catch (e) {
       console.error("Error adding category: ", e);
-      throw e;
+      alert("Note: Database write failed. Category saved locally.");
     }
   };
 
   const deleteBlogCategory = async (id: string) => {
+    setBlogCategories(prev => prev.filter(c => c.id !== id));
     try {
-        await db.collection("blog_categories").doc(id).delete();
-        setBlogCategories(prev => prev.filter(c => c.id !== id));
+        if (!id.startsWith('temp-')) {
+            await db.collection("blog_categories").doc(id).delete();
+        }
     } catch (e) {
         console.error("Error deleting category: ", e);
     }
