@@ -33,6 +33,11 @@ export const ServiceTemplate: React.FC = () => {
     }
   };
 
+  const hasFeatures = service.features && service.features.length > 0;
+  const hasProcess = service.processSteps && service.processSteps.length > 0;
+  const hasBenefits = service.benefits && service.benefits.length > 0;
+  const hasDeliverables = service.deliverables && service.deliverables.length > 0;
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
@@ -68,65 +73,77 @@ export const ServiceTemplate: React.FC = () => {
                 {service.fullDescription}
               </p>
 
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Key Features</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {service.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <Check className="text-green-500 shrink-0" size={18} />
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">{feature}</span>
+              {hasFeatures && (
+                <>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Key Features</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {service.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <Check className="text-green-500 shrink-0" size={18} />
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">{feature}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </MotionDiv>
 
             {/* Process Steps */}
-            <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-2">
-                    <Settings className="text-primary" />
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Our Process</h2>
+            {hasProcess && (
+                <div className="space-y-6">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Settings className="text-primary" />
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Our Process</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {service.processSteps?.map((step, idx) => (
+                            <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+                                 <div className="absolute top-0 right-0 p-4 opacity-5 font-bold text-6xl text-primary">{idx + 1}</div>
+                                 <h4 className="font-bold text-lg mb-2 relative z-10">{step.title}</h4>
+                                 <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">{step.description}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {service.processSteps?.map((step, idx) => (
-                        <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-100 dark:border-gray-800 relative overflow-hidden">
-                             <div className="absolute top-0 right-0 p-4 opacity-5 font-bold text-6xl text-primary">{idx + 1}</div>
-                             <h4 className="font-bold text-lg mb-2 relative z-10">{step.title}</h4>
-                             <p className="text-sm text-gray-600 dark:text-gray-400 relative z-10">{step.description}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            )}
 
             {/* Benefits & Deliverables */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                 <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                     <div className="flex items-center gap-2 mb-4">
-                        <TrendingUp className="text-green-500" />
-                        <h3 className="text-lg font-bold">Benefits</h3>
-                     </div>
-                     <ul className="space-y-3">
-                        {service.benefits?.map((item, idx) => (
-                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                 <Check className="text-green-500 shrink-0 mt-0.5" size={16} />
-                                 {item}
-                             </li>
-                        ))}
-                     </ul>
-                 </div>
-                 <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                     <div className="flex items-center gap-2 mb-4">
-                        <Package className="text-secondary" />
-                        <h3 className="text-lg font-bold">Deliverables</h3>
-                     </div>
-                     <ul className="space-y-3">
-                        {service.deliverables?.map((item, idx) => (
-                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                 <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
-                                 {item}
-                             </li>
-                        ))}
-                     </ul>
-                 </div>
-            </div>
+            {(hasBenefits || hasDeliverables) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     {hasBenefits && (
+                         <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                             <div className="flex items-center gap-2 mb-4">
+                                <TrendingUp className="text-green-500" />
+                                <h3 className="text-lg font-bold">Benefits</h3>
+                             </div>
+                             <ul className="space-y-3">
+                                {service.benefits?.map((item, idx) => (
+                                     <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                         <Check className="text-green-500 shrink-0 mt-0.5" size={16} />
+                                         {item}
+                                     </li>
+                                ))}
+                             </ul>
+                         </div>
+                     )}
+                     {hasDeliverables && (
+                         <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                             <div className="flex items-center gap-2 mb-4">
+                                <Package className="text-secondary" />
+                                <h3 className="text-lg font-bold">Deliverables</h3>
+                             </div>
+                             <ul className="space-y-3">
+                                {service.deliverables?.map((item, idx) => (
+                                     <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                         <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
+                                         {item}
+                                     </li>
+                                ))}
+                             </ul>
+                         </div>
+                     )}
+                </div>
+            )}
 
             {/* Why Us Block */}
             <div className="bg-gradient-to-br from-primary to-orange-400 rounded-2xl p-8 text-white shadow-lg">

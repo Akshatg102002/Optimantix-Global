@@ -35,6 +35,11 @@ export const SubServiceTemplate: React.FC = () => {
     }
   };
 
+  const hasFeatures = subService.features && subService.features.length > 0;
+  const hasBenefits = subService.benefits && subService.benefits.length > 0;
+  const hasPhases = subService.phases && subService.phases.length > 0;
+  const hasStats = subService.stats && subService.stats.length > 0;
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
@@ -69,44 +74,50 @@ export const SubServiceTemplate: React.FC = () => {
                 {subService.fullDescription}
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                        <Star className="text-yellow-400" size={20} /> Key Features
-                    </h3>
-                    <ul className="space-y-3">
-                        {subService.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
-                            <Check className="text-green-500 shrink-0 mt-0.5" size={16} />
-                            {feature}
-                        </li>
-                        ))}
-                    </ul>
+              {(hasFeatures || hasBenefits) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {hasFeatures && (
+                          <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Star className="text-yellow-400" size={20} /> Key Features
+                            </h3>
+                            <ul className="space-y-3">
+                                {subService.features.map((feature, idx) => (
+                                <li key={idx} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                                    <Check className="text-green-500 shrink-0 mt-0.5" size={16} />
+                                    {feature}
+                                </li>
+                                ))}
+                            </ul>
+                          </div>
+                      )}
+                      {hasBenefits && (
+                          <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Zap className="text-primary" size={20} /> Benefits
+                            </h3>
+                            <ul className="space-y-3">
+                                {subService.benefits.map((benefit, idx) => (
+                                <li key={idx} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
+                                    {benefit}
+                                </li>
+                                ))}
+                            </ul>
+                          </div>
+                      )}
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                        <Zap className="text-primary" size={20} /> Benefits
-                    </h3>
-                    <ul className="space-y-3">
-                        {subService.benefits.map((benefit, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
-                            <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
-                            {benefit}
-                        </li>
-                        ))}
-                    </ul>
-                  </div>
-              </div>
+              )}
             </MotionDiv>
 
             {/* Growth Roadmap */}
-            {subService.phases && (
+            {hasPhases && (
                 <div>
                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-2">
                       <Map className="text-primary" /> Strategic Roadmap
                    </h2>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {subService.phases.map((phase, idx) => (
+                      {subService.phases!.map((phase, idx) => (
                           <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-100 dark:border-gray-800 relative hover:-translate-y-1 transition-transform">
                               <div className="absolute -top-3 -left-3 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
                                   {idx + 1}
@@ -120,7 +131,9 @@ export const SubServiceTemplate: React.FC = () => {
             )}
 
             {/* Visuals & Stats */}
-            <ServiceGrowthChart stats={subService.stats} serviceName={subService.title} />
+            {hasStats && (
+                <ServiceGrowthChart stats={subService.stats} serviceName={subService.title} />
+            )}
 
             {/* CTA Block */}
             <div className="bg-primary/5 border border-primary/20 rounded-2xl p-8 text-center">
