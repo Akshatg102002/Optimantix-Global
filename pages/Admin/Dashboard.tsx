@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, FileText, Settings, LogOut, CheckCircle, XCircle, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, Users, Globe, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { BlogPost, BlogCategory } from '../../types';
+import { BlogPost } from '../../types';
 
 // Tabs
 const TABS = {
   OVERVIEW: 'OVERVIEW',
-  LEADS: 'LEADS',
   SERVICES: 'SERVICES',
   BLOG: 'BLOG',
   PORTFOLIO: 'PORTFOLIO'
@@ -26,8 +25,8 @@ export const AdminDashboard: React.FC = () => {
   const [blogView, setBlogView] = useState(BLOG_VIEWS.LIST);
 
   const { 
-    leads, services, blogs, blogCategories, projects, 
-    updateLeadStatus, updateService, 
+    services, blogs, blogCategories, projects, 
+    updateService, 
     addBlogPost, deleteBlogPost, 
     addBlogCategory, deleteBlogCategory,
     addProject, deleteProject, 
@@ -64,11 +63,6 @@ export const AdminDashboard: React.FC = () => {
   const handleLogout = () => {
     logout();
     navigate('/admin/login');
-  };
-
-  // --- Lead Handlers ---
-  const handleStatusUpdate = (id: string, status: 'Contacted' | 'Closed') => {
-    updateLeadStatus(id, status);
   };
 
   // --- Service Handlers ---
@@ -128,7 +122,6 @@ export const AdminDashboard: React.FC = () => {
   if (!isAuthenticated) return null;
 
   const stats = [
-    { label: 'Total Leads', value: leads.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
     { label: 'Blog Posts', value: blogs.length, icon: FileText, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20' },
     { label: 'Projects', value: projects.length, icon: Briefcase, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-900/20' },
     { label: 'Services', value: services.length, icon: Settings, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-900/20' },
@@ -147,12 +140,6 @@ export const AdminDashboard: React.FC = () => {
         <nav className="flex-1 p-4 space-y-2">
           <button onClick={() => setActiveTab(TABS.OVERVIEW)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.OVERVIEW ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <PieChart size={20} /> Overview
-          </button>
-          <button onClick={() => setActiveTab(TABS.LEADS)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.LEADS ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
-            <MessageSquare size={20} /> Leads
-            {leads.filter(l => l.status === 'New').length > 0 && (
-                <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{leads.filter(l => l.status === 'New').length}</span>
-            )}
           </button>
           <button onClick={() => setActiveTab(TABS.SERVICES)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.SERVICES ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <Settings size={20} /> Services
@@ -187,7 +174,7 @@ export const AdminDashboard: React.FC = () => {
                 <h1 className="text-2xl font-bold mb-2">Dashboard Overview</h1>
                 <p className="text-gray-500 mb-8">Welcome back, Admin. Here's what's happening.</p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     {stats.map((stat, idx) => (
                         <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4">
                             <div className={`p-4 rounded-xl ${stat.bg} ${stat.color}`}>
@@ -200,111 +187,11 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                     ))}
                 </div>
-
-                <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
-                    <h2 className="text-lg font-bold mb-4">Recent Leads</h2>
-                    {leads.slice(0, 5).length > 0 ? (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="text-xs uppercase text-gray-400 border-b border-gray-100 dark:border-gray-800">
-                                    <tr>
-                                        <th className="pb-3 pl-2">Name</th>
-                                        <th className="pb-3">Service</th>
-                                        <th className="pb-3">Date</th>
-                                        <th className="pb-3">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
-                                    {leads.slice(0, 5).map(lead => (
-                                        <tr key={lead.id}>
-                                            <td className="py-3 pl-2 font-medium">{lead.name}</td>
-                                            <td className="py-3 text-sm text-gray-500">{lead.serviceInterest}</td>
-                                            <td className="py-3 text-sm text-gray-500">{new Date(lead.date).toLocaleDateString()}</td>
-                                            <td className="py-3">
-                                                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                                                    lead.status === 'New' ? 'bg-blue-100 text-blue-700' :
-                                                    lead.status === 'Contacted' ? 'bg-yellow-100 text-yellow-700' :
-                                                    'bg-green-100 text-green-700'
-                                                }`}>
-                                                    {lead.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <button onClick={() => setActiveTab(TABS.LEADS)} className="mt-4 text-sm text-primary hover:underline font-medium">View All Leads &rarr;</button>
-                        </div>
-                    ) : (
-                        <p className="text-gray-500 text-sm">No leads to display yet.</p>
-                    )}
+                
+                <div className="bg-white dark:bg-dark-card rounded-xl p-8 border border-gray-200 dark:border-gray-800 text-center">
+                    <p className="text-gray-500 dark:text-gray-400">Select a module from the sidebar to manage content.</p>
                 </div>
              </div>
-        )}
-
-        {/* LEADS TAB */}
-        {activeTab === TABS.LEADS && (
-          <div className="animate-fadeIn">
-            <h1 className="text-2xl font-bold mb-6">Lead Management</h1>
-            <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left min-w-[800px]">
-                  <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-gray-500 text-xs uppercase tracking-wider">
-                    <tr>
-                      <th className="p-4 font-semibold">Date</th>
-                      <th className="p-4 font-semibold">Name</th>
-                      <th className="p-4 font-semibold">Contact</th>
-                      <th className="p-4 font-semibold">Details</th>
-                      <th className="p-4 font-semibold">Status</th>
-                      <th className="p-4 font-semibold text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {leads.length === 0 ? (
-                      <tr><td colSpan={6} className="p-8 text-center text-gray-500">No leads found yet.</td></tr>
-                    ) : (
-                      leads.map(lead => (
-                        <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                          <td className="p-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">{new Date(lead.date).toLocaleDateString()}</td>
-                          <td className="p-4">
-                              <div className="font-bold text-gray-900 dark:text-gray-200">{lead.name}</div>
-                              {lead.company && <div className="text-xs text-gray-500">{lead.company}</div>}
-                          </td>
-                          <td className="p-4 text-sm text-gray-600 dark:text-gray-400">
-                            <div className="flex items-center gap-1"><span className="text-xs opacity-70">E:</span> {lead.email}</div>
-                            <div className="flex items-center gap-1"><span className="text-xs opacity-70">P:</span> {lead.phone}</div>
-                          </td>
-                          <td className="p-4 text-sm max-w-xs">
-                              <div className="font-medium text-primary mb-1">{lead.serviceInterest}</div>
-                              <div className="text-gray-500 text-xs line-clamp-2" title={lead.message}>{lead.message}</div>
-                          </td>
-                          <td className="p-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                              lead.status === 'New' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200' :
-                              lead.status === 'Contacted' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200' :
-                              'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200'
-                            }`}>
-                              {lead.status}
-                            </span>
-                          </td>
-                          <td className="p-4">
-                            <div className="flex justify-end gap-2">
-                                {lead.status !== 'Closed' && (
-                                    <>
-                                    <button onClick={() => handleStatusUpdate(lead.id, 'Contacted')} title="Mark Contacted" className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 p-2 rounded-lg transition"><CheckCircle size={16} /></button>
-                                    <button onClick={() => handleStatusUpdate(lead.id, 'Closed')} title="Mark Closed" className="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-lg transition"><CheckCircle size={16} /></button>
-                                    </>
-                                )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
         )}
 
         {/* SERVICES TAB */}

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { SimpleCaptcha, CaptchaRef } from './SimpleCaptcha';
@@ -82,17 +83,15 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
           <input 
             {...register('name', { required: 'Name is required' })}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-            placeholder="John Doe"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+            placeholder="Full Name"
           />
-          {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
+          {errors.name && <span className="text-xs text-red-500 ml-1">{errors.name.message}</span>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
           <input 
             {...register('email', { 
               required: 'Email is required',
@@ -101,38 +100,35 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
                 message: "Invalid email address"
               }
             })}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-            placeholder="john@example.com"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+            placeholder="Email Address"
           />
-          {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
+          {errors.email && <span className="text-xs text-red-500 ml-1">{errors.email.message}</span>}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
               <input 
               {...register('phone', { required: 'Phone is required' })}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="+91..."
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+              placeholder="Phone Number"
               />
-              {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
+              {errors.phone && <span className="text-xs text-red-500 ml-1">{errors.phone.message}</span>}
           </div>
           <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
               <input 
               {...register('company')}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="Business Name"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+              placeholder="Company Name (Optional)"
               />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Interest</label>
           <select 
             {...register('serviceInterest')}
             defaultValue={defaultService}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
           >
             <option value="Digital Marketing">Digital Marketing</option>
             <option value="Marketplace Management">Marketplace Management</option>
@@ -145,14 +141,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Details</label>
           <textarea 
             {...register('message', { required: 'Details are required' })}
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark dark:text-white rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
             placeholder="Tell us about your goals and requirements..."
           />
-          {errors.message && <span className="text-xs text-red-500">{errors.message.message}</span>}
+          {errors.message && <span className="text-xs text-red-500 ml-1">{errors.message.message}</span>}
         </div>
         
         <SimpleCaptcha ref={captchaRef} />
