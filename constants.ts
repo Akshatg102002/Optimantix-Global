@@ -177,14 +177,14 @@ export const INITIAL_SERVICES: Service[] = [
   {
     id: '3',
     slug: 'development',
-    title: 'Web & App Development',
-    shortDescription: 'High-performance websites and scalable mobile applications.',
-    fullDescription: 'We build digital products that are fast, secure, and scalable. Whether it is a corporate website, an e-commerce store, or a custom mobile app, our code is clean and our designs are user-centric.',
+    title: 'Web Development',
+    shortDescription: 'High-performance websites and scalable web applications.',
+    fullDescription: 'We build digital products that are fast, secure, and scalable. Whether it is a corporate website or an e-commerce store, our code is clean and our designs are user-centric.',
     iconName: 'Code',
-    features: ['Custom Web Development', 'iOS & Android Apps', 'E-commerce Solutions', 'API Integration', 'Responsive Design'],
+    features: ['Custom Web Development', 'E-commerce Solutions', 'API Integration', 'Responsive Design'],
     processSteps: [
       { title: 'Discovery & UX', description: 'Wireframing and prototyping to ensure the user journey is intuitive.' },
-      { title: 'Development', description: 'Agile development using modern stacks like React, Node.js, and Flutter.' },
+      { title: 'Development', description: 'Agile development using modern stacks like React and Node.js.' },
       { title: 'Testing (QA)', description: 'Rigorous testing for bugs, security vulnerabilities, and performance bottlenecks.' },
       { title: 'Deployment & Support', description: 'Seamless launch and ongoing maintenance to ensure 99.9% uptime.' }
     ],
@@ -227,25 +227,6 @@ export const INITIAL_SERVICES: Service[] = [
             stats: [
                 { label: 'Uptime', value: '99.99%', desc: 'Service Availability' },
                 { label: 'Response', value: '<50ms', desc: 'Average API latency' }
-            ]
-        },
-        {
-            id: 'dev-3',
-            slug: 'mobile',
-            title: 'Mobile App Development',
-            shortDescription: 'iOS and Android apps using Flutter & React Native.',
-            fullDescription: 'Reach customers on their phones with high-performance native and cross-platform mobile applications.',
-            features: ['Cross-platform Dev', 'Native iOS/Android', 'App Store Submission', 'UI/UX Design'],
-            benefits: ['Wider Reach', 'Push Notifications', 'Offline Capabilities'],
-            phases: [
-                { title: 'Wireframing', description: 'Mapping out user flows and screens.' },
-                { title: 'Hybrid Dev', description: 'Coding in Flutter/React Native for dual-platform support.' },
-                { title: 'Native Bridge', description: 'Integrating device features like Camera, GPS, and Biometrics.' },
-                { title: 'Store Launch', description: 'Managing submission to Apple App Store and Google Play.' }
-            ],
-            stats: [
-                { label: 'Retention', value: '40%', desc: 'Day-30 User Retention' },
-                { label: 'Crash Rate', value: '<0.1%', desc: 'Stability metric' }
             ]
         }
     ]

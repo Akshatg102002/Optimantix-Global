@@ -135,7 +135,7 @@ const FAQS = [
   },
   {
     question: "Do you offer custom development solutions?",
-    answer: "Yes, absolutely. We specialize in custom web and mobile app development tailored to your specific business requirements, rather than relying solely on templates."
+    answer: "Yes, absolutely. We specialize in custom web development tailored to your specific business requirements, rather than relying solely on templates."
   },
   {
     question: "What platforms do you support for Marketplace Management?",

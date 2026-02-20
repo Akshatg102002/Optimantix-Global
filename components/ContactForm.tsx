@@ -132,7 +132,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
           >
             <option value="Digital Marketing">Digital Marketing</option>
             <option value="Marketplace Management">Marketplace Management</option>
-            <option value="Web & App Development">Web & App Development</option>
+            <option value="Web Development">Web Development</option>
             <option value="Graphic Design">Graphic Design</option>
             <option value="Hosting Solutions">Hosting Solutions</option>
             <option value="Communications">Communications</option>
