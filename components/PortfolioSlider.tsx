@@ -1,6 +1,7 @@
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 const PORTFOLIO_IMAGES = [
   "https://socialfoundationindia.org/wp-content/uploads/2026/02/Vita.png",
@@ -13,6 +14,7 @@ const PORTFOLIO_IMAGES = [
 
 export const PortfolioSlider: React.FC = () => {
   const MotionDiv = motion.div as any;
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <section className="py-20 bg-white dark:bg-dark-card border-t border-gray-100 dark:border-gray-800">
@@ -33,17 +35,55 @@ export const PortfolioSlider: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 dark:border-gray-800 aspect-[4/3] bg-gray-50 dark:bg-[#111]"
+              className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 dark:border-gray-800 aspect-[4/3] bg-gray-50 dark:bg-[#111] cursor-pointer"
+              onClick={() => setSelectedImage(imageUrl)}
             >
               <img 
                 src={imageUrl} 
                 alt={`Portfolio Item ${index + 1}`} 
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700"
               />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                <span className="opacity-0 group-hover:opacity-100 bg-white/90 text-gray-900 px-4 py-2 rounded-full font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                  View Project
+                </span>
+              </div>
             </MotionDiv>
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-5xl w-full max-h-[90vh] bg-transparent rounded-lg overflow-hidden"
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+              <img
+                src={selectedImage}
+                alt="Portfolio Full View"
+                className="w-full h-full object-contain max-h-[85vh] rounded-lg"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
