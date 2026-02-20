@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ArrowRight, Sun, Moon, ChevronRight as ChevronRightIcon } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight, Sun, Moon, ChevronRight as ChevronRightIcon, Home, Briefcase, FileText, Info, Phone } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Icon } from './Icon';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -44,20 +44,21 @@ export const Header: React.FC = () => {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pb-4 bg-[#020514]">
         <nav className="max-w-7xl mx-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg relative">
-          <div className="flex justify-between items-center h-16 px-6">
+          <div className="flex justify-between items-center h-20 px-6">
             {/* Logo - Left */}
             <Link to="/" onClick={handleNavClick} className="flex items-center space-x-2 z-10">
               <img
                 src="https://optimantix.com/wp-content/uploads/2022/08/Untitled-200-x-100-px-1.png"
                 alt="Optimantix Logo"
-                className="h-12 w-auto"
+                className="h-20 w-auto"
               />
             </Link>
 
             {/* Desktop Nav - Centered */}
-            <div className="hidden lg:flex flex-1 justify-center items-center space-x-8">
-              <Link to="/" onClick={handleNavClick} className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
-                Home
+            <div className="hidden lg:flex flex-1 justify-center items-center space-x-2">
+              <Link to="/" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
+                <Home className="w-4 h-4" />
+                <span>Home</span>
               </Link>
 
               {/* Wrapper without relative so absolute children align to nav */}
@@ -67,8 +68,9 @@ export const Header: React.FC = () => {
                 onMouseLeave={() => setIsServicesOpen(false)}
               >
                 <button 
-                  className={`font-medium transition-colors flex items-center space-x-1 py-4 ${isServicesOpen ? 'text-primary' : 'text-gray-700 dark:text-gray-200 hover:text-primary'}`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200 ${isServicesOpen ? 'text-primary bg-gray-100 dark:bg-gray-800' : 'text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                 >
+                  <Briefcase className="w-4 h-4" />
                   <span>Solutions</span>
                   <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isServicesOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -183,14 +185,17 @@ export const Header: React.FC = () => {
                 </AnimatePresence>
               </div>
 
-              <Link to="/blog" onClick={handleNavClick} className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
-                Blog
+              <Link to="/blog" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
+                <FileText className="w-4 h-4" />
+                <span>Blog</span>
               </Link>
-              <Link to="/about" onClick={handleNavClick} className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
-                About
+              <Link to="/about" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
+                <Info className="w-4 h-4" />
+                <span>About</span>
               </Link>
-              <Link to="/contact" onClick={handleNavClick} className="font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
-                Contact
+              <Link to="/contact" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
+                <Phone className="w-4 h-4" />
+                <span>Contact</span>
               </Link>
             </div>
 
@@ -198,14 +203,14 @@ export const Header: React.FC = () => {
             <div className="hidden lg:flex items-center space-x-4">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
               <Link
                 to="/contact"
                 onClick={handleNavClick}
-                className="bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition-colors flex items-center space-x-2 shadow-lg shadow-primary/20"
+                className="bg-primary text-white px-6 py-2.5 rounded-full font-medium hover:bg-primary-dark transition-colors flex items-center space-x-2 shadow-lg shadow-primary/20 hover:scale-105 duration-200"
               >
                 <span>Get Started</span>
                 <ArrowRight className="h-4 w-4" />
@@ -234,16 +239,20 @@ export const Header: React.FC = () => {
         {isOpen && (
           <div className="lg:hidden mt-2 bg-white dark:bg-gray-900 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-800">
             <div className="px-4 py-4 space-y-3">
-              <Link to="/" onClick={handleNavClick} className="block text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
-                Home
+              <Link to="/" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                <Home className="w-5 h-5 text-primary" />
+                <span>Home</span>
               </Link>
 
               <div>
                 <button
                   onClick={() => setIsServicesOpen(!isServicesOpen)}
-                  className="flex items-center justify-between w-full text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
+                  className="flex items-center justify-between w-full text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
                 >
-                  <span>Solutions</span>
+                  <div className="flex items-center gap-3">
+                    <Briefcase className="w-5 h-5 text-primary" />
+                    <span>Solutions</span>
+                  </div>
                   <ChevronDown className={`h-5 w-5 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -288,16 +297,18 @@ export const Header: React.FC = () => {
                 )}
               </div>
 
-              <Link to="/blog" onClick={handleNavClick} className="block text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
-                Blog
+              <Link to="/blog" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                <FileText className="w-5 h-5 text-primary" />
+                <span>Blog</span>
               </Link>
-              <Link to="/about" onClick={handleNavClick} className="block text-lg font-medium text-gray-800 dark:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
-                About
+              <Link to="/about" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                <Info className="w-5 h-5 text-primary" />
+                <span>About</span>
               </Link>
               <Link
                 to="/contact"
                 onClick={handleNavClick}
-                className="block bg-primary text-white px-4 py-3 rounded-lg font-medium text-center hover:bg-primary-dark transition-colors"
+                className="block bg-primary text-white px-4 py-3 rounded-xl font-medium text-center hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 mt-4"
               >
                 Get Started Now
               </Link>
