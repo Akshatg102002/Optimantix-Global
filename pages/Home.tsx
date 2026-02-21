@@ -420,7 +420,7 @@ export const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogs.slice(0, 3).map(blog => (
-              <Link key={blog.id} to={`/blog/${blog.id}`} className="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 flex flex-col h-full">
+              <Link key={blog.id} to={`/blog/${blog.slug}`} className="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 flex flex-col h-full">
                 <div className="h-56 overflow-hidden relative">
                   <img 
                     src={blog.imageUrl} 

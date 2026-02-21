@@ -35,7 +35,7 @@ const App: React.FC = () => {
               <Route path="/services/:slug" element={<ServiceTemplate />} />
               <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />
               <Route path="/blog" element={<BlogList />} />
-              <Route path="/blog/:id" element={<BlogPost />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 

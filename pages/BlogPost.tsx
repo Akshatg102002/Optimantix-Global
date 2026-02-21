@@ -7,9 +7,9 @@ import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 
 export const BlogPost: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { blogs } = useData();
-  const blog = blogs.find(b => b.id === id);
+  const blog = blogs.find(b => b.slug === slug);
 
   if (!blog) {
     return <Navigate to="/blog" replace />;
