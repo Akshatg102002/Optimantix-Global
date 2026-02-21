@@ -48,9 +48,9 @@ export const Header: React.FC = () => {
             {/* Logo - Left */}
             <Link to="/" onClick={handleNavClick} className="flex items-center space-x-2 z-10">
               <img
-                src="https://optimantix.com/wp-content/uploads/2022/08/Untitled-200-x-100-px-1.png"
+                src="https://i.ibb.co/FkFfTxxC/opti.png"
                 alt="Optimantix Logo"
-                className="h-20 w-auto"
+                className="h-10 w-auto"
               />
             </Link>
 
@@ -237,7 +237,7 @@ export const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden mt-2 bg-white dark:bg-gray-900 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-800">
+          <div className="lg:hidden mt-2 bg-white dark:bg-gray-900 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-800 max-h-[calc(100vh-100px)] overflow-y-auto">
             <div className="px-4 py-4 space-y-3">
               <Link to="/" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
                 <Home className="w-5 h-5 text-primary" />
