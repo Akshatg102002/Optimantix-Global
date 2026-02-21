@@ -5,7 +5,6 @@ import { useData } from '../context/DataContext';
 import { Calendar, User } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
-import { BlogCSVImport } from '../components/BlogCSVImport';
 
 export const BlogList: React.FC = () => {
   const { blogs } = useData();
@@ -25,11 +24,6 @@ export const BlogList: React.FC = () => {
       />
 
       <div className="container mx-auto px-4 md:px-6 py-16">
-        {/* CSV Import Section */}
-        <div className="mb-12">
-            <BlogCSVImport />
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map(blog => (
             <Link key={blog.id} to={`/blog/${blog.id}`} className="group bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm hover:shadow-xl dark:hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800">

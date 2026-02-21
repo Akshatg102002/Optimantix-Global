@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 import { BlogPost } from '../../types';
+import { BlogCSVImport } from '../../components/BlogCSVImport';
 
 // Tabs
 const TABS = {
@@ -17,7 +18,8 @@ const TABS = {
 const BLOG_VIEWS = {
   LIST: 'LIST',
   EDIT: 'EDIT',
-  CATEGORIES: 'CATEGORIES'
+  CATEGORIES: 'CATEGORIES',
+  IMPORT: 'IMPORT'
 };
 
 export const AdminDashboard: React.FC = () => {
@@ -250,6 +252,7 @@ export const AdminDashboard: React.FC = () => {
                   {blogView === BLOG_VIEWS.LIST && "Manage Blogs"}
                   {blogView === BLOG_VIEWS.EDIT && "Create New Blog"}
                   {blogView === BLOG_VIEWS.CATEGORIES && "Blog Categories"}
+                  {blogView === BLOG_VIEWS.IMPORT && "Import Blogs from CSV"}
                </h1>
                <div className="flex gap-3">
                    {blogView !== BLOG_VIEWS.LIST && (
@@ -259,6 +262,9 @@ export const AdminDashboard: React.FC = () => {
                    )}
                    {blogView === BLOG_VIEWS.LIST && (
                        <>
+                        <button onClick={() => setBlogView(BLOG_VIEWS.IMPORT)} className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition flex items-center gap-2">
+                            <Upload size={16} /> Import CSV
+                        </button>
                         <button onClick={() => setBlogView(BLOG_VIEWS.CATEGORIES)} className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition">
                             Categories
                         </button>
@@ -269,6 +275,13 @@ export const AdminDashboard: React.FC = () => {
                    )}
                </div>
             </div>
+
+            {/* BLOG VIEW: IMPORT */}
+            {blogView === BLOG_VIEWS.IMPORT && (
+                <div className="bg-white dark:bg-dark-card p-8 rounded-xl border border-gray-200 dark:border-gray-800">
+                    <BlogCSVImport />
+                </div>
+            )}
 
             {/* BLOG VIEW: LIST */}
             {blogView === BLOG_VIEWS.LIST && (
