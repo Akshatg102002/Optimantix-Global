@@ -33,18 +33,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService = 'Gene
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
         },
-        body: JSON.stringify({
-          access_key: "96c96747-780b-479e-b0d6-4aba911bc9a4",
-          subject: `New Lead: ${data.serviceInterest}`,
-          from_name: "Optimantix Global Website",
-          ...data,
-        }),
+        body: JSON.stringify(data),
       });
 
       const result = await response.json();
