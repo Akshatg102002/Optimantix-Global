@@ -23,7 +23,7 @@ async function startServer() {
 
       const { data, error } = await resend.emails.send({
         from: 'Optimantix Global <onboarding@resend.dev>',
-        to: ['optimantixglobal@gmail.com'], // Defaulting to a sensible email or the user's if known. I'll use a placeholder or the user's email if provided.
+        to: ['akshatg193@gmail.com'], // Updated to owner's email for testing as per Resend restrictions
         subject: `New Lead: ${serviceInterest}`,
         html: `
           <div style="font-family: sans-serif; padding: 20px; color: #333;">
