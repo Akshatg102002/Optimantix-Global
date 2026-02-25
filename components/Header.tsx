@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ArrowRight, Sun, Moon, ChevronRight as ChevronRightIcon, Home, Briefcase, FileText, Info, Phone, Globe } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight, Sun, Moon, ChevronRight as ChevronRightIcon, Home, Briefcase, FileText, Info, Phone, Globe, Server } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Icon } from './Icon';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -189,6 +189,10 @@ export const Header: React.FC = () => {
                 <Globe className="w-4 h-4" />
                 <span>Workspace</span>
               </Link>
+              <Link to="/hosting" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
+                <Server className="w-4 h-4" />
+                <span>Hosting</span>
+              </Link>
               <Link to="/blog" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
                 <FileText className="w-4 h-4" />
                 <span>Blog</span>
@@ -304,6 +308,11 @@ export const Header: React.FC = () => {
               <Link to="/google-workspace" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
                 <Globe className="w-5 h-5 text-primary" />
                 <span>Google Workspace</span>
+              </Link>
+
+              <Link to="/hosting" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                <Server className="w-5 h-5 text-primary" />
+                <span>Hosting Solutions</span>
               </Link>
 
               <Link to="/blog" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">

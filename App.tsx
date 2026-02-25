@@ -17,6 +17,7 @@ const SubServiceTemplate = lazy(() => import('./pages/SubServiceTemplate').then(
 const BlogList = lazy(() => import('./pages/BlogList').then(module => ({ default: module.BlogList })));
 const BlogPost = lazy(() => import('./pages/BlogPost').then(module => ({ default: module.BlogPost })));
 const GoogleWorkspace = lazy(() => import('./pages/GoogleWorkspace').then(module => ({ default: module.GoogleWorkspace })));
+const HostingSolutions = lazy(() => import('./pages/HostingSolutions').then(module => ({ default: module.HostingSolutions })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
 const AdminLogin = lazy(() => import('./pages/Admin/Login').then(module => ({ default: module.AdminLogin })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
@@ -38,6 +39,7 @@ const App: React.FC = () => {
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/google-workspace" element={<GoogleWorkspace />} />
+              <Route path="/hosting" element={<HostingSolutions />} />
               
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 
