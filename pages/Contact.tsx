@@ -56,9 +56,12 @@ export const Contact: React.FC = () => {
                         <MapPin className="text-primary mt-1 shrink-0" />
                         <span>C-13, Sector 58, Noida, 201301, India</span>
                     </li>
-                    <li className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
-                        <Phone className="text-primary shrink-0" />
-                        <span>+91 9910343016</span>
+                    <li className="flex items-start gap-4 text-gray-600 dark:text-gray-400">
+                        <Phone className="text-primary shrink-0 mt-1" />
+                        <div className="flex flex-col">
+                          <span>+91 9910343016 (India)</span>
+                          <span>+1 802 995 2844 (USA)</span>
+                        </div>
                     </li>
                     <li className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
                         <Mail className="text-primary shrink-0" />

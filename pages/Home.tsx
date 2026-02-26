@@ -604,9 +604,14 @@ export const Home: React.FC = () => {
                   >
                     Request Free Quote <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
-                  <a href="tel:+919910343016" className="border-2 border-white hover:bg-white/10 text-white font-bold py-4 px-8 rounded-full transition inline-block text-lg hover:scale-105 duration-200">
-                    Call Us Now
-                  </a>
+                  <div className="flex flex-col gap-2">
+                    <a href="tel:+919910343016" className="border-2 border-white hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full transition inline-block text-base hover:scale-105 duration-200 text-center">
+                      Call IN: +91 9910343016
+                    </a>
+                    <a href="tel:+18029952844" className="border-2 border-white hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full transition inline-block text-base hover:scale-105 duration-200 text-center">
+                      Call US: +1 802 995 2844
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

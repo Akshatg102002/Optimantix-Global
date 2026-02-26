@@ -21,7 +21,10 @@ export const SimpleCaptcha = forwardRef<CaptchaRef>((_, ref) => {
   };
 
   useEffect(() => {
-    generateProblem();
+    const timer = setTimeout(() => {
+      generateProblem();
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useImperativeHandle(ref, () => ({

@@ -17,14 +17,20 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     // Force close on any location change
-    setIsOpen(false);
-    setIsServicesOpen(false);
+    const timer = setTimeout(() => {
+      setIsOpen(false);
+      setIsServicesOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [location]);
 
   // Set initial active service for Mega Menu
   useEffect(() => {
     if (services.length > 0 && !activeServiceId) {
-      setActiveServiceId(services[0].id);
+      const timer = setTimeout(() => {
+        setActiveServiceId(services[0].id);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [services, activeServiceId]);
 

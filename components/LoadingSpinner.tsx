@@ -23,13 +23,20 @@ export const LoadingSpinner: React.FC<Props> = ({ isGlobal = false }) => {
           <div className="relative flex flex-col items-center">
             <div className="relative">
                 <MotionDiv
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                     <div className="w-8 h-8 bg-white dark:bg-dark rounded-full"></div>
-                </div>
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  opacity: [0.8, 1, 0.8]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="w-24 h-24 flex items-center justify-center"
+                >
+                  <img 
+                    src="https://i.ibb.co/p65V8CGV/OG.png" 
+                    alt="Optimantix Logo" 
+                    className="w-full h-full object-contain"
+                    referrerPolicy="no-referrer"
+                  />
+                </MotionDiv>
             </div>
             
             <MotionP

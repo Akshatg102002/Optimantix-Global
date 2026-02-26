@@ -30,21 +30,6 @@ export const Chatbot: React.FC = () => {
   const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Initial Welcome
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      addBotMessage("Hi there! 👋 I'm the Optimantix Assistant. How can I help you grow your business today?", [
-        { label: "Explore Services", value: "services", action: 'reply' },
-        { label: "Request a Quote", value: "quote", action: 'navigate', payload: '/contact' },
-        { label: "Contact Support", value: "support", action: 'reply' }
-      ]);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
-
   const addBotMessage = (text: string, options?: ChatOption[]) => {
     setIsTyping(true);
     setTimeout(() => {
@@ -65,6 +50,24 @@ export const Chatbot: React.FC = () => {
       sender: 'user'
     }]);
   };
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
+
+  // Initial Welcome
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      const timer = setTimeout(() => {
+        addBotMessage("Hi there! 👋 I'm the Optimantix Assistant. How can I help you grow your business today?", [
+          { label: "Explore Services", value: "services", action: 'reply' },
+          { label: "Request a Quote", value: "quote", action: 'navigate', payload: '/contact' },
+          { label: "Contact Support", value: "support", action: 'reply' }
+        ]);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, messages.length]);
 
   const handleOptionClick = (option: ChatOption) => {
     addUserMessage(option.label);
@@ -116,7 +119,8 @@ export const Chatbot: React.FC = () => {
           }
       } else if (key === 'support') {
           addBotMessage("You can reach our support team directly.", [
-              { label: "Call +91 9910343016", value: "call", action: 'link', payload: 'tel:+919910343016' },
+              { label: "Call +91 9910343016", value: "call_in", action: 'link', payload: 'tel:+919910343016' },
+              { label: "Call +1 802 995 2844", value: "call_us", action: 'link', payload: 'tel:+18029952844' },
               { label: "Email Info", value: "email", action: 'link', payload: 'mailto:info@optimantix.com' },
               { label: "Back to Menu", value: "menu", action: 'reply' }
           ]);

@@ -53,6 +53,37 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [globalLoading, setGlobalLoading] = useState(false);
   
+  // --- FIREBASE FETCHING ---
+  const fetchBlogs = async () => {
+    try {
+      const querySnapshot = await db.collection("blogs").orderBy("date", "desc").get();
+      if (!querySnapshot.empty) {
+        const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as BlogPost));
+        setBlogs(fetchedBlogs);
+      }
+    } catch (error) {
+      console.warn("Fetching blogs failed (using local state):", error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const querySnapshot = await db.collection("blog_categories").get();
+      if (!querySnapshot.empty) {
+        const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as BlogCategory));
+        setBlogCategories(fetchedCategories);
+      }
+    } catch (error) {
+      console.warn("Fetching categories failed (using local state):", error);
+    }
+  }
+
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
@@ -92,11 +123,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Check Local Storage for Admin Session
     const localAuth = localStorage.getItem(STORAGE_KEYS.AUTH);
     if (localAuth === 'true') {
-        setIsAuthenticated(true);
-        // Try to establish firebase connection silently if needed
-        if (!auth.currentUser) {
-            auth.signInAnonymously().catch(e => console.warn("Background auth failed", e));
-        }
+        const timer = setTimeout(() => {
+          setIsAuthenticated(true);
+          // Try to establish firebase connection silently if needed
+          if (!auth.currentUser) {
+              auth.signInAnonymously().catch(e => console.warn("Background auth failed", e));
+          }
+        }, 0);
+        return () => clearTimeout(timer);
     }
     
     // Always fetch public data initially, regardless of auth
@@ -131,37 +165,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem(STORAGE_KEYS.AUTH);
   };
 
-  // --- FIREBASE FETCHING ---
-  const fetchBlogs = async () => {
-    try {
-      const querySnapshot = await db.collection("blogs").orderBy("date", "desc").get();
-      if (!querySnapshot.empty) {
-        const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as BlogPost));
-        setBlogs(fetchedBlogs);
-      }
-    } catch (error) {
-      console.warn("Fetching blogs failed (using local state):", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const querySnapshot = await db.collection("blog_categories").get();
-      if (!querySnapshot.empty) {
-        const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as BlogCategory));
-        setBlogCategories(fetchedCategories);
-      }
-    } catch (error) {
-      console.warn("Fetching categories failed (using local state):", error);
-    }
-  }
-
   useEffect(() => {
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
@@ -170,7 +173,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (storedServices) {
         try {
             const parsed = JSON.parse(storedServices);
-            if (Array.isArray(parsed) && parsed.length > 0) setServices(parsed);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              const timer = setTimeout(() => setServices(parsed), 0);
+              return () => clearTimeout(timer);
+            }
         } catch (e) { console.error("Failed to parse services", e); }
     }
     

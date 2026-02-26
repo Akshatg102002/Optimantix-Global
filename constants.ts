@@ -306,17 +306,6 @@ export const INITIAL_SERVICES: Service[] = [
     deliverables: ['cPanel/Admin Access', 'SSL Certificate', 'Daily Backup Schedule', 'Quarterly Health Check'],
     subServices: [
         {
-            id: 'host-1',
-            slug: 'shared-hosting',
-            title: 'Shared Hosting',
-            shortDescription: 'Affordable and reliable hosting for small businesses.',
-            fullDescription: 'Perfect for startups and small business websites. Enjoy high performance at an affordable price point with our optimized shared hosting environments.',
-            features: ['Free SSL', 'One-Click Install', 'Email Accounts', 'cPanel Control'],
-            benefits: ['Cost Effective', 'Easy Management', '24/7 Support'],
-            phases: [],
-            stats: []
-        },
-        {
             id: 'host-2',
             slug: 'vps',
             title: 'VPS Hosting',
