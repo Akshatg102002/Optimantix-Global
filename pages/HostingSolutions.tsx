@@ -1,30 +1,38 @@
 
 import React from 'react';
-import { Check, Shield, Zap, Users, Globe, Server, Cloud, Database, Lock, ArrowRight, HelpCircle, HardDrive, Cpu, Activity, RefreshCw } from 'lucide-react';
+import { Check, Shield, Users, Globe, Database, Lock, HelpCircle, HardDrive, Cpu, Activity, RefreshCw, Star, Quote } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 
+interface HostingPlan {
+  name: string;
+  price: string;
+  bestFor: string;
+  features: string[];
+  popular?: boolean;
+}
+
 export const HostingSolutions: React.FC = () => {
-  const benefits = [
-    {
-      title: "99.9% Uptime SLA",
-      description: "Your website stays live. We back it with a service level agreement so you're never left guessing about reliability.",
-      icon: <Activity className="w-6 h-6" />
-    },
+  const mainBenefits = [
     {
       title: "INR Billing & GST Invoices",
-      description: "All plans are billed in Indian Rupees with proper GST-compliant invoices — making accounting effortless.",
+      description: "All plans are billed in Indian Rupees with proper GST-compliant invoices — making accounting and ITC claims effortless.",
       icon: <Database className="w-6 h-6" />
     },
     {
-      title: "Free SSL Certificate",
-      description: "All hosting plans include a free SSL certificate (HTTPS), keeping your website secure and trusted.",
+      title: "Free SSL on All Plans",
+      description: "Keep your website secure and trusted by search engines and visitors alike with free SSL certificates (HTTPS).",
       icon: <Lock className="w-6 h-6" />
     },
     {
-      title: "One-Click App Installer",
-      description: "Install WordPress, Joomla, Magento, and 100+ other applications in a single click — no technical knowledge required.",
-      icon: <Zap className="w-6 h-6" />
+      title: "24/7 India-Based Support",
+      description: "Reach a real person who understands your needs. Our support team is available round the clock via chat, email, and phone.",
+      icon: <Users className="w-6 h-6" />
+    },
+    {
+      title: "DDoS Protection",
+      description: "Your server is shielded against volumetric and application-layer attacks at the network level.",
+      icon: <Shield className="w-6 h-6" />
     },
     {
       title: "Daily Backups",
@@ -32,72 +40,176 @@ export const HostingSolutions: React.FC = () => {
       icon: <RefreshCw className="w-6 h-6" />
     },
     {
-      title: "24/7 India-Based Support",
-      description: "Reach a real person who understands your needs. Our support team is available round the clock.",
-      icon: <Users className="w-6 h-6" />
-    },
-    {
       title: "Free Website Migration",
-      description: "Already hosted elsewhere? We migrate your website to Optimantix for free — with zero downtime.",
+      description: "Already hosted elsewhere? We migrate your website to Optimantix for free — with zero downtime and full data integrity.",
       icon: <Globe className="w-6 h-6" />
-    },
-    {
-      title: "Scalable Infrastructure",
-      description: "Start small and grow. Upgrade your plan anytime as your traffic and business demands increase.",
-      icon: <Server className="w-6 h-6" />
     }
   ];
 
-  const wpPlans = [
-    { name: "WP STARTER", price: "₹99", bestFor: "Bloggers and personal websites", features: ["1 WordPress Website", "10 GB SSD Storage", "Free SSL Certificate", "Free Domain for 1st Year", "Unlimited Bandwidth", "One-Click WordPress Install", "Automatic WordPress Updates", "Daily Backups", "24/7 Support"] },
-    { name: "WP BUSINESS", price: "₹249", popular: true, bestFor: "Small business websites", features: ["Up to 3 WordPress Websites", "30 GB SSD Storage", "Free SSL Certificate", "Free Domain for 1st Year", "Unlimited Bandwidth", "LiteSpeed Cache", "One-Click Staging", "Automatic Updates", "Daily Backups", "Free Malware Scan", "Priority 24/7 Support"] },
-    { name: "WP PRO", price: "₹499", bestFor: "High-traffic sites and agencies", features: ["Unlimited WordPress Websites", "100 GB SSD Storage", "Free SSL Certificate", "Free Domain for 1st Year", "Unlimited Bandwidth", "LiteSpeed Cache + CDN", "Advanced Staging", "Automatic Updates", "Daily Backups", "Advanced Malware Protection", "Dedicated WP Support"] }
-  ];
-
-  const sharedPlans = [
-    { name: "SHARED BASIC", price: "₹59", bestFor: "Personal websites and blogs", features: ["1 Website", "5 GB SSD Storage", "Free SSL Certificate", "5 Email Accounts", "Unlimited Bandwidth", "cPanel Control Panel", "One-Click App Installer", "99.9% Uptime Guarantee", "24/7 Support"] },
-    { name: "SHARED STANDARD", price: "₹129", popular: true, bestFor: "Small business websites", features: ["Up to 5 Websites", "20 GB SSD Storage", "Free SSL Certificate", "Unlimited Email Accounts", "Unlimited Bandwidth", "cPanel Control Panel", "One-Click App Installer", "Free Domain for 1st Year", "Daily Backups", "99.9% Uptime Guarantee", "24/7 Support"] },
-    { name: "SHARED PREMIUM", price: "₹229", bestFor: "Growing businesses", features: ["Unlimited Websites", "50 GB SSD Storage", "Free SSL Certificate", "Unlimited Email Accounts", "Unlimited Bandwidth", "cPanel Control Panel", "One-Click App Installer", "Free Domain for 1st Year", "Daily Backups", "Free Malware Protection", "Priority 24/7 Support"] }
+  const vpsPlans = [
+    {
+      name: "VPS BASIC",
+      price: "₹799",
+      bestFor: "Developers & Personal Projects",
+      features: [
+        "2 vCPU Cores",
+        "2 GB RAM",
+        "40 GB NVMe SSD",
+        "2 TB Bandwidth",
+        "Full Root Access",
+        "Choice of OS",
+        "Free SSL Certificate",
+        "1 Dedicated IP",
+        "Weekly Backups",
+        "99.9% Uptime SLA",
+        "24/7 Support"
+      ]
+    },
+    {
+      name: "VPS STANDARD",
+      price: "₹1,499",
+      popular: true,
+      bestFor: "Growing Applications & Small Businesses",
+      features: [
+        "4 vCPU Cores",
+        "4 GB RAM",
+        "80 GB NVMe SSD",
+        "4 TB Bandwidth",
+        "Full Root Access",
+        "Choice of OS",
+        "Free SSL Certificate",
+        "2 Dedicated IPs",
+        "Daily Backups",
+        "DDoS Protection",
+        "99.9% Uptime SLA",
+        "24/7 Priority Support"
+      ]
+    },
+    {
+      name: "VPS PRO",
+      price: "₹2,999",
+      bestFor: "High-Traffic Apps & Agencies",
+      features: [
+        "8 vCPU Cores",
+        "8 GB RAM",
+        "160 GB NVMe SSD",
+        "8 TB Bandwidth",
+        "Full Root Access",
+        "Choice of OS",
+        "Free SSL Certificate",
+        "4 Dedicated IPs",
+        "Daily Backups + Snapshots",
+        "Advanced DDoS + Firewall",
+        "cPanel Available",
+        "99.9% Uptime SLA",
+        "Dedicated Priority Support"
+      ]
+    }
   ];
 
   const cloudPlans = [
-    { name: "CLOUD STARTER", price: "₹599", bestFor: "Growing websites", features: ["2 vCPU Cores", "2 GB RAM", "50 GB SSD Storage", "Free SSL Certificate", "Unlimited Bandwidth", "Free CDN Integration", "Daily Automated Backups", "Root Access Available", "99.99% Uptime SLA", "24/7 Priority Support"] },
-    { name: "CLOUD BUSINESS", price: "₹1,199", popular: true, bestFor: "E-commerce websites", features: ["4 vCPU Cores", "4 GB RAM", "100 GB SSD Storage", "Free SSL Certificate", "Unlimited Bandwidth", "Free CDN + DDoS Protection", "Daily + On-Demand Backups", "Root Access Available", "Auto-Scaling", "99.99% Uptime SLA", "24/7 Priority Support"] },
-    { name: "CLOUD PRO", price: "₹2,499", bestFor: "High-traffic applications", features: ["8 vCPU Cores", "8 GB RAM", "200 GB SSD Storage", "Free SSL Certificate", "Unlimited Bandwidth", "Advanced CDN + DDoS + WAF", "Daily + Hourly Backups", "Full Root Access", "Auto-Scaling + Load Balancing", "Dedicated IP Address", "99.99% Uptime SLA", "Dedicated Priority Support"] }
-  ];
-
-  const vpsPlans = [
-    { name: "VPS BASIC", price: "₹799", bestFor: "Developers", features: ["2 vCPU Cores", "2 GB RAM", "40 GB NVMe SSD", "2 TB Bandwidth", "Full Root Access", "Choice of OS", "Free SSL Certificate", "1 Dedicated IP", "Weekly Backups", "99.9% Uptime SLA", "24/7 Support"] },
-    { name: "VPS STANDARD", price: "₹1,499", popular: true, bestFor: "Growing applications", features: ["4 vCPU Cores", "4 GB RAM", "80 GB NVMe SSD", "4 TB Bandwidth", "Full Root Access", "Choice of OS", "Free SSL Certificate", "2 Dedicated IPs", "Daily Backups", "DDoS Protection", "99.9% Uptime SLA", "24/7 Priority Support"] },
-    { name: "VPS PRO", price: "₹2,999", bestFor: "High-traffic apps", features: ["8 vCPU Cores", "8 GB RAM", "160 GB NVMe SSD", "8 TB Bandwidth", "Full Root Access", "Choice of OS", "Free SSL Certificate", "4 Dedicated IPs", "Daily Backups + Snapshots", "Advanced DDoS + Firewall", "cPanel Available", "99.9% Uptime SLA", "Dedicated Priority Support"] }
+    {
+      name: "CLOUD STARTER",
+      price: "₹599",
+      bestFor: "Growing Websites",
+      features: [
+        "2 vCPU Cores",
+        "2 GB RAM",
+        "50 GB SSD Storage",
+        "Unlimited Bandwidth",
+        "Free SSL Certificate",
+        "Free CDN Integration",
+        "Daily Automated Backups",
+        "Root Access Available",
+        "99.99% Uptime SLA",
+        "24/7 Priority Support"
+      ]
+    },
+    {
+      name: "CLOUD BUSINESS",
+      price: "₹1,199",
+      popular: true,
+      bestFor: "eCommerce & Business Applications",
+      features: [
+        "4 vCPU Cores",
+        "4 GB RAM",
+        "100 GB SSD Storage",
+        "Unlimited Bandwidth",
+        "Free SSL Certificate",
+        "Free CDN + DDoS Protection",
+        "Daily + On-Demand Backups",
+        "Root Access Available",
+        "Auto-Scaling",
+        "99.99% Uptime SLA",
+        "24/7 Priority Support"
+      ]
+    },
+    {
+      name: "CLOUD PRO",
+      price: "₹2,499",
+      bestFor: "High-Traffic Applications",
+      features: [
+        "8 vCPU Cores",
+        "8 GB RAM",
+        "200 GB SSD Storage",
+        "Unlimited Bandwidth",
+        "Free SSL Certificate",
+        "Advanced CDN + DDoS + WAF",
+        "Daily + Hourly Backups",
+        "Full Root Access",
+        "Auto-Scaling + Load Balancing",
+        "Dedicated IP Address",
+        "99.99% Uptime SLA",
+        "Dedicated Priority Support"
+      ]
+    }
   ];
 
   const comparison = [
-    { feature: "Starting Price", shared: "₹59/mo", wp: "₹99/mo", cloud: "₹599/mo", vps: "₹799/mo" },
-    { feature: "Best For", shared: "Beginners", wp: "WordPress sites", cloud: "Scalable apps", vps: "Developers" },
-    { feature: "SSD Storage", shared: "5–50 GB", wp: "10–100 GB", cloud: "50–200 GB", vps: "40–160 GB" },
-    { feature: "Bandwidth", shared: "Unlimited", wp: "Unlimited", cloud: "Unlimited", vps: "2–8 TB" },
-    { feature: "Free SSL", shared: "Yes", wp: "Yes", cloud: "Yes", vps: "Yes" },
-    { feature: "Free Domain", shared: "Select plans", wp: "Yes", cloud: "No", vps: "No" },
-    { feature: "Root Access", shared: "No", wp: "No", cloud: "Yes", vps: "Yes" },
-    { feature: "Daily Backups", shared: "Select plans", wp: "Yes", cloud: "Yes", vps: "Yes" },
-    { feature: "Uptime SLA", shared: "99.9%", wp: "99.9%", cloud: "99.99%", vps: "99.9%" },
+    { feature: "Best For", vps: "Developers & power users", cloud: "Scalable apps & eCommerce" },
+    { feature: "Starting Price", vps: "₹799/month", cloud: "₹599/month" },
+    { feature: "Resources", vps: "Fixed & Dedicated", cloud: "Dynamic & Auto-Scalable" },
+    { feature: "Uptime SLA", vps: "99.9%", cloud: "99.99%" },
+    { feature: "Root Access", vps: "Yes", cloud: "Yes" },
+    { feature: "Daily Backups", vps: "Select plans", cloud: "Yes" },
+    { feature: "DDoS Protection", vps: "Standard+ plans", cloud: "Yes" },
+    { feature: "Free SSL", vps: "Yes", cloud: "Yes" },
+  ];
+
+  const testimonials = [
+    {
+      quote: "We switched our eCommerce store to Optimantix Cloud Business during peak sale season. The auto-scaling handled a 10x traffic spike without a single second of downtime. Incredibly impressed.",
+      author: "Rohit K.",
+      role: "eCommerce Business Owner"
+    },
+    {
+      quote: "The 99.99% uptime SLA is real — we've been on Optimantix Cloud Hosting for 8 months and haven't experienced a single outage. Our clients have noticed the difference.",
+      author: "Priya D.",
+      role: "Digital Agency Owner"
+    },
+    {
+      quote: "INR billing and proper GST invoices were the main reason we switched. No more international payment headaches on the company credit card. Optimantix just makes it easy.",
+      author: "Arjun S.",
+      role: "Startup Founder"
+    }
   ];
 
   const faqs = [
-    { q: "What is the difference between Shared, WordPress, Cloud, and VPS Hosting?", a: "Shared Hosting is the most affordable option where multiple websites share the same server. WordPress Hosting is optimized specifically for WordPress sites. Cloud Hosting uses multiple servers for better performance and scalability. VPS Hosting provides dedicated virtual resources and full root access for custom applications." },
-    { q: "Which hosting plan should I choose for my WordPress website?", a: "If you are running a WordPress site, WordPress Hosting is the recommended choice as it is pre-configured for WordPress performance and security." },
-    { q: "Do all plans include a free SSL certificate?", a: "Yes. Every hosting plan from Optimantix includes a free SSL certificate, which enables HTTPS on your website." },
-    { q: "Can I migrate my existing website to Optimantix for free?", a: "Yes. We provide free website migration for all new customers. Our team handles the full transfer of your website files, databases, and emails." },
+    { q: "What is VPS Hosting?", a: "A Virtual Private Server (VPS) gives you dedicated CPU, RAM, and storage within a shared physical machine. Unlike shared hosting, your allocated resources are guaranteed — your performance is consistent and unaffected by other users on the same server." },
+    { q: "What is Cloud Hosting?", a: "Cloud hosting uses a network of distributed virtual and physical servers to host websites and applications. Unlike traditional hosting on a single server, cloud hosting distributes your workload across multiple nodes — delivering better reliability, scalability, and uptime." },
+    { q: "How is Cloud Hosting different from VPS Hosting?", a: "VPS hosting gives you fixed, dedicated resources on a single virtual server — ideal for stable, predictable workloads. Cloud hosting provides dynamic, auto-scalable resources distributed across multiple servers, with a higher 99.99% uptime SLA — better suited for applications with unpredictable traffic." },
+    { q: "Which operating systems can I install?", a: "You can choose from popular Linux distributions including Ubuntu, CentOS, and Debian, or opt for Windows Server. You have full root access to configure the OS exactly as your project requires." },
+    { q: "Do all plans include a free SSL certificate?", a: "Yes. Every hosting plan from Optimantix includes a free SSL certificate, which enables HTTPS on your website. This is essential for security, SEO rankings, and visitor trust." },
+    { q: "Can I migrate my existing website to Optimantix for free?", a: "Yes. We provide free website migration for all new customers. Our team handles the full transfer of your website files, databases, and emails — with minimal to zero downtime." },
     { q: "Is GST charged on hosting plans?", a: "Yes. All prices listed are exclusive of 18% GST. We issue GST-compliant invoices for ITC claims." },
-    { q: "Can I upgrade my hosting plan later?", a: "Absolutely. You can upgrade your plan at any time as your website grows. Upgrades are applied instantly." },
+    { q: "Can I upgrade my hosting plan later?", a: "Absolutely. You can upgrade your plan at any time as your website grows. Upgrades are applied instantly and prorated to your billing cycle." },
   ];
 
   return (
     <div className="bg-white dark:bg-dark min-h-screen">
       <SEO 
-        title="Reliable Web Hosting India | WordPress, Shared, Cloud & VPS Hosting" 
-        description="Optimantix delivers fast, secure, and affordable hosting with INR billing, GST invoices, and 24/7 local support. Explore our hosting plans today."
+        title="Hosting Plans Built for Indian Businesses | VPS & Cloud Hosting" 
+        description="Fast, secure, and scalable hosting billed in INR. 99.99% uptime SLA, free SSL, and 24/7 India-based support. Explore VPS and Cloud plans."
       />
 
       {/* Hero Section */}
@@ -109,15 +221,23 @@ export const HostingSolutions: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight"
             >
-              Reliable Web Hosting Solutions Built for <span className="text-primary">Indian Businesses</span>
+              Hosting Plans Built for <span className="text-primary">Indian Businesses</span>
             </motion.h1>
-            <motion.p 
+            <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed"
+              className="text-xl md:text-2xl font-medium text-gray-600 dark:text-gray-400 mb-6"
             >
-              From personal blogs to enterprise-grade applications, Optimantix delivers fast, secure, and affordable hosting — with INR billing, GST invoices, and a team that actually picks up the phone.
+              Fast, Secure & Scalable — Billed in INR, Backed by a Local Team
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="text-lg text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-3xl mx-auto"
+            >
+              Whether you need dedicated resources for your application or elastic cloud infrastructure that scales with your business, Optimantix has a hosting plan designed for you.
             </motion.p>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -126,7 +246,7 @@ export const HostingSolutions: React.FC = () => {
               className="flex flex-col sm:flex-row justify-center gap-4 mb-16"
             >
               <a href="#plans" className="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-secondary transition shadow-lg shadow-primary/20">
-                Explore Hosting Plans
+                Explore Plans
               </a>
               <a href="/contact" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                 Talk to an Expert
@@ -137,160 +257,40 @@ export const HostingSolutions: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto"
             >
-              <div className="flex flex-col items-center">
-                <div className="text-xl font-bold text-primary mb-1">99.9%</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Uptime Guarantee</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-xl font-bold text-primary mb-1">INR Billing</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">No Forex Hassle</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-xl font-bold text-primary mb-1">24/7</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Local Support</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-xl font-bold text-primary mb-1">Free SSL</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">On All Plans</div>
-              </div>
+              {mainBenefits.map((benefit, idx) => (
+                <div key={idx} className="flex flex-col items-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-100 dark:border-gray-700">
+                  <div className="text-primary mb-2">{benefit.icon}</div>
+                  <div className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">{benefit.title}</div>
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Advantage Section */}
+      {/* Comparison Table Section */}
       <section className="py-24 bg-white dark:bg-dark">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">The Optimantix Hosting Advantage</h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              We're not just another hosting provider. Optimantix combines enterprise-grade infrastructure with the personal touch of a local Indian team.
-            </p>
+            <h2 className="text-3xl font-bold mb-4">Choose the Right Hosting for Your Needs</h2>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, idx) => (
-              <div key={idx} className="p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-dark-card hover:border-primary/30 transition-all group">
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-                  {benefit.icon}
-                </div>
-                <h3 className="text-lg font-bold mb-3">{benefit.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Plans Overview */}
-      <section id="plans" className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
-        <div className="container mx-auto px-4 md:px-6 text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Find the Right Hosting Plan for You</h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Whether you're launching your first website or managing high-traffic applications, we have a plan designed for your needs and budget.
-          </p>
-        </div>
-
-        {/* WordPress Hosting */}
-        <div className="container mx-auto px-4 md:px-6 mb-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-            <div>
-              <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-3">WordPress Hosting</div>
-              <h3 className="text-2xl md:text-3xl font-bold">Fast, Secure & Optimized for WordPress</h3>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md">
-              Purpose-built to deliver the best performance with pre-configured environments and LiteSpeed caching.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {wpPlans.map((plan, idx) => (
-              <PlanCard key={idx} plan={plan} />
-            ))}
-          </div>
-        </div>
-
-        {/* Shared Hosting */}
-        <div className="container mx-auto px-4 md:px-6 mb-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-            <div>
-              <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-3">Shared Hosting</div>
-              <h3 className="text-2xl md:text-3xl font-bold">Affordable Entry-Level Hosting</h3>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md">
-              The most cost-effective way to get your website online. Ideal for individuals and small businesses.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {sharedPlans.map((plan, idx) => (
-              <PlanCard key={idx} plan={plan} />
-            ))}
-          </div>
-        </div>
-
-        {/* Cloud Hosting */}
-        <div className="container mx-auto px-4 md:px-6 mb-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-            <div>
-              <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-3">Cloud Hosting</div>
-              <h3 className="text-2xl md:text-3xl font-bold">High-Performance & Scalable</h3>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md">
-              High availability and automatic failover. Perfect for businesses that can't afford downtime.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {cloudPlans.map((plan, idx) => (
-              <PlanCard key={idx} plan={plan} />
-            ))}
-          </div>
-        </div>
-
-        {/* VPS Hosting */}
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-            <div>
-              <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-3">VPS Hosting</div>
-              <h3 className="text-2xl md:text-3xl font-bold">Dedicated Resources & Full Control</h3>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md">
-              Dedicated CPU, RAM, and storage. Ideal for developers and businesses needing maximum performance.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {vpsPlans.map((plan, idx) => (
-              <PlanCard key={idx} plan={plan} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Table */}
-      <section className="py-24 bg-white dark:bg-dark overflow-x-auto">
-        <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold mb-12 text-center">Which Hosting Plan Is Right for You?</h2>
-          <div className="min-w-[800px]">
-            <table className="w-full border-collapse">
+          <div className="max-w-4xl mx-auto overflow-x-auto">
+            <table className="w-full border-collapse bg-gray-50 dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-800">
-                  <th className="py-4 px-6 text-left text-sm font-bold text-gray-500 uppercase tracking-wider">Feature</th>
-                  <th className="py-4 px-6 text-center text-sm font-bold text-gray-500 uppercase tracking-wider">Shared</th>
-                  <th className="py-4 px-6 text-center text-sm font-bold text-gray-500 uppercase tracking-wider">WordPress</th>
-                  <th className="py-4 px-6 text-center text-sm font-bold text-gray-500 uppercase tracking-wider">Cloud</th>
-                  <th className="py-4 px-6 text-center text-sm font-bold text-gray-500 uppercase tracking-wider">VPS</th>
+                <tr className="bg-gray-100 dark:bg-gray-800">
+                  <th className="py-6 px-8 text-left text-sm font-bold text-gray-500 uppercase tracking-wider">Feature</th>
+                  <th className="py-6 px-8 text-center text-sm font-bold text-gray-500 uppercase tracking-wider">VPS Hosting</th>
+                  <th className="py-6 px-8 text-center text-sm font-bold text-gray-500 uppercase tracking-wider">Cloud Hosting</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {comparison.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="py-4 px-6 text-sm font-medium text-gray-700 dark:text-gray-300">{row.feature}</td>
-                    <td className="py-4 px-6 text-center text-sm text-gray-600 dark:text-gray-400">{row.shared}</td>
-                    <td className="py-4 px-6 text-center text-sm text-gray-600 dark:text-gray-400">{row.wp}</td>
-                    <td className="py-4 px-6 text-center text-sm text-gray-600 dark:text-gray-400">{row.cloud}</td>
-                    <td className="py-4 px-6 text-center text-sm text-gray-600 dark:text-gray-400">{row.vps}</td>
+                  <tr key={idx} className="hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors">
+                    <td className="py-5 px-8 text-sm font-bold text-gray-700 dark:text-gray-300">{row.feature}</td>
+                    <td className="py-5 px-8 text-center text-sm text-gray-600 dark:text-gray-400">{row.vps}</td>
+                    <td className="py-5 px-8 text-center text-sm text-gray-600 dark:text-gray-400">{row.cloud}</td>
                   </tr>
                 ))}
               </tbody>
@@ -299,23 +299,199 @@ export const HostingSolutions: React.FC = () => {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* VPS Hosting Section */}
+      <section id="vps" className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <div className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-4">VPS Hosting</div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">Dedicated Resources. Full Control. Maximum Performance.</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+              Optimantix VPS Hosting gives you the power of a dedicated server at a fraction of the cost. Each VPS instance comes with isolated CPU, RAM, and NVMe SSD storage — so your performance is never impacted by other users.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mb-10">
+              {["Full Root Access", "Choice of OS", "NVMe SSD Storage", "Free SSL Certificate", "DDoS Protection", "24/7 India Support"].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Check className="w-4 h-4 text-primary" />
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center gap-4">
+              <a href="#vps-plans" className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-secondary transition">View VPS Plans</a>
+              <a href="/contact" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition">Talk to an Expert</a>
+            </div>
+          </div>
+
+          <div id="vps-plans" className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+            {vpsPlans.map((plan, idx) => (
+              <PlanCard key={idx} plan={plan} />
+            ))}
+          </div>
+
+          {/* Why Choose VPS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+            <div className="p-8 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+              <h3 className="text-xl font-bold mb-4">NVMe SSD Storage</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                All VPS plans run on ultra-fast NVMe SSD drives — delivering significantly lower latency and faster data access compared to standard SSDs.
+              </p>
+            </div>
+            <div className="p-8 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+              <h3 className="text-xl font-bold mb-4">Full Root Access & OS Freedom</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                Install any software, configure system settings, and choose your preferred OS — Ubuntu, CentOS, Debian, or Windows Server.
+              </p>
+            </div>
+            <div className="p-8 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+              <h3 className="text-xl font-bold mb-4">Scalable Resources</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                Start with VPS Basic and upgrade to Standard or Pro at any time as your business grows. Resource upgrades are applied with zero downtime.
+              </p>
+            </div>
+          </div>
+
+          {/* VPS Use Cases */}
+          <div className="bg-white dark:bg-dark-card p-12 rounded-3xl border border-gray-100 dark:border-gray-800">
+            <h3 className="text-2xl font-bold mb-10 text-center">What Can You Use Optimantix VPS Hosting For?</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { title: "Web Applications", desc: "Host Node.js, Python, PHP, or any custom stack with full server control." },
+                { title: "eCommerce Stores", desc: "Run WooCommerce, Magento, or OpenCart with dedicated resources." },
+                { title: "Forex & Trading Bots", desc: "Run MT4/MT5 trading applications 24/7 with stable, uninterrupted uptime." },
+                { title: "Game Servers", desc: "Deploy and manage game servers with low latency and high bandwidth." },
+                { title: "SaaS Platforms", desc: "Build and scale multi-tenant applications on isolated infrastructure." },
+                { title: "Database Servers", desc: "Host MySQL, PostgreSQL, or MongoDB with dedicated I/O for fast queries." },
+                { title: "Development & Staging", desc: "Create isolated environments for testing and deploying your applications." },
+                { title: "Agency Hosting", desc: "Manage multiple client websites from a single, powerful VPS instance." }
+              ].map((useCase, idx) => (
+                <div key={idx}>
+                  <h4 className="font-bold mb-2 text-primary">{useCase.title}</h4>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">{useCase.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Cloud Hosting Section */}
+      <section id="cloud" className="py-24 bg-white dark:bg-dark">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <div className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-4">Cloud Hosting</div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">High Availability. Auto-Scaling. Zero Compromise on Uptime.</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+              Powered by a distributed, redundant infrastructure, our cloud hosting plans deliver 99.99% uptime, automatic failover, and on-demand resource scaling — so your website keeps running no matter what.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mb-10">
+              {["99.99% Uptime SLA", "Auto-Scaling Infrastructure", "Free CDN Integration", "DDoS Protection", "Daily + On-Demand Backups", "Root Access Available"].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Check className="w-4 h-4 text-primary" />
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center gap-4">
+              <a href="#cloud-plans" className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-secondary transition">View Cloud Plans</a>
+              <a href="/contact" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition">Talk to an Expert</a>
+            </div>
+          </div>
+
+          <div id="cloud-plans" className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+            {cloudPlans.map((plan, idx) => (
+              <PlanCard key={idx} plan={plan} />
+            ))}
+          </div>
+
+          {/* Why Choose Cloud */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+            <div className="p-8 bg-gray-50 dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+              <h3 className="text-xl font-bold mb-4">99.99% Uptime Guarantee</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                Our cloud hosting is built on a redundant, distributed infrastructure that keeps your website live even if one server fails. We back this with a formal 99.99% uptime SLA.
+              </p>
+            </div>
+            <div className="p-8 bg-gray-50 dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+              <h3 className="text-xl font-bold mb-4">Auto-Scaling Resources</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                Traffic spikes shouldn't crash your website. Your resources automatically scale up during high-traffic periods and scale back down when things are quiet.
+              </p>
+            </div>
+            <div className="p-8 bg-gray-50 dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+              <h3 className="text-xl font-bold mb-4">Free CDN Integration</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                All cloud plans include free CDN integration, delivering your content from servers closest to your visitors for faster page loads across India and globally.
+              </p>
+            </div>
+          </div>
+
+          {/* Cloud Use Cases */}
+          <div className="bg-gray-50 dark:bg-dark-card p-12 rounded-3xl border border-gray-100 dark:border-gray-800">
+            <h3 className="text-2xl font-bold mb-10 text-center">What Can You Use Optimantix Cloud Hosting For?</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { title: "eCommerce Stores", desc: "Handle seasonal traffic spikes and flash sales without performance degradation." },
+                { title: "Business Websites", desc: "Keep your corporate site fast and always online with a 99.99% uptime SLA." },
+                { title: "Web Applications", desc: "Host scalable apps with auto-scaling infrastructure that grows on demand." },
+                { title: "SaaS Platforms", desc: "Deliver reliable multi-tenant software with high availability and load balancing." },
+                { title: "Media & Content Sites", desc: "Serve images, videos, and content globally with built-in CDN." },
+                { title: "Startup MVPs", desc: "Launch fast on Cloud Starter and scale up as your user base grows." },
+                { title: "Tally on Cloud", desc: "Access your Tally accounting software securely from anywhere in India." },
+                { title: "Development Environments", desc: "Spin up and tear down cloud instances for testing and staging." }
+              ].map((useCase, idx) => (
+                <div key={idx}>
+                  <h4 className="font-bold mb-2 text-primary">{useCase.title}</h4>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">{useCase.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Infrastructure Section */}
       <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
         <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold mb-16 text-center">Get Your Website Online in 4 Simple Steps</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <h2 className="text-3xl font-bold mb-16 text-center">The Infrastructure Behind Your Hosting</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {[
-              { title: "Choose Your Plan", desc: "Pick the plan that matches your website type and expected traffic." },
-              { title: "Register Domain", desc: "Choose a new domain name or transfer your existing domain to Optimantix." },
-              { title: "We Set Up Hosting", desc: "Your hosting environment is provisioned instantly. We configure everything for you." },
-              { title: "Launch Website", desc: "Upload your files, install WordPress, and go live. We're here to help." }
-            ].map((step, idx) => (
-              <div key={idx} className="relative p-6 bg-white dark:bg-dark-card rounded-2xl shadow-sm">
-                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mb-4">
-                  {idx + 1}
+              { title: "KVM Virtualization", desc: "We use KVM hypervisor technology to deliver true resource isolation. Your CPU, RAM, and storage are dedicated to your instance.", icon: <Cpu /> },
+              { title: "NVMe-Powered Storage", desc: "Our storage layer uses NVMe SSDs which are multiple times faster than standard SSDs for better application responsiveness.", icon: <HardDrive /> },
+              { title: "Redundant Network", desc: "Multi-layered network design with redundant connections ensuring low latency, high availability, and minimal packet loss.", icon: <Activity /> },
+              { title: "Enterprise-Grade Security", desc: "Protected by enterprise firewalls and intrusion detection systems (IDS). Regular security audits keep your environment safe.", icon: <Shield /> },
+              { title: "India-Located Data Centres", desc: "Your data stays in India. Local hosting means lower latency for your Indian audience and compliance with data residency.", icon: <Globe /> },
+              { title: "Intelligent Load Balancing", desc: "Distribute incoming traffic evenly across your cloud instances, preventing any single server from becoming a bottleneck.", icon: <RefreshCw /> }
+            ].map((infra, idx) => (
+              <div key={idx} className="flex gap-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary flex-shrink-0">
+                  {infra.icon}
                 </div>
-                <h3 className="text-lg font-bold mb-2">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+                <div>
+                  <h3 className="text-lg font-bold mb-2">{infra.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{infra.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-white dark:bg-dark">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-3xl font-bold mb-16 text-center">What Our Customers Say</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((t, idx) => (
+              <div key={idx} className="p-8 bg-gray-50 dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800 relative">
+                <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/10" />
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-primary text-primary" />)}
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 italic mb-6 text-sm leading-relaxed">"{t.quote}"</p>
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white">{t.author}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t.role}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -323,12 +499,12 @@ export const HostingSolutions: React.FC = () => {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 bg-white dark:bg-dark">
+      <section className="py-24 bg-gray-50 dark:bg-[#0a0a0a]">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl">
           <h2 className="text-3xl font-bold mb-12 text-center">Frequently Asked Questions</h2>
           <div className="space-y-6">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="bg-gray-50 dark:bg-dark-card p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
+              <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-bold mb-3 flex items-start gap-3">
                   <HelpCircle className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                   {faq.q}
@@ -342,23 +518,54 @@ export const HostingSolutions: React.FC = () => {
         </div>
       </section>
 
+      {/* Steps Section */}
+      <section className="py-24 bg-white dark:bg-dark">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-3xl font-bold mb-16 text-center">Get Online in 4 Simple Steps</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { title: "Choose Your Plan", desc: "Pick the VPS or Cloud plan that matches your website type and traffic." },
+              { title: "Register Domain", desc: "Choose a new domain name or transfer your existing domain to Optimantix." },
+              { title: "Instant Provisioning", desc: "Your hosting environment is provisioned within minutes. We configure everything." },
+              { title: "Launch & Grow", desc: "Upload your files, deploy your application, and go live. We're here to help." }
+            ].map((step, idx) => (
+              <div key={idx} className="relative p-6 bg-gray-50 dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-gray-800">
+                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mb-4">
+                  {idx + 1}
+                </div>
+                <h3 className="text-lg font-bold mb-2">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-24 bg-primary">
         <div className="container mx-auto px-4 md:px-6 text-center text-white">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to launch your website?</h2>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">Still Not Sure Which Plan Is Right for You?</h2>
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-            Get in touch with our hosting experts today for a free consultation and find the perfect plan for your business.
+            Get in touch with our hosting experts today for a free consultation.
           </p>
-          <a href="/contact" className="bg-white text-primary px-10 py-4 rounded-xl font-bold hover:bg-gray-100 transition inline-flex items-center gap-2 shadow-xl">
-            Get Started Now <ArrowRight size={20} />
-          </a>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#vps" className="bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition shadow-xl">
+              Start with VPS — from ₹799/mo
+            </a>
+            <a href="#cloud" className="bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition shadow-xl">
+              Start with Cloud — from ₹599/mo
+            </a>
+            <a href="/contact" className="bg-primary border border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition">
+              Talk to an Expert
+            </a>
+          </div>
         </div>
       </section>
     </div>
   );
 };
 
-const PlanCard: React.FC<{ plan: any }> = ({ plan }) => (
+const PlanCard: React.FC<{ plan: HostingPlan }> = ({ plan }) => (
   <div className={`relative p-8 rounded-2xl border ${plan.popular ? 'border-primary bg-white dark:bg-dark-card shadow-xl scale-105 z-10' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-dark-card'}`}>
     {plan.popular && (
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
