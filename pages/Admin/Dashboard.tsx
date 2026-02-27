@@ -7,7 +7,7 @@ import { MediaPicker } from '../../components/MediaManager/MediaPicker';
 import { MediaFile } from '../../hooks/useMedia';
 import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { BlogPost, CaseStudy } from '../../types';
+import { BlogPost, CaseStudy, Service } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
 
 // Tabs
@@ -62,7 +62,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Service Edit Form
   const [editingService, setEditingService] = useState<string | null>(null);
-  const [editServiceForm, setEditServiceForm] = useState<any>({ title: '', shortDescription: '' });
+  const [editServiceForm, setEditServiceForm] = useState<Partial<Service>>({ title: '', shortDescription: '' });
 
   // Blog Form
   const initialBlogForm: Partial<BlogPost> = { 
@@ -111,7 +111,7 @@ export const AdminDashboard: React.FC = () => {
       setCaseStudyForm(initialCaseStudyForm);
       setEditingCaseStudy(null);
       setCaseStudyView(CASE_STUDY_VIEWS.LIST);
-    } catch (error) {
+    } catch {
       alert("Failed to save case study");
     } finally {
       setIsSubmittingCaseStudy(false);
@@ -131,13 +131,13 @@ export const AdminDashboard: React.FC = () => {
   };
 
   // --- Service Handlers ---
-  const handleEditService = (service: any) => {
+  const handleEditService = (service: Service) => {
     setEditingService(service.id);
     setEditServiceForm(service);
   };
 
   const saveService = () => {
-    updateService(editServiceForm);
+    updateService(editServiceForm as Service);
     setEditingService(null);
   };
 
@@ -153,7 +153,7 @@ export const AdminDashboard: React.FC = () => {
         alert("Blog Posted Successfully!");
         setBlogForm(initialBlogForm);
         setBlogView(BLOG_VIEWS.LIST);
-    } catch (error) {
+    } catch {
         alert("Failed to post blog");
     } finally {
         setIsSubmittingBlog(false);
@@ -167,7 +167,7 @@ export const AdminDashboard: React.FC = () => {
     try {
         await addBlogCategory({ name: newCategoryName, slug });
         setNewCategoryName('');
-    } catch (error) {
+    } catch {
         alert("Failed to create category");
     }
   };
@@ -189,7 +189,7 @@ export const AdminDashboard: React.FC = () => {
       setEditingBlog(null);
       setBlogForm(initialBlogForm);
       setBlogView(BLOG_VIEWS.LIST);
-    } catch (error) {
+    } catch {
       alert("Failed to update blog");
     } finally {
       setIsSubmittingBlog(false);

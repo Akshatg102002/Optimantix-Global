@@ -2,7 +2,6 @@
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { ContactForm } from '../components/ContactForm';
 import { ServiceGrowthChart } from '../components/ServiceGrowthChart';
 import { Check, ArrowLeft, Star, Zap, Map, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -16,7 +15,7 @@ export const SubServiceTemplate: React.FC = () => {
   const service = services.find(s => s.slug === slug);
   const subService = service?.subServices?.find(sub => sub.slug === subSlug);
 
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
 
   if (!service || !subService) {
     return <Navigate to="/404" replace />;
@@ -129,6 +128,29 @@ export const SubServiceTemplate: React.FC = () => {
                           </div>
                       ))}
                    </div>
+                </div>
+            )}
+
+            {/* Case Studies */}
+            {relevantCaseStudies.length > 0 && (
+                <div className="space-y-6">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Success Stories</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {relevantCaseStudies.map(study => (
+                            <Link to={`/case-studies/${study.slug}`} key={study.id} className="group block bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
+                                <div className="h-48 overflow-hidden">
+                                    <img src={study.imageUrl} alt={study.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                                </div>
+                                <div className="p-6">
+                                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition">{study.title}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{study.excerpt}</p>
+                                    <div className="mt-4 flex items-center text-primary font-medium text-sm">
+                                        Read Case Study <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition" />
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             )}
 

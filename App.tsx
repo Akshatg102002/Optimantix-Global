@@ -15,6 +15,7 @@ const ServiceTemplate = lazy(() => import('./pages/ServiceTemplate').then(module
 const SubServiceTemplate = lazy(() => import('./pages/SubServiceTemplate').then(module => ({ default: module.SubServiceTemplate })));
 const BlogList = lazy(() => import('./pages/BlogList').then(module => ({ default: module.BlogList })));
 const BlogPost = lazy(() => import('./pages/BlogPost').then(module => ({ default: module.BlogPost })));
+const CaseStudyTemplate = lazy(() => import('./pages/CaseStudyTemplate').then(module => ({ default: module.CaseStudyTemplate })));
 const GoogleWorkspace = lazy(() => import('./pages/GoogleWorkspace').then(module => ({ default: module.GoogleWorkspace })));
 const HostingSolutions = lazy(() => import('./pages/HostingSolutions').then(module => ({ default: module.HostingSolutions })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
@@ -36,6 +37,7 @@ const App: React.FC = () => {
               <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/case-studies/:slug" element={<CaseStudyTemplate />} />
               <Route path="/google-workspace" element={<GoogleWorkspace />} />
               <Route path="/hosting" element={<HostingSolutions />} />
               

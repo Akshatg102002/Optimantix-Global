@@ -47,7 +47,7 @@ async function startServer() {
       }
 
       res.json({ success: true, data });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Server Error:', err);
       res.status(500).json({ success: false, message: 'Internal server error' });
     }

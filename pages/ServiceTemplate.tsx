@@ -3,18 +3,18 @@ import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
-import { ContactForm } from '../components/ContactForm';
 import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
+import { PortfolioSlider } from '../components/PortfolioSlider';
 
 export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { services, caseStudies } = useData();
   const service = services.find(s => s.slug === slug);
   
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
 
   if (!service) {
     return <Navigate to="/" replace />;
@@ -144,6 +144,13 @@ export const ServiceTemplate: React.FC = () => {
                              </ul>
                          </div>
                      )}
+                </div>
+            )}
+
+            {/* Portfolio Section (Only for Web Development) */}
+            {service.slug === 'development' && (
+                <div className="py-8">
+                    <PortfolioSlider />
                 </div>
             )}
 

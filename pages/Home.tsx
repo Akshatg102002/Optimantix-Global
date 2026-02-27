@@ -5,7 +5,6 @@ import { ArrowRight, TrendingUp, Users, ShieldCheck, Clock, ChevronDown, BarChar
 import { useData } from '../context/DataContext';
 import { LeadModal } from '../components/LeadModal';
 import { SEO } from '../components/SEO';
-import { PortfolioSlider } from '../components/PortfolioSlider';
 import { WORK_PROCESS, INDUSTRIES } from '../constants';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -175,7 +174,7 @@ const ClientLogo: React.FC<{ client: { name: string; logo: string | null } }> = 
 
 export const Home: React.FC = () => {
   const { services, blogs } = useData();
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   useEffect(() => {
@@ -364,9 +363,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Portfolio Section */}
-      <PortfolioSlider />
 
       {/* Process Section */}
       <section className="py-24 bg-white dark:bg-dark-card">
