@@ -1,5 +1,5 @@
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { BottomNav } from './BottomNav';

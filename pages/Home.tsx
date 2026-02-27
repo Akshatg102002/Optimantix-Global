@@ -575,49 +575,7 @@ export const Home: React.FC = () => {
 
       
 
-      {/* Final CTA */}
-      <section className="py-16 bg-white dark:bg-dark-card">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="bg-primary rounded-[3rem] overflow-hidden shadow-2xl shadow-primary/20 mx-auto max-w-7xl relative">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-              <div className="hidden lg:block h-full min-h-[500px] relative">
-                 <img 
-                    src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" 
-                    alt="Team collaboration" 
-                    className="absolute inset-0 w-full h-full object-cover opacity-90 mix-blend-overlay"
-                 />
-                 <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
-              </div>
-              
-              <div className="p-12 md:p-20 lg:pl-0 lg:pr-20 text-center lg:text-left">
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-white">Ready to scale your business?</h2>
-                <p className="text-white/90 text-xl mb-10 font-light max-w-xl mx-auto lg:mx-0">
-                  Join hundreds of successful companies that trust Optimantix for their digital transformation. Let's build something extraordinary together.
-                </p>
-                <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                  <Link
-                    to="/contact"
-                    className="bg-white text-primary hover:bg-gray-50 font-bold py-4 px-8 rounded-full transition inline-block shadow-xl text-lg hover:scale-105 duration-200 flex items-center justify-center"
-                  >
-                    Request Free Quote <ArrowRight className="ml-2 w-5 h-5" />
-                  </Link>
-                  <div className="flex flex-col gap-2">
-                    <a href="tel:+919910343016" className="border-2 border-white hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full transition inline-block text-base hover:scale-105 duration-200 text-center">
-                      Call IN: +91 9910343016
-                    </a>
-                    <a href="tel:+18029952844" className="border-2 border-white hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full transition inline-block text-base hover:scale-105 duration-200 text-center">
-                      Call US: +1 802 995 2844
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 };

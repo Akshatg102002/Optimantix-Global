@@ -7,7 +7,11 @@ export interface CaptchaRef {
   reset: () => void;
 }
 
-export const SimpleCaptcha = forwardRef<CaptchaRef>((_, ref) => {
+export interface SimpleCaptchaProps {
+  isDarkTheme?: boolean;
+}
+
+export const SimpleCaptcha = forwardRef<CaptchaRef, SimpleCaptchaProps>(({ isDarkTheme }, ref) => {
   const [num1, setNum1] = useState(0);
   const [num2, setNum2] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
@@ -37,13 +41,33 @@ export const SimpleCaptcha = forwardRef<CaptchaRef>((_, ref) => {
       }
       return true;
     },
-    reset: () => generateProblem()
+    reset: () => {
+      generateProblem();
+      setUserAnswer('');
+      setError('');
+    }
   }));
 
+  const containerClasses = isDarkTheme 
+    ? "bg-white/5 border border-white/10 rounded-lg p-4" 
+    : "bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700";
+
+  const labelClasses = isDarkTheme
+    ? "text-sm font-medium text-white/90"
+    : "text-sm font-medium text-gray-700 dark:text-gray-300";
+
+  const inputClasses = isDarkTheme
+    ? "w-full px-3 py-2 border border-white/20 rounded-md focus:ring-2 focus:ring-white/50 outline-none bg-white/10 text-white placeholder-white/50"
+    : "w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary outline-none dark:bg-dark dark:border-gray-600 dark:text-white";
+
+  const buttonClasses = isDarkTheme
+    ? "p-2 text-white/70 hover:text-white transition"
+    : "p-2 text-gray-500 hover:text-primary transition";
+
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+    <div className={containerClasses}>
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className={labelClasses}>
           Security Check: What is {num1} + {num2}?
         </label>
         <div className="flex gap-2">
@@ -51,13 +75,13 @@ export const SimpleCaptcha = forwardRef<CaptchaRef>((_, ref) => {
             type="number"
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary outline-none dark:bg-dark dark:border-gray-600 dark:text-white"
+            className={inputClasses}
             placeholder="?"
           />
           <button
             type="button"
             onClick={generateProblem}
-            className="p-2 text-gray-500 hover:text-primary transition"
+            className={buttonClasses}
             title="Refresh Question"
           >
             <RefreshCw size={18} />
