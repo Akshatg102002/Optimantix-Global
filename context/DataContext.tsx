@@ -134,10 +134,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     
     // Always fetch public data initially, regardless of auth
-    fetchBlogs();
-    fetchCategories();
+    const timer = setTimeout(() => {
+      fetchBlogs();
+      fetchCategories();
+    }, 0);
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   // --- LOGIN LOGIC ---
@@ -181,11 +186,19 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     
     if (storedLeads) {
-        try { setLeads(JSON.parse(storedLeads)); } catch (e) { console.error(e); }
+        try { 
+          const parsed = JSON.parse(storedLeads);
+          const timer = setTimeout(() => setLeads(parsed), 0);
+          return () => clearTimeout(timer);
+        } catch (e) { console.error(e); }
     }
     
     if (storedProjects) {
-        try { setProjects(JSON.parse(storedProjects)); } catch (e) { console.error(e); }
+        try { 
+          const parsed = JSON.parse(storedProjects);
+          const timer = setTimeout(() => setProjects(parsed), 0);
+          return () => clearTimeout(timer);
+        } catch (e) { console.error(e); }
     }
   }, []);
 

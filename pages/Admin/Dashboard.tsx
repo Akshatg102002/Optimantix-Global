@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { AdminMedia } from './Media';
+import { MediaPicker } from '../../components/MediaManager/MediaPicker';
+import { MediaFile } from '../../hooks/useMedia';
 import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 import { BlogPost } from '../../types';
@@ -12,7 +15,8 @@ const TABS = {
   OVERVIEW: 'OVERVIEW',
   SERVICES: 'SERVICES',
   BLOG: 'BLOG',
-  PORTFOLIO: 'PORTFOLIO'
+  PORTFOLIO: 'PORTFOLIO',
+  MEDIA: 'MEDIA'
 };
 
 const BLOG_VIEWS = {
@@ -55,6 +59,10 @@ export const AdminDashboard: React.FC = () => {
 
   // Project Form
   const [newProjectForm, setNewProjectForm] = useState({ title: '', category: '', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', projectUrl: '' });
+
+  // Media Picker State
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<'blog' | 'project' | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -151,6 +159,9 @@ export const AdminDashboard: React.FC = () => {
           </button>
           <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <Briefcase size={20} /> Portfolio
+          </button>
+          <button onClick={() => setActiveTab(TABS.MEDIA)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.MEDIA ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+            <ImageIcon size={20} /> Media
           </button>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -462,7 +473,16 @@ export const AdminDashboard: React.FC = () => {
                              </div>
 
                              <div>
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2"><ImageIcon size={16}/> Featured Image URL</label>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-2"><ImageIcon size={16}/> Featured Image URL</span>
+                                  <button 
+                                    type="button"
+                                    onClick={() => { setMediaPickerTarget('blog'); setIsMediaPickerOpen(true); }}
+                                    className="text-xs text-primary hover:underline font-bold"
+                                  >
+                                    Select from Library
+                                  </button>
+                                </label>
                                 <input 
                                     required
                                     className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
@@ -548,6 +568,13 @@ export const AdminDashboard: React.FC = () => {
                     value={newProjectForm.imageUrl}
                     onChange={e => setNewProjectForm({...newProjectForm, imageUrl: e.target.value})}
                   />
+                  <button 
+                    type="button"
+                    onClick={() => { setMediaPickerTarget('project'); setIsMediaPickerOpen(true); }}
+                    className="text-xs text-primary hover:underline font-bold block mt-1"
+                  >
+                    Select from Library
+                  </button>
                   <input 
                     placeholder="Project Link (Optional)" 
                     className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none"
@@ -562,6 +589,25 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* MEDIA TAB */}
+        {activeTab === TABS.MEDIA && (
+          <div className="animate-fadeIn">
+            <AdminMedia />
+          </div>
+        )}
+
+        <MediaPicker 
+          isOpen={isMediaPickerOpen}
+          onClose={() => setIsMediaPickerOpen(false)}
+          onSelect={(file: MediaFile) => {
+            if (mediaPickerTarget === 'blog') {
+              setBlogForm(prev => ({ ...prev, imageUrl: file.data }));
+            } else if (mediaPickerTarget === 'project') {
+              setNewProjectForm(prev => ({ ...prev, imageUrl: file.data }));
+            }
+          }}
+        />
       </main>
     </div>
   );
