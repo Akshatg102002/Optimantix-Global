@@ -5,9 +5,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AdminMedia } from './Media';
 import { MediaPicker } from '../../components/MediaManager/MediaPicker';
 import { MediaFile } from '../../hooks/useMedia';
-import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { BlogPost } from '../../types';
+import { BlogPost, CaseStudy } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
 
 // Tabs
@@ -16,6 +16,7 @@ const TABS = {
   SERVICES: 'SERVICES',
   BLOG: 'BLOG',
   PORTFOLIO: 'PORTFOLIO',
+  CASE_STUDIES: 'CASE_STUDIES',
   MEDIA: 'MEDIA'
 };
 
@@ -26,20 +27,38 @@ const BLOG_VIEWS = {
   IMPORT: 'IMPORT'
 };
 
+const CASE_STUDY_VIEWS = {
+  LIST: 'LIST',
+  EDIT: 'EDIT'
+};
+
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TABS.OVERVIEW);
   const [blogView, setBlogView] = useState(BLOG_VIEWS.LIST);
 
   const { 
-    services, blogs, blogCategories, projects, 
+    services, blogs, blogCategories, projects, caseStudies,
     updateService, 
     addBlogPost, deleteBlogPost, updateBlogPost,
     addBlogCategory, deleteBlogCategory,
     addProject, deleteProject, 
+    addCaseStudy, updateCaseStudy, deleteCaseStudy,
     isAuthenticated, logout 
   } = useData();
 
   const navigate = useNavigate();
+
+  // Case Study State
+  const [caseStudyView, setCaseStudyView] = useState(CASE_STUDY_VIEWS.LIST);
+  const initialCaseStudyForm: Partial<CaseStudy> = {
+    title: '', slug: '', excerpt: '', content: '', imageUrl: '',
+    serviceId: '', subServiceId: '',
+    metaTitle: '', metaDescription: '', tags: [],
+    date: new Date().toISOString()
+  };
+  const [caseStudyForm, setCaseStudyForm] = useState<Partial<CaseStudy>>(initialCaseStudyForm);
+  const [editingCaseStudy, setEditingCaseStudy] = useState<CaseStudy | null>(null);
+  const [isSubmittingCaseStudy, setIsSubmittingCaseStudy] = useState(false);
 
   // Service Edit Form
   const [editingService, setEditingService] = useState<string | null>(null);
@@ -64,7 +83,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Media Picker State
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
-  const [mediaPickerTarget, setMediaPickerTarget] = useState<'blog' | 'project' | null>(null);
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<'blog' | 'project' | 'caseStudy' | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -75,6 +94,40 @@ export const AdminDashboard: React.FC = () => {
   const handleLogout = () => {
     logout();
     navigate('/admin/login');
+  };
+
+  // --- Case Study Handlers ---
+  const handleSaveCaseStudy = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingCaseStudy(true);
+    try {
+      if (editingCaseStudy) {
+        updateCaseStudy({ ...editingCaseStudy, ...caseStudyForm } as CaseStudy);
+        alert("Case Study Updated!");
+      } else {
+        addCaseStudy({ ...caseStudyForm, date: new Date().toISOString() } as CaseStudy);
+        alert("Case Study Created!");
+      }
+      setCaseStudyForm(initialCaseStudyForm);
+      setEditingCaseStudy(null);
+      setCaseStudyView(CASE_STUDY_VIEWS.LIST);
+    } catch (error) {
+      alert("Failed to save case study");
+    } finally {
+      setIsSubmittingCaseStudy(false);
+    }
+  };
+
+  const handleEditCaseStudy = (study: CaseStudy) => {
+    setEditingCaseStudy(study);
+    setCaseStudyForm(study);
+    setCaseStudyView(CASE_STUDY_VIEWS.EDIT);
+  };
+
+  const handleDeleteCaseStudy = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this case study?")) {
+      deleteCaseStudy(id);
+    }
   };
 
   // --- Service Handlers ---
@@ -185,6 +238,9 @@ export const AdminDashboard: React.FC = () => {
           </button>
           <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <Briefcase size={20} /> Portfolio
+          </button>
+          <button onClick={() => { setActiveTab(TABS.CASE_STUDIES); setCaseStudyView(CASE_STUDY_VIEWS.LIST); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.CASE_STUDIES ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+            <BookOpen size={20} /> Case Studies
           </button>
           <button onClick={() => setActiveTab(TABS.MEDIA)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.MEDIA ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <ImageIcon size={20} /> Media
@@ -617,6 +673,219 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
+        {/* CASE STUDIES TAB */}
+        {activeTab === TABS.CASE_STUDIES && (
+          <div className="animate-fadeIn">
+            {/* Header / Navigation for Case Studies Tab */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+               <h1 className="text-2xl font-bold">
+                  {caseStudyView === CASE_STUDY_VIEWS.LIST && "Manage Case Studies"}
+                  {caseStudyView === CASE_STUDY_VIEWS.EDIT && (editingCaseStudy ? 'Edit Case Study' : 'Create New Case Study')}
+               </h1>
+               <div className="flex gap-3">
+                   {caseStudyView !== CASE_STUDY_VIEWS.LIST && (
+                        <button onClick={() => setCaseStudyView(CASE_STUDY_VIEWS.LIST)} className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition flex items-center gap-2">
+                            <ArrowLeft size={16} /> Back to List
+                        </button>
+                   )}
+                   {caseStudyView === CASE_STUDY_VIEWS.LIST && (
+                        <button onClick={() => { setCaseStudyForm(initialCaseStudyForm); setEditingCaseStudy(null); setCaseStudyView(CASE_STUDY_VIEWS.EDIT); }} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-secondary transition flex items-center gap-2 shadow-lg shadow-primary/20">
+                            <Plus size={16} /> New Case Study
+                        </button>
+                   )}
+               </div>
+            </div>
+
+            {/* CASE STUDY VIEW: LIST */}
+            {caseStudyView === CASE_STUDY_VIEWS.LIST && (
+                <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+                    <div className="p-1 min-w-[800px] overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-xs uppercase text-gray-500 font-bold tracking-wider">
+                                <tr>
+                                    <th className="p-4">Title</th>
+                                    <th className="p-4">Service</th>
+                                    <th className="p-4">Date</th>
+                                    <th className="p-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                                {caseStudies.length === 0 ? (
+                                    <tr><td colSpan={4} className="p-8 text-center text-gray-500">No case studies created yet.</td></tr>
+                                ) : (
+                                    caseStudies.map(study => {
+                                        const service = services.find(s => s.id === study.serviceId);
+                                        return (
+                                            <tr key={study.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                                <td className="p-4 font-medium max-w-xs truncate">{study.title}</td>
+                                                <td className="p-4 text-sm">
+                                                    {service ? <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-md text-xs font-bold">{service.title}</span> : <span className="text-gray-400 text-xs italic">Unassigned</span>}
+                                                </td>
+                                                <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(study.date).toLocaleDateString()}</td>
+                                                <td className="p-4 text-right flex items-center justify-end gap-2">
+                                                    <button onClick={() => handleEditCaseStudy(study)} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition"><Save size={18} /></button>
+                                                    <button onClick={() => handleDeleteCaseStudy(study.id)} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition"><XCircle size={18} /></button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+
+            {/* CASE STUDY VIEW: EDIT */}
+            {caseStudyView === CASE_STUDY_VIEWS.EDIT && (
+                <form onSubmit={handleSaveCaseStudy} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
+                            <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Content</h2>
+                            
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Title</label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none text-lg font-medium"
+                                    placeholder="Case Study Title"
+                                    value={caseStudyForm.title}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, title: e.target.value, slug: generateSlug(e.target.value)})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Slug (URL)</label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm text-gray-500 font-mono"
+                                    value={caseStudyForm.slug}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, slug: generateSlug(e.target.value)})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Content</label>
+                                <textarea 
+                                    required
+                                    rows={12}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none leading-relaxed"
+                                    placeholder="Describe the problem, solution, and results..."
+                                    value={caseStudyForm.content}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, content: e.target.value})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Short Excerpt</label>
+                                <textarea 
+                                    required
+                                    rows={3}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="Brief summary..."
+                                    value={caseStudyForm.excerpt}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, excerpt: e.target.value})}
+                                />
+                            </div>
+                        </div>
+
+                        {/* SEO Section */}
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
+                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 flex items-center gap-2"><Tag size={18} /> SEO Settings</h2>
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Title</label>
+                                <input 
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="SEO Title"
+                                    value={caseStudyForm.metaTitle}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, metaTitle: e.target.value})}
+                                />
+                             </div>
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Description</label>
+                                <textarea 
+                                    rows={2}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="SEO Description"
+                                    value={caseStudyForm.metaDescription}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, metaDescription: e.target.value})}
+                                />
+                             </div>
+                        </div>
+                    </div>
+
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4 sticky top-6">
+                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Settings</h2>
+                             
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Service Assignment</label>
+                                <select 
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    value={caseStudyForm.serviceId}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, serviceId: e.target.value, subServiceId: ''})}
+                                >
+                                    <option value="">Select Service</option>
+                                    {services.map(s => (
+                                        <option key={s.id} value={s.id}>{s.title}</option>
+                                    ))}
+                                </select>
+                             </div>
+
+                             {caseStudyForm.serviceId && (
+                                 <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Sub-Service (Optional)</label>
+                                    <select 
+                                        className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                        value={caseStudyForm.subServiceId}
+                                        onChange={e => setCaseStudyForm({...caseStudyForm, subServiceId: e.target.value})}
+                                    >
+                                        <option value="">Select Sub-Service</option>
+                                        {services.find(s => s.id === caseStudyForm.serviceId)?.subServices?.map(sub => (
+                                            <option key={sub.id} value={sub.id}>{sub.title}</option>
+                                        ))}
+                                    </select>
+                                 </div>
+                             )}
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-2"><ImageIcon size={16}/> Featured Image</span>
+                                  <button 
+                                    type="button"
+                                    onClick={() => { setMediaPickerTarget('caseStudy'); setIsMediaPickerOpen(true); }}
+                                    className="text-xs text-primary hover:underline font-bold"
+                                  >
+                                    Select from Library
+                                  </button>
+                                </label>
+                                <input 
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
+                                    value={caseStudyForm.imageUrl}
+                                    onChange={e => setCaseStudyForm({...caseStudyForm, imageUrl: e.target.value})}
+                                />
+                                {caseStudyForm.imageUrl && (
+                                    <div className="mt-3 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100">
+                                        <img src={caseStudyForm.imageUrl} className="w-full h-full object-cover" alt="Preview" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                    </div>
+                                )}
+                             </div>
+
+                             <button 
+                                type="submit" 
+                                disabled={isSubmittingCaseStudy}
+                                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-secondary transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-md"
+                            >
+                                {isSubmittingCaseStudy ? 'Saving...' : <><Save size={18} /> {editingCaseStudy ? 'Update Case Study' : 'Create Case Study'}</>}
+                             </button>
+                        </div>
+                    </div>
+                </form>
+            )}
+          </div>
+        )}
+
         {/* MEDIA TAB */}
         {activeTab === TABS.MEDIA && (
           <div className="animate-fadeIn">
@@ -632,6 +901,8 @@ export const AdminDashboard: React.FC = () => {
               setBlogForm(prev => ({ ...prev, imageUrl: file.data }));
             } else if (mediaPickerTarget === 'project') {
               setNewProjectForm(prev => ({ ...prev, imageUrl: file.data }));
+            } else if (mediaPickerTarget === 'caseStudy') {
+              setCaseStudyForm(prev => ({ ...prev, imageUrl: file.data }));
             }
           }}
         />

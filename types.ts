@@ -9,6 +9,10 @@ export interface SubService {
   benefits: string[];
   phases?: { title: string; description: string }[];
   stats?: { label: string; value: string; desc: string }[];
+  // SEO
+  metaTitle?: string;
+  metaDescription?: string;
+  tags?: string[];
 }
 
 export interface Service {
@@ -24,6 +28,10 @@ export interface Service {
   benefits: string[];
   deliverables: string[];
   subServices?: SubService[];
+  // SEO
+  metaTitle?: string;
+  metaDescription?: string;
+  tags?: string[];
 }
 
 export interface BlogCategory {
@@ -45,6 +53,7 @@ export interface BlogPost {
   categoryId?: string;
   metaTitle?: string;
   metaDescription?: string;
+  tags?: string[];
   isPublished?: boolean;
 }
 
@@ -54,6 +63,25 @@ export interface Project {
   category: string;
   imageUrl: string;
   projectUrl?: string;
+  // SEO
+  metaTitle?: string;
+  metaDescription?: string;
+  tags?: string[];
+}
+
+export interface CaseStudy {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  imageUrl: string;
+  serviceId?: string;
+  subServiceId?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  tags?: string[];
+  date: string;
 }
 
 export interface Lead {

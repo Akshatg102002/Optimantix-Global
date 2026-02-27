@@ -1,17 +1,17 @@
 
 import React from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { ContactForm } from '../components/ContactForm';
-import { Check, Star, Settings, Package, TrendingUp } from 'lucide-react';
+import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 
 export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { services } = useData();
+  const { services, caseStudies } = useData();
   const service = services.find(s => s.slug === slug);
   
   const MotionDiv = motion.div as any;
@@ -19,6 +19,8 @@ export const ServiceTemplate: React.FC = () => {
   if (!service) {
     return <Navigate to="/" replace />;
   }
+
+  const relevantCaseStudies = caseStudies.filter(cs => cs.serviceId === service.id);
 
   // Helper to get image based on slug (fallback if not in data object)
   const getServiceImage = (slug: string) => {
@@ -52,10 +54,10 @@ export const ServiceTemplate: React.FC = () => {
       />
 
       <div className="container mx-auto px-4 md:px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="max-w-4xl mx-auto space-y-12">
           
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-12">
+          <div className="space-y-12">
             
             {/* Overview */}
             <MotionDiv 
@@ -157,21 +159,29 @@ export const ServiceTemplate: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <div className="bg-white dark:bg-dark-card rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
-                <div className="bg-gray-900 text-white p-6 text-center">
-                  <h3 className="text-xl font-bold">Ready to Start?</h3>
-                  <p className="text-gray-400 text-sm mt-1">Get a custom quote today.</p>
+            {/* Case Studies */}
+            {relevantCaseStudies.length > 0 && (
+                <div className="space-y-6">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Success Stories</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {relevantCaseStudies.map(study => (
+                            <Link to={`/case-studies/${study.slug}`} key={study.id} className="group block bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
+                                <div className="h-48 overflow-hidden">
+                                    <img src={study.imageUrl} alt={study.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                                </div>
+                                <div className="p-6">
+                                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition">{study.title}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{study.excerpt}</p>
+                                    <div className="mt-4 flex items-center text-primary font-medium text-sm">
+                                        Read Case Study <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition" />
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
-                <div className="p-6">
-                  <ContactForm defaultService={service.title} />
-                </div>
-              </div>
-            </div>
+            )}
           </div>
 
         </div>

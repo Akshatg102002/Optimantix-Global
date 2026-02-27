@@ -4,14 +4,14 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { ContactForm } from '../components/ContactForm';
 import { ServiceGrowthChart } from '../components/ServiceGrowthChart';
-import { Check, ArrowLeft, Star, Zap, Map } from 'lucide-react';
+import { Check, ArrowLeft, Star, Zap, Map, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 
 export const SubServiceTemplate: React.FC = () => {
   const { slug, subSlug } = useParams<{ slug: string; subSlug: string }>();
-  const { services } = useData();
+  const { services, caseStudies } = useData();
   
   const service = services.find(s => s.slug === slug);
   const subService = service?.subServices?.find(sub => sub.slug === subSlug);
@@ -21,6 +21,8 @@ export const SubServiceTemplate: React.FC = () => {
   if (!service || !subService) {
     return <Navigate to="/404" replace />;
   }
+  
+  const relevantCaseStudies = caseStudies.filter(cs => cs.subServiceId === subService.id);
   
   // Helper to get image based on slug
   const getServiceImage = (slug: string) => {
@@ -58,10 +60,10 @@ export const SubServiceTemplate: React.FC = () => {
             <ArrowLeft size={16} className="mr-2" /> Back to {service.title}
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="max-w-4xl mx-auto space-y-16">
           
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-16">
+          <div className="space-y-16">
             
             {/* Overview */}
             <MotionDiv 
@@ -146,21 +148,6 @@ export const SubServiceTemplate: React.FC = () => {
                         Speak to an Expert
                      </Link>
                 </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <div className="bg-white dark:bg-dark-card rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
-                <div className="bg-gray-900 text-white p-6 text-center">
-                  <h3 className="text-xl font-bold">Get Started</h3>
-                  <p className="text-gray-400 text-sm mt-1">Request a quote for {subService.title}</p>
-                </div>
-                <div className="p-6">
-                  <ContactForm defaultService={service.title} />
-                </div>
-              </div>
             </div>
           </div>
 

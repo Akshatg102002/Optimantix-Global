@@ -45,9 +45,8 @@ interface FormData {
   serviceSubCategory: string;
   timeline: string;
   budget: string;
-  goals: string[];
+  goals: string;
   message: string;
-  referenceLinks?: string;
 }
 
 interface ContactFormProps {
@@ -127,64 +126,45 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
     }
   };
 
-  const inputClasses = "w-full mt-1 px-4 py-3 bg-white/10 border border-white/20 text-white rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent outline-none transition placeholder-white/50";
-  const labelClasses = "text-sm font-medium text-white/90";
-  const selectClasses = "w-full mt-1 px-4 py-3 bg-white/10 border border-white/20 text-white rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent outline-none transition appearance-none";
+  const inputClasses = "w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition placeholder-gray-400 text-sm";
+  const selectClasses = "w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition appearance-none text-sm";
 
   return (
-    <div className="bg-primary rounded-[2rem] overflow-hidden shadow-2xl shadow-primary/20 relative p-8 md:p-10">
-      {/* Background effects */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
-
-      <h3 className="text-3xl font-bold text-white mb-8 relative z-10">Request a Quote</h3>
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
+      <h3 className="text-2xl font-bold text-gray-900 mb-6">Request a Quote</h3>
       
       {submitResult && (
-        <div className={`p-4 mb-6 rounded-lg border relative z-10 ${submitResult.success ? 'bg-green-500/20 text-green-100 border-green-500/30' : 'bg-red-500/20 text-red-100 border-red-500/30'}`}>
+        <div className={`p-3 mb-4 rounded-lg border text-sm ${submitResult.success ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
           {submitResult.message}
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Contact Information */}
-        <fieldset className="space-y-4">
-          <legend className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <span>👤</span> Contact Information
-          </legend>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-                <label className={labelClasses}>Full Name*</label>
-                <input {...register('fullName', { required: 'Full Name is required' })} className={inputClasses} placeholder="John Doe" />
-                {errors.fullName && <span className="text-xs text-red-200 mt-1 block">{errors.fullName.message}</span>}
+                <input {...register('fullName', { required: 'Full Name is required' })} className={inputClasses} placeholder="Full Name*" />
+                {errors.fullName && <span className="text-xs text-red-500 mt-1 block">{errors.fullName.message}</span>}
             </div>
             <div>
-                <label className={labelClasses}>Company Name*</label>
-                <input {...register('companyName', { required: 'Company Name is required' })} className={inputClasses} placeholder="Your Company" />
-                {errors.companyName && <span className="text-xs text-red-200 mt-1 block">{errors.companyName.message}</span>}
+                <input {...register('companyName', { required: 'Company Name is required' })} className={inputClasses} placeholder="Company Name*" />
+                {errors.companyName && <span className="text-xs text-red-500 mt-1 block">{errors.companyName.message}</span>}
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-                <label className={labelClasses}>Work Email*</label>
-                <input {...register('workEmail', { required: 'Work Email is required', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email" }})} className={inputClasses} placeholder="name@company.com" />
-                {errors.workEmail && <span className="text-xs text-red-200 mt-1 block">{errors.workEmail.message}</span>}
+                <input {...register('workEmail', { required: 'Work Email is required', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email" }})} className={inputClasses} placeholder="Work Email*" />
+                {errors.workEmail && <span className="text-xs text-red-500 mt-1 block">{errors.workEmail.message}</span>}
             </div>
             <div>
-                <label className={labelClasses}>Phone Number*</label>
-                <input {...register('workPhone', { required: 'Work Phone is required' })} className={inputClasses} placeholder="+1 (555) 000-0000" />
-                {errors.workPhone && <span className="text-xs text-red-200 mt-1 block">{errors.workPhone.message}</span>}
+                <input {...register('workPhone', { required: 'Work Phone is required' })} className={inputClasses} placeholder="Phone Number*" />
+                {errors.workPhone && <span className="text-xs text-red-500 mt-1 block">{errors.workPhone.message}</span>}
             </div>
-          </div>
-        </fieldset>
+        </div>
 
         {/* Services Required */}
-        <fieldset className="space-y-4">
-          <legend className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <span>🧩</span> Services Required*
-          </legend>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-                <label className={labelClasses}>Service Category</label>
                 <div className="relative">
                     <select 
                       {...register('serviceCategory', { 
@@ -193,98 +173,93 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
                       })} 
                       className={selectClasses}
                     >
-                        <option value="" className="text-gray-800">Select Category</option>
+                        <option value="">Select Category*</option>
                         {Object.keys(SERVICES_DATA).map(category => (
-                            <option key={category} value={category} className="text-gray-800">{category}</option>
+                            <option key={category} value={category}>{category}</option>
                         ))}
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-white">
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                     </div>
                 </div>
-                {errors.serviceCategory && <span className="text-xs text-red-200 mt-1 block">{errors.serviceCategory.message}</span>}
+                {errors.serviceCategory && <span className="text-xs text-red-500 mt-1 block">{errors.serviceCategory.message}</span>}
             </div>
             <div>
-                <label className={labelClasses}>Specific Service</label>
                 <div className="relative">
                     <select {...register('serviceSubCategory', { required: 'Service is required' })} className={selectClasses} disabled={!selectedCategory}>
-                        <option value="" className="text-gray-800">Select Service</option>
+                        <option value="">Select Service*</option>
                         {subServices.map(service => (
-                            <option key={service} value={service} className="text-gray-800">{service}</option>
+                            <option key={service} value={service}>{service}</option>
                         ))}
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-white">
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                     </div>
                 </div>
-                {errors.serviceSubCategory && <span className="text-xs text-red-200 mt-1 block">{errors.serviceSubCategory.message}</span>}
+                {errors.serviceSubCategory && <span className="text-xs text-red-500 mt-1 block">{errors.serviceSubCategory.message}</span>}
             </div>
-          </div>
-        </fieldset>
+        </div>
 
         {/* Project Timeline & Budget */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <fieldset>
-            <legend className="text-lg font-bold text-white mb-2 flex items-center gap-2"><span>⏳</span> Timeline*</legend>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="relative">
                 <select {...register('timeline', { required: 'Timeline is required' })} className={selectClasses}>
-                <option value="" className="text-gray-800">Select Timeline</option>
-                <option value="Immediate Start" className="text-gray-800">Immediate Start (High Priority)</option>
-                <option value="Within 15 Days" className="text-gray-800">Within 15 Days</option>
-                <option value="Within 30 Days" className="text-gray-800">Within 30 Days</option>
-                <option value="1–2 Months" className="text-gray-800">1–2 Months</option>
-                <option value="Just Exploring" className="text-gray-800">Just Exploring Options</option>
+                <option value="">Select Timeline*</option>
+                <option value="Immediate Start">Immediate Start (High Priority)</option>
+                <option value="Within 15 Days">Within 15 Days</option>
+                <option value="Within 30 Days">Within 30 Days</option>
+                <option value="1–2 Months">1–2 Months</option>
+                <option value="Just Exploring">Just Exploring Options</option>
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-white">
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                 </div>
+                {errors.timeline && <span className="text-xs text-red-500 mt-1 block">{errors.timeline.message}</span>}
             </div>
-            {errors.timeline && <span className="text-xs text-red-200 mt-1 block">{errors.timeline.message}</span>}
-          </fieldset>
-          <fieldset>
-            <legend className="text-lg font-bold text-white mb-2 flex items-center gap-2"><span>💰</span> Budget*</legend>
             <div className="relative">
                 <select {...register('budget', { required: 'Budget is required' })} className={selectClasses}>
-                <option value="" className="text-gray-800">Select Budget</option>
-                <option value="0-50k" className="text-gray-800">₹0 – ₹50,000</option>
-                <option value="50k-1L" className="text-gray-800">₹50,000 – ₹1,00,000</option>
-                <option value="1L-5L" className="text-gray-800">₹1,00,000 – ₹5,00,000</option>
-                <option value="5L+" className="text-gray-800">₹5,00,000 and Above</option>
-                <option value="TBD" className="text-gray-800">Prefer to Discuss</option>
+                <option value="">Select Budget*</option>
+                <option value="0-50k">₹0 – ₹50,000</option>
+                <option value="50k-1L">₹50,000 – ₹1,00,000</option>
+                <option value="1L-5L">₹1,00,000 – ₹5,00,000</option>
+                <option value="5L+">₹5,00,000 and Above</option>
+                <option value="TBD">Prefer to Discuss</option>
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-white">
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                 </div>
+                {errors.budget && <span className="text-xs text-red-500 mt-1 block">{errors.budget.message}</span>}
             </div>
-            {errors.budget && <span className="text-xs text-red-200 mt-1 block">{errors.budget.message}</span>}
-          </fieldset>
         </div>
 
         {/* Project Goals */}
-        <fieldset>
-          <legend className="text-lg font-bold text-white mb-2 flex items-center gap-2"><span>🎯</span> Goals</legend>
-           <div className="grid grid-cols-2 gap-2 mt-2">
-             {['Generate Leads', 'Increase Sales', 'Brand Awareness', 'New Product Launch', 'Online Presence', 'Other'].map(goal => (
-                <div key={goal}><label className="flex items-center text-white/90 cursor-pointer hover:text-white"><input type="checkbox" {...register('goals')} value={goal} className="mr-2 rounded border-white/30 bg-white/10 text-primary focus:ring-offset-0 focus:ring-white/50" />{goal}</label></div>
-              ))}
-           </div>
-        </fieldset>
+        <div>
+            <label className="text-sm font-bold text-gray-700 mb-1 block">Goals</label>
+            <div className="relative">
+                <select {...register('goals')} className={selectClasses}>
+                    <option value="">Select Primary Goal</option>
+                    <option value="Generate Leads">Generate Leads</option>
+                    <option value="Increase Sales">Increase Sales</option>
+                    <option value="Brand Awareness">Brand Awareness</option>
+                    <option value="New Product Launch">New Product Launch</option>
+                    <option value="Online Presence">Online Presence</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
+                </div>
+            </div>
+        </div>
 
         {/* Project Details */}
-        <fieldset>
-            <legend className="text-lg font-bold text-white mb-2 flex items-center gap-2"><span>📝</span> Message*</legend>
-            <textarea {...register('message', { required: 'Message is required' })} rows={4} className={inputClasses} placeholder="Tell us about your project requirements..."></textarea>
-            {errors.message && <span className="text-xs text-red-200 mt-1 block">{errors.message.message}</span>}
-        </fieldset>
+        <div>
+            <textarea {...register('message', { required: 'Message is required' })} rows={3} className={inputClasses} placeholder="Tell us about your project requirements...*"></textarea>
+            {errors.message && <span className="text-xs text-red-500 mt-1 block">{errors.message.message}</span>}
+        </div>
         
-        <fieldset>
-            <legend className="text-lg font-bold text-white mb-2 flex items-center gap-2"><span>🔗</span> Links</legend>
-            <input {...register('referenceLinks')} className={inputClasses} placeholder="Website, social media, or competitor links (Optional)" />
-        </fieldset>
+        <SimpleCaptcha ref={captchaRef} isDarkTheme={false} />
 
-        <SimpleCaptcha ref={captchaRef} isDarkTheme={true} />
-
-        <button type="submit" disabled={isSubmitting} className="w-full bg-white text-primary font-bold py-4 px-6 rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl disabled:opacity-70 flex justify-center items-center text-lg transform hover:-translate-y-1">
+        <button type="submit" disabled={isSubmitting} className="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-secondary transition-all shadow-md hover:shadow-lg disabled:opacity-70 flex justify-center items-center text-base transform hover:-translate-y-0.5">
           {isSubmitting ? 'Sending...' : 'Submit Request'}
         </button>
       </form>

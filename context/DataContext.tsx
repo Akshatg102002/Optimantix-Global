@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Service, BlogPost, Lead, Project, BlogCategory } from '../types';
+import { Service, BlogPost, Lead, Project, BlogCategory, CaseStudy } from '../types';
 import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
 import { db, auth } from '../lib/firebase';
 import firebase from 'firebase/compat/app';
@@ -11,6 +11,7 @@ interface DataContextType {
   blogCategories: BlogCategory[];
   leads: Lead[];
   projects: Project[];
+  caseStudies: CaseStudy[];
   isDark: boolean;
   toggleTheme: () => void;
   isAuthenticated: boolean;
@@ -30,6 +31,12 @@ interface DataContextType {
   // Project Actions
   addProject: (project: Omit<Project, 'id'>) => void;
   deleteProject: (id: string) => void;
+  updateProject: (project: Project) => void;
+  // Case Study Actions
+  addCaseStudy: (study: Omit<CaseStudy, 'id'>) => void;
+  updateCaseStudy: (study: CaseStudy) => void;
+  deleteCaseStudy: (id: string) => void;
+  
   updateLeadStatus: (id: string, status: Lead['status']) => void;
   // UI State
   globalLoading: boolean;
@@ -43,6 +50,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     SERVICES: 'opt_services_v5',
     LEADS: 'opt_leads_v5',
     PROJECTS: 'opt_projects_v5',
+    CASE_STUDIES: 'opt_case_studies_v1',
     THEME: 'opt_theme',
     AUTH: 'opt_admin_auth'
   };
@@ -52,6 +60,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [globalLoading, setGlobalLoading] = useState(false);
   
   // --- FIREBASE FETCHING ---
@@ -286,13 +295,32 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  // --- PROJECT ACTIONS ---
   const addProject = (projectData: Omit<Project, 'id'>) => {
     const newProject: Project = { ...projectData, id: Date.now().toString() };
     setProjects(prev => [newProject, ...prev]);
   };
 
+  const updateProject = (project: Project) => {
+    setProjects(prev => prev.map(p => p.id === project.id ? project : p));
+  };
+
   const deleteProject = (id: string) => {
     setProjects(prev => prev.filter(p => p.id !== id));
+  };
+
+  // --- CASE STUDY ACTIONS ---
+  const addCaseStudy = (studyData: Omit<CaseStudy, 'id'>) => {
+    const newStudy: CaseStudy = { ...studyData, id: Date.now().toString() };
+    setCaseStudies(prev => [newStudy, ...prev]);
+  };
+
+  const updateCaseStudy = (study: CaseStudy) => {
+    setCaseStudies(prev => prev.map(s => s.id === study.id ? study : s));
+  };
+
+  const deleteCaseStudy = (id: string) => {
+    setCaseStudies(prev => prev.filter(s => s.id !== id));
   };
 
   const updateLeadStatus = (id: string, status: Lead['status']) => {
@@ -301,13 +329,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <DataContext.Provider value={{ 
-      services, blogs, blogCategories, leads, projects,
+      services, blogs, blogCategories, leads, projects, caseStudies,
       isDark, toggleTheme,
       isAuthenticated, 
       currentUser,
       login, logout,
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus, updateBlogPost,
-      addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
+      addProject, deleteProject, updateProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
+      addCaseStudy, updateCaseStudy, deleteCaseStudy,
       globalLoading, setGlobalLoading
     }}>
       {children}
