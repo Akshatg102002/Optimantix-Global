@@ -7,7 +7,7 @@ import { MediaPicker } from '../../components/MediaManager/MediaPicker';
 import { MediaFile } from '../../hooks/useMedia';
 import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { BlogPost, CaseStudy, Service } from '../../types';
+import { BlogPost, CaseStudy, Service, SubService } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
 
 // Tabs
@@ -136,8 +136,8 @@ export const AdminDashboard: React.FC = () => {
     setEditServiceForm(service);
   };
 
-  const saveService = () => {
-    updateService(editServiceForm as Service);
+  const saveService = async () => {
+    await updateService(editServiceForm as Service);
     setEditingService(null);
   };
 
@@ -298,21 +298,102 @@ export const AdminDashboard: React.FC = () => {
                 <div key={service.id} className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:border-primary/30 transition-all">
                   {editingService === service.id ? (
                     <div className="space-y-4">
-                      <input 
-                        className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" 
-                        value={editServiceForm.title} 
-                        onChange={e => setEditServiceForm({...editServiceForm, title: e.target.value})}
-                        placeholder="Service Title"
-                      />
-                      <textarea 
-                        className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" 
-                        rows={3}
-                        value={editServiceForm.shortDescription} 
-                        onChange={e => setEditServiceForm({...editServiceForm, shortDescription: e.target.value})}
-                        placeholder="Short Description"
-                      />
-                      <div className="flex gap-2">
-                        <button onClick={saveService} className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold">Save Changes</button>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Title</label>
+                          <input 
+                            className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" 
+                            value={editServiceForm.title} 
+                            onChange={e => setEditServiceForm({...editServiceForm, title: e.target.value})}
+                            placeholder="Service Title"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Slug</label>
+                          <input 
+                            className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" 
+                            value={editServiceForm.slug} 
+                            onChange={e => setEditServiceForm({...editServiceForm, slug: e.target.value})}
+                            placeholder="service-slug"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Short Description</label>
+                        <textarea 
+                          className="w-full border p-2 rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none" 
+                          rows={2}
+                          value={editServiceForm.shortDescription} 
+                          onChange={e => setEditServiceForm({...editServiceForm, shortDescription: e.target.value})}
+                          placeholder="Short Description"
+                        />
+                      </div>
+
+                      {/* Sub-services Management */}
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300">Sub-Services</h4>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              const newSub = { id: Date.now().toString(), title: 'New Sub-Service', slug: 'new-sub-service', shortDescription: '', fullDescription: '', features: [], benefits: [] };
+                              setEditServiceForm({
+                                ...editServiceForm,
+                                subServices: [...(editServiceForm.subServices || []), newSub]
+                              });
+                            }}
+                            className="text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary hover:text-white transition"
+                          >
+                            + Add Sub-Service
+                          </button>
+                        </div>
+                        <div className="space-y-2 max-h-60 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-100 dark:border-gray-800">
+                          {editServiceForm.subServices?.map((sub: SubService, idx: number) => (
+                            <div key={sub.id || idx} className="bg-white dark:bg-dark-card p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2">
+                              <div className="flex gap-2">
+                                <input 
+                                  className="flex-1 text-xs border p-1.5 rounded dark:bg-gray-800 dark:border-gray-700"
+                                  value={sub.title}
+                                  onChange={e => {
+                                    const newSubs = [...(editServiceForm.subServices || [])];
+                                    newSubs[idx] = { ...sub, title: e.target.value, slug: generateSlug(e.target.value) };
+                                    setEditServiceForm({ ...editServiceForm, subServices: newSubs });
+                                  }}
+                                  placeholder="Sub-service Title"
+                                />
+                                <button 
+                                  type="button"
+                                  onClick={() => {
+                                    const newSubs = editServiceForm.subServices?.filter((_: SubService, i: number) => i !== idx);
+                                    setEditServiceForm({ ...editServiceForm, subServices: newSubs });
+                                  }}
+                                  className="text-red-500 hover:bg-red-50 p-1 rounded"
+                                >
+                                  <XCircle size={14} />
+                                </button>
+                              </div>
+                              <input 
+                                className="w-full text-[10px] border p-1 rounded dark:bg-gray-800 dark:border-gray-700 font-mono text-gray-500"
+                                value={sub.slug}
+                                onChange={e => {
+                                  const newSubs = [...(editServiceForm.subServices || [])];
+                                  newSubs[idx] = { ...sub, slug: e.target.value };
+                                  setEditServiceForm({ ...editServiceForm, subServices: newSubs });
+                                }}
+                                placeholder="sub-service-slug"
+                              />
+                            </div>
+                          ))}
+                          {(!editServiceForm.subServices || editServiceForm.subServices.length === 0) && (
+                            <p className="text-center text-xs text-gray-400 py-4">No sub-services added.</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                        <button onClick={saveService} className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+                          <Save size={16} /> Save Changes
+                        </button>
                         <button onClick={() => setEditingService(null)} className="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-bold">Cancel</button>
                       </div>
                     </div>

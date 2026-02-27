@@ -19,7 +19,6 @@ interface DataContextType {
   login: (pass: string) => Promise<void>;
   logout: () => Promise<void>;
   addLead: (lead: Omit<Lead, 'id' | 'date' | 'status'>) => void;
-  updateService: (service: Service) => void;
   // Blog Actions
   fetchBlogs: () => Promise<void>;
   addBlogPost: (post: Omit<BlogPost, 'id'>) => Promise<void>;
@@ -29,13 +28,18 @@ interface DataContextType {
   addBlogCategory: (category: Omit<BlogCategory, 'id'>) => Promise<void>;
   deleteBlogCategory: (id: string) => Promise<void>;
   // Project Actions
-  addProject: (project: Omit<Project, 'id'>) => void;
-  deleteProject: (id: string) => void;
-  updateProject: (project: Project) => void;
+  fetchProjects: () => Promise<void>;
+  addProject: (project: Omit<Project, 'id'>) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
+  updateProject: (project: Project) => Promise<void>;
   // Case Study Actions
-  addCaseStudy: (study: Omit<CaseStudy, 'id'>) => void;
-  updateCaseStudy: (study: CaseStudy) => void;
-  deleteCaseStudy: (id: string) => void;
+  fetchCaseStudies: () => Promise<void>;
+  addCaseStudy: (study: Omit<CaseStudy, 'id'>) => Promise<void>;
+  updateCaseStudy: (study: CaseStudy) => Promise<void>;
+  deleteCaseStudy: (id: string) => Promise<void>;
+  // Service Actions
+  fetchServices: () => Promise<void>;
+  updateService: (service: Service) => Promise<void>;
   
   updateLeadStatus: (id: string, status: Lead['status']) => void;
   // UI State
@@ -90,9 +94,66 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setBlogCategories(fetchedCategories);
       }
     } catch (error) {
-      console.warn("Fetching categories failed (using local state):", error);
+      console.warn("Fetching categories failed:", error);
     }
   }
+
+  const fetchServices = async () => {
+    try {
+      const querySnapshot = await db.collection("services").get();
+      if (!querySnapshot.empty) {
+        const fetchedServices: Service[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as Service));
+        setServices(fetchedServices);
+      } else {
+        // Seed initial services if empty
+        for (const service of INITIAL_SERVICES) {
+          const { id, ...rest } = service;
+          await db.collection("services").doc(id).set(rest);
+        }
+      }
+    } catch (error) {
+      console.warn("Fetching services failed:", error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const querySnapshot = await db.collection("projects").get();
+      if (!querySnapshot.empty) {
+        const fetchedProjects: Project[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as Project));
+        setProjects(fetchedProjects);
+      } else {
+        // Seed initial projects if empty
+        for (const project of INITIAL_PROJECTS) {
+          const { id, ...rest } = project;
+          await db.collection("projects").doc(id).set(rest);
+        }
+      }
+    } catch (error) {
+      console.warn("Fetching projects failed:", error);
+    }
+  };
+
+  const fetchCaseStudies = async () => {
+    try {
+      const querySnapshot = await db.collection("case_studies").orderBy("date", "desc").get();
+      if (!querySnapshot.empty) {
+        const fetchedStudies: CaseStudy[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as CaseStudy));
+        setCaseStudies(fetchedStudies);
+      }
+    } catch (error) {
+      console.warn("Fetching case studies failed:", error);
+    }
+  };
 
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -127,6 +188,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // If firebase user exists, we are "connected" to DB
         fetchBlogs(); 
         fetchCategories();
+        fetchServices();
+        fetchProjects();
+        fetchCaseStudies();
       }
     });
     
@@ -147,6 +211,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const timer = setTimeout(() => {
       fetchBlogs();
       fetchCategories();
+      fetchServices();
+      fetchProjects();
+      fetchCaseStudies();
     }, 0);
 
     return () => {
@@ -228,8 +295,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLeads(prev => [newLead, ...prev]);
   };
 
-  const updateService = (updatedService: Service) => {
+  const updateService = async (updatedService: Service) => {
     setServices(prev => prev.map(s => s.id === updatedService.id ? updatedService : s));
+    try {
+      await db.collection("services").doc(updatedService.id).set(updatedService);
+    } catch (e) {
+      console.error("Error updating service: ", e);
+    }
   };
 
   const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
@@ -296,31 +368,73 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // --- PROJECT ACTIONS ---
-  const addProject = (projectData: Omit<Project, 'id'>) => {
-    const newProject: Project = { ...projectData, id: Date.now().toString() };
+  const addProject = async (projectData: Omit<Project, 'id'>) => {
+    const tempId = 'temp-proj-' + Date.now();
+    const newProject: Project = { ...projectData, id: tempId };
     setProjects(prev => [newProject, ...prev]);
+    try {
+      const docRef = await db.collection("projects").add(projectData);
+      setProjects(prev => prev.map(p => p.id === tempId ? { ...p, id: docRef.id } : p));
+    } catch (e) {
+      console.error("Error adding project: ", e);
+    }
   };
 
-  const updateProject = (project: Project) => {
+  const updateProject = async (project: Project) => {
     setProjects(prev => prev.map(p => p.id === project.id ? project : p));
+    try {
+      if (!project.id.startsWith('temp-')) {
+        await db.collection("projects").doc(project.id).update(project);
+      }
+    } catch (e) {
+      console.error("Error updating project: ", e);
+    }
   };
 
-  const deleteProject = (id: string) => {
+  const deleteProject = async (id: string) => {
     setProjects(prev => prev.filter(p => p.id !== id));
+    try {
+      if (!id.startsWith('temp-')) {
+        await db.collection("projects").doc(id).delete();
+      }
+    } catch (e) {
+      console.error("Error deleting project: ", e);
+    }
   };
 
   // --- CASE STUDY ACTIONS ---
-  const addCaseStudy = (studyData: Omit<CaseStudy, 'id'>) => {
-    const newStudy: CaseStudy = { ...studyData, id: Date.now().toString() };
+  const addCaseStudy = async (studyData: Omit<CaseStudy, 'id'>) => {
+    const tempId = 'temp-study-' + Date.now();
+    const newStudy: CaseStudy = { ...studyData, id: tempId };
     setCaseStudies(prev => [newStudy, ...prev]);
+    try {
+      const docRef = await db.collection("case_studies").add(studyData);
+      setCaseStudies(prev => prev.map(s => s.id === tempId ? { ...s, id: docRef.id } : s));
+    } catch (e) {
+      console.error("Error adding case study: ", e);
+    }
   };
 
-  const updateCaseStudy = (study: CaseStudy) => {
+  const updateCaseStudy = async (study: CaseStudy) => {
     setCaseStudies(prev => prev.map(s => s.id === study.id ? study : s));
+    try {
+      if (!study.id.startsWith('temp-')) {
+        await db.collection("case_studies").doc(study.id).update(study);
+      }
+    } catch (e) {
+      console.error("Error updating case study: ", e);
+    }
   };
 
-  const deleteCaseStudy = (id: string) => {
+  const deleteCaseStudy = async (id: string) => {
     setCaseStudies(prev => prev.filter(s => s.id !== id));
+    try {
+      if (!id.startsWith('temp-')) {
+        await db.collection("case_studies").doc(id).delete();
+      }
+    } catch (e) {
+      console.error("Error deleting case study: ", e);
+    }
   };
 
   const updateLeadStatus = (id: string, status: Lead['status']) => {
@@ -337,6 +451,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus, updateBlogPost,
       addProject, deleteProject, updateProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
       addCaseStudy, updateCaseStudy, deleteCaseStudy,
+      fetchProjects, fetchCaseStudies, fetchServices,
       globalLoading, setGlobalLoading
     }}>
       {children}

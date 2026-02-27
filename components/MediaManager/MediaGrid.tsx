@@ -14,6 +14,7 @@ export const MediaGrid: React.FC<MediaGridProps> = ({ onSelect, selectable = fal
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
   const handleCopy = (file: MediaFile) => {
     // In a real app with Storage, this would be the URL. 
@@ -29,14 +30,17 @@ export const MediaGrid: React.FC<MediaGridProps> = ({ onSelect, selectable = fal
     if (!files || files.length === 0) return;
 
     setIsUploading(true);
+    setUploadProgress({ current: 0, total: files.length });
     try {
       for (let i = 0; i < files.length; i++) {
         await uploadFile(files[i]);
+        setUploadProgress(prev => ({ ...prev, current: i + 1 }));
       }
     } catch (err) {
       console.error('Upload failed', err);
     } finally {
       setIsUploading(false);
+      setUploadProgress({ current: 0, total: 0 });
       // Reset input
       e.target.value = '';
     }
@@ -55,7 +59,45 @@ export const MediaGrid: React.FC<MediaGridProps> = ({ onSelect, selectable = fal
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Loading Overlay */}
+      <AnimatePresence>
+        {isUploading && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          >
+            <div className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 max-w-sm w-full mx-4 text-center">
+              <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                <div 
+                  className="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"
+                ></div>
+                <div className="absolute inset-0 flex items-center justify-center font-bold text-primary">
+                  {Math.round((uploadProgress.current / uploadProgress.total) * 100)}%
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Uploading Media</h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                Please wait while we process your files.
+              </p>
+              <div className="bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden mb-2">
+                <motion.div 
+                  className="bg-primary h-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                />
+              </div>
+              <div className="text-xs font-medium text-gray-400">
+                {uploadProgress.current} out of {uploadProgress.total} uploaded
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
         <div className="relative w-full md:w-96">
