@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Check, Shield, Zap, Users, Globe, Mail, MessageSquare, Video, Calendar, FileText, Layout, Database, Search, Lock, HelpCircle, ArrowRight, Star } from 'lucide-react';
+import { Check, Zap, Users, Globe, Layout, Database, HelpCircle, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 

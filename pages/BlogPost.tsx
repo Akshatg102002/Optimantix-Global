@@ -5,6 +5,7 @@ import { useData } from '../context/DataContext';
 import { ArrowLeft } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
+import { ShareButtons } from '../components/ShareButtons';
 
 export const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -41,6 +42,8 @@ export const BlogPost: React.FC = () => {
             {blog.content.split('\n').map((paragraph, idx) => (
               <p key={idx} className="mb-4 whitespace-pre-line">{paragraph}</p>
             ))}
+            
+            <ShareButtons title={blog.title} url={window.location.href} />
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-sm text-gray-500">

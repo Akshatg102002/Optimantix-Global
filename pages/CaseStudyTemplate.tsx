@@ -6,6 +6,7 @@ import { ParallaxHero } from '../components/ParallaxHero';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { ShareButtons } from '../components/ShareButtons';
 
 export const CaseStudyTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -73,6 +74,7 @@ export const CaseStudyTemplate: React.FC = () => {
             {/* Content */}
             <div className="prose dark:prose-invert max-w-none">
                 <ReactMarkdown>{study.content}</ReactMarkdown>
+                <ShareButtons title={study.title} url={window.location.href} />
             </div>
 
             {/* Tags */}

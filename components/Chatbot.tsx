@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, ChevronRight, User, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeInput } from '../utils/security';

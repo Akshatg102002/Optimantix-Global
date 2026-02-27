@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Layers, Briefcase, Phone, User } from 'lucide-react';
+import { Home, Layers, Briefcase, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const BottomNav: React.FC = () => {
@@ -11,8 +11,8 @@ export const BottomNav: React.FC = () => {
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
     { path: '/services', label: 'Solutions', icon: Layers },
-    { path: '/blog', label: 'Blog', icon: Briefcase },
-    { path: '/contact', label: 'Contact', icon: Phone },
+    { path: '/blog', label: 'Blog', icon: FileText },
+    { path: '/case-studies', label: 'Projects', icon: Briefcase },
   ];
 
   const MotionDiv = motion.div as any;
