@@ -38,7 +38,7 @@ export const BlogList: React.FC = () => {
                 <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-3">
                   <div className="flex items-center gap-1">
                     <Calendar size={14} />
-                    <span>{new Date(blog.date).toLocaleDateString()}</span>
+                    <span>{blog.date.includes('-') ? new Date(blog.date).toLocaleDateString() : blog.date}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <User size={14} />

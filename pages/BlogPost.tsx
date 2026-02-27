@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { Calendar, User, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 
@@ -24,7 +24,7 @@ export const BlogPost: React.FC = () => {
 
       <ParallaxHero 
          title={blog.title}
-         subtitle={`By ${blog.author} • ${new Date(blog.date).toLocaleDateString()}`}
+         subtitle={`By ${blog.author} • ${blog.date.includes('-') ? new Date(blog.date).toLocaleDateString() : blog.date}`}
          imageUrl={blog.imageUrl}
          height="60vh"
          overlayOpacity={0.7}
@@ -44,7 +44,7 @@ export const BlogPost: React.FC = () => {
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-sm text-gray-500">
-             <span>Published on {new Date(blog.date).toLocaleDateString()}</span>
+             <span>Published on {blog.date.includes('-') ? new Date(blog.date).toLocaleDateString() : blog.date}</span>
              <span>Author: {blog.author}</span>
           </div>
         </article>

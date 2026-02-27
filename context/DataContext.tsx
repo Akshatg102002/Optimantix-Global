@@ -67,32 +67,52 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [globalLoading, setGlobalLoading] = useState(false);
   
+  // Helper to parse various date formats
+  const parseDate = (dateStr: string) => {
+    if (!dateStr) return 0;
+    // Try standard parsing
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d.getTime();
+    
+    // Try DD/MM/YYYY
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1;
+      const year = parseInt(parts[2]);
+      const d2 = new Date(year, month, day);
+      if (!isNaN(d2.getTime())) return d2.getTime();
+    }
+    
+    return 0;
+  };
+
   // --- FIREBASE FETCHING ---
   const fetchBlogs = async () => {
     try {
-      const querySnapshot = await db.collection("blogs").orderBy("date", "desc").get();
-      if (!querySnapshot.empty) {
-        const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as BlogPost));
-        setBlogs(fetchedBlogs);
-      }
+      const querySnapshot = await db.collection("blogs").get();
+      const fetchedBlogs: BlogPost[] = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as BlogPost));
+      
+      // Sort in memory to avoid index requirements
+      fetchedBlogs.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      
+      setBlogs(fetchedBlogs);
     } catch (error) {
-      console.warn("Fetching blogs failed (using local state):", error);
+      console.warn("Fetching blogs failed:", error);
     }
   };
 
   const fetchCategories = async () => {
     try {
       const querySnapshot = await db.collection("blog_categories").get();
-      if (!querySnapshot.empty) {
-        const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as BlogCategory));
-        setBlogCategories(fetchedCategories);
-      }
+      const fetchedCategories: BlogCategory[] = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as BlogCategory));
+      setBlogCategories(fetchedCategories);
     } catch (error) {
       console.warn("Fetching categories failed:", error);
     }
@@ -142,14 +162,16 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchCaseStudies = async () => {
     try {
-      const querySnapshot = await db.collection("case_studies").orderBy("date", "desc").get();
-      if (!querySnapshot.empty) {
-        const fetchedStudies: CaseStudy[] = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as CaseStudy));
-        setCaseStudies(fetchedStudies);
-      }
+      const querySnapshot = await db.collection("case_studies").get();
+      const fetchedStudies: CaseStudy[] = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as CaseStudy));
+      
+      // Sort in memory
+      fetchedStudies.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      
+      setCaseStudies(fetchedStudies);
     } catch (error) {
       console.warn("Fetching case studies failed:", error);
     }
@@ -197,24 +219,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Check Local Storage for Admin Session
     const localAuth = localStorage.getItem(STORAGE_KEYS.AUTH);
     if (localAuth === 'true') {
-        const timer = setTimeout(() => {
-          setIsAuthenticated(true);
-          // Try to establish firebase connection silently if needed
-          if (!auth.currentUser) {
-              auth.signInAnonymously().catch(e => console.warn("Background auth failed", e));
-          }
-        }, 0);
-        return () => clearTimeout(timer);
+      setTimeout(() => setIsAuthenticated(true), 0);
+    }
+
+    // Always attempt anonymous sign-in if no user exists to ensure DB access
+    if (!auth.currentUser) {
+      auth.signInAnonymously().catch(e => console.warn("Background auth failed", e));
     }
     
-    // Always fetch public data initially, regardless of auth
+    // Always fetch public data initially
     const timer = setTimeout(() => {
       fetchBlogs();
       fetchCategories();
       fetchServices();
       fetchProjects();
       fetchCaseStudies();
-    }, 0);
+    }, 500); // Small delay to allow auth to initialize
 
     return () => {
       unsubscribe();
@@ -251,30 +271,39 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
     const storedLeads = localStorage.getItem(STORAGE_KEYS.LEADS);
     const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+    const storedBlogs = localStorage.getItem('opt_blogs_v1');
+    const storedCaseStudies = localStorage.getItem(STORAGE_KEYS.CASE_STUDIES);
 
     if (storedServices) {
         try {
             const parsed = JSON.parse(storedServices);
             if (Array.isArray(parsed) && parsed.length > 0) {
-              const timer = setTimeout(() => setServices(parsed), 0);
-              return () => clearTimeout(timer);
+              setTimeout(() => setServices(parsed), 0);
             }
         } catch (e) { console.error("Failed to parse services", e); }
     }
     
     if (storedLeads) {
         try { 
-          const parsed = JSON.parse(storedLeads);
-          const timer = setTimeout(() => setLeads(parsed), 0);
-          return () => clearTimeout(timer);
+          setTimeout(() => setLeads(JSON.parse(storedLeads)), 0);
         } catch (e) { console.error(e); }
     }
     
     if (storedProjects) {
         try { 
-          const parsed = JSON.parse(storedProjects);
-          const timer = setTimeout(() => setProjects(parsed), 0);
-          return () => clearTimeout(timer);
+          setTimeout(() => setProjects(JSON.parse(storedProjects)), 0);
+        } catch (e) { console.error(e); }
+    }
+
+    if (storedBlogs) {
+        try {
+          setTimeout(() => setBlogs(JSON.parse(storedBlogs)), 0);
+        } catch (e) { console.error(e); }
+    }
+
+    if (storedCaseStudies) {
+        try {
+          setTimeout(() => setCaseStudies(JSON.parse(storedCaseStudies)), 0);
         } catch (e) { console.error(e); }
     }
   }, []);
@@ -282,6 +311,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services)); }, [services]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads)); }, [leads]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects)); }, [projects]);
+  useEffect(() => { localStorage.setItem('opt_blogs_v1', JSON.stringify(blogs)); }, [blogs]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.CASE_STUDIES, JSON.stringify(caseStudies)); }, [caseStudies]);
 
   // --- ACTION HANDLERS ---
 
