@@ -22,6 +22,7 @@ interface DataContextType {
   // Blog Actions
   fetchBlogs: () => Promise<void>;
   addBlogPost: (post: Omit<BlogPost, 'id'>) => Promise<void>;
+  updateBlogPost: (post: BlogPost) => Promise<void>;
   deleteBlogPost: (id: string) => Promise<void>;
   // Category Actions
   addBlogCategory: (category: Omit<BlogCategory, 'id'>) => Promise<void>;
@@ -248,6 +249,18 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateBlogPost = async (post: BlogPost) => {
+    setBlogs(prev => prev.map(b => b.id === post.id ? post : b));
+    try {
+      if (!post.id.startsWith('temp-')) {
+        await db.collection("blogs").doc(post.id).update(post);
+      }
+    } catch (e) {
+      console.error("Error updating blog: ", e);
+      alert("Note: Database update failed. Item updated locally.");
+    }
+  };
+
   const addBlogCategory = async (categoryData: Omit<BlogCategory, 'id'>) => {
     const tempId = 'temp-cat-' + Date.now();
     const newCat = { ...categoryData, id: tempId };
@@ -293,7 +306,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       isAuthenticated, 
       currentUser,
       login, logout,
-      addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus,
+      addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus, updateBlogPost,
       addProject, deleteProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
       globalLoading, setGlobalLoading
     }}>

@@ -8,8 +8,10 @@ import { Chatbot } from './Chatbot';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 
+import { ContactSection } from './ContactSection';
+
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -27,6 +29,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="flex-grow pt-20 pb-20 md:pb-0">
         {children}
       </main>
+      <ContactSection />
       <Footer />
       <BottomNav />
       <FloatingContact />

@@ -10,7 +10,6 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 // Lazy load pages to enable loading animation and code splitting
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
-const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
 const ServicesPage = lazy(() => import('./pages/ServicesPage').then(module => ({ default: module.ServicesPage })));
 const ServiceTemplate = lazy(() => import('./pages/ServiceTemplate').then(module => ({ default: module.ServiceTemplate })));
 const SubServiceTemplate = lazy(() => import('./pages/SubServiceTemplate').then(module => ({ default: module.SubServiceTemplate })));
@@ -32,7 +31,6 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/:slug" element={<ServiceTemplate />} />
               <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />

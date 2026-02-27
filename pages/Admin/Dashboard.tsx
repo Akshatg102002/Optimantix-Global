@@ -33,7 +33,7 @@ export const AdminDashboard: React.FC = () => {
   const { 
     services, blogs, blogCategories, projects, 
     updateService, 
-    addBlogPost, deleteBlogPost, 
+    addBlogPost, deleteBlogPost, updateBlogPost,
     addBlogCategory, deleteBlogCategory,
     addProject, deleteProject, 
     isAuthenticated, logout 
@@ -53,6 +53,8 @@ export const AdminDashboard: React.FC = () => {
   };
   const [blogForm, setBlogForm] = useState<Partial<BlogPost>>(initialBlogForm);
   const [isSubmittingBlog, setIsSubmittingBlog] = useState(false);
+
+  const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
 
   // Category Form
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -114,6 +116,30 @@ export const AdminDashboard: React.FC = () => {
         setNewCategoryName('');
     } catch (error) {
         alert("Failed to create category");
+    }
+  };
+
+  const handleEditBlog = (blog: BlogPost) => {
+    setEditingBlog(blog);
+    setBlogForm(blog);
+    setBlogView(BLOG_VIEWS.EDIT);
+  };
+
+  const handleUpdateBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingBlog) return;
+
+    setIsSubmittingBlog(true);
+    try {
+      await updateBlogPost({ ...editingBlog, ...blogForm });
+      alert("Blog Updated Successfully!");
+      setEditingBlog(null);
+      setBlogForm(initialBlogForm);
+      setBlogView(BLOG_VIEWS.LIST);
+    } catch (error) {
+      alert("Failed to update blog");
+    } finally {
+      setIsSubmittingBlog(false);
     }
   };
 
@@ -261,7 +287,7 @@ export const AdminDashboard: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                <h1 className="text-2xl font-bold">
                   {blogView === BLOG_VIEWS.LIST && "Manage Blogs"}
-                  {blogView === BLOG_VIEWS.EDIT && "Create New Blog"}
+                  {blogView === BLOG_VIEWS.EDIT && (editingBlog ? 'Edit Blog Post' : 'Create New Blog')}
                   {blogView === BLOG_VIEWS.CATEGORIES && "Blog Categories"}
                   {blogView === BLOG_VIEWS.IMPORT && "Import Blogs from CSV"}
                </h1>
@@ -322,7 +348,8 @@ export const AdminDashboard: React.FC = () => {
                                                 </td>
                                                 <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{blog.author}</td>
                                                 <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(blog.date).toLocaleDateString()}</td>
-                                                <td className="p-4 text-right">
+                                                <td className="p-4 text-right flex items-center justify-end gap-2">
+                                                    <button onClick={() => handleEditBlog(blog)} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition"><Save size={18} /></button>
                                                     <button onClick={() => deleteBlogPost(blog.id)} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition"><XCircle size={18} /></button>
                                                 </td>
                                             </tr>
@@ -367,7 +394,7 @@ export const AdminDashboard: React.FC = () => {
 
             {/* BLOG VIEW: EDIT (NEW BLOG) */}
             {blogView === BLOG_VIEWS.EDIT && (
-                <form onSubmit={handlePublishBlog} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <form onSubmit={editingBlog ? handleUpdateBlog : handlePublishBlog} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
                         <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Content</h2>
@@ -501,7 +528,7 @@ export const AdminDashboard: React.FC = () => {
                                 disabled={isSubmittingBlog}
                                 className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-secondary transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-md"
                             >
-                                {isSubmittingBlog ? "Publishing..." : <><Save size={18} /> Publish Blog</>}
+                                {isSubmittingBlog ? (editingBlog ? 'Updating...' : 'Publishing...') : <><Save size={18} /> {editingBlog ? 'Update Blog' : 'Publish Blog'}</>}
                              </button>
                         </div>
                     </div>
