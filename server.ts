@@ -3,9 +3,33 @@ import { createServer as createViteServer } from "vite";
 import { Resend } from 'resend';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { promises as fs } from 'fs';
+import type { BlogPost } from './types';
+import { normalizeBlogPayload, generateSlug } from './utils/blog';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const BLOG_DB_PATH = path.join(__dirname, 'data', 'blogs.json');
+
+const ensureBlogDb = async () => {
+  await fs.mkdir(path.dirname(BLOG_DB_PATH), { recursive: true });
+  try {
+    await fs.access(BLOG_DB_PATH);
+  } catch {
+    await fs.writeFile(BLOG_DB_PATH, '[]', 'utf8');
+  }
+};
+
+const readBlogs = async (): Promise<BlogPost[]> => {
+  await ensureBlogDb();
+  const raw = await fs.readFile(BLOG_DB_PATH, 'utf8');
+  return JSON.parse(raw) as BlogPost[];
+};
+
+const writeBlogs = async (blogs: BlogPost[]) => {
+  await ensureBlogDb();
+  await fs.writeFile(BLOG_DB_PATH, JSON.stringify(blogs, null, 2), 'utf8');
+};
 
 async function startServer() {
   const app = express();
@@ -15,6 +39,61 @@ async function startServer() {
   const resend = new Resend(process.env.RESEND_API_KEY || 're_VDxHSd9Q_KDURrtak3UEbnE6n1bvB5Eep');
 
   app.use(express.json());
+
+  app.get('/api/blogs', async (_req, res) => {
+    const blogs = await readBlogs();
+    res.json({ success: true, data: blogs.sort((a, b) => +new Date(b.date) - +new Date(a.date)) });
+  });
+
+  app.get('/api/blogs/:idOrSlug', async (req, res) => {
+    const blogs = await readBlogs();
+    const blog = blogs.find(
+      (item) => item.id === req.params.idOrSlug || item.slug === req.params.idOrSlug
+    );
+
+    if (!blog) return res.status(404).json({ success: false, message: 'Blog not found' });
+    return res.json({ success: true, data: blog });
+  });
+
+  app.post('/api/blogs', async (req, res) => {
+    try {
+      const blogs = await readBlogs();
+      const normalized = normalizeBlogPayload(req.body);
+      const finalSlug = blogs.some((b) => b.slug === normalized.slug)
+        ? `${normalized.slug}-${Date.now()}`
+        : normalized.slug;
+
+      const created: BlogPost = {
+        id: `blog-${Date.now()}`,
+        ...normalized,
+        slug: generateSlug(finalSlug)
+      };
+
+      await writeBlogs([created, ...blogs]);
+      return res.status(201).json({ success: true, data: created });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to create blog';
+      return res.status(400).json({ success: false, message });
+    }
+  });
+
+  app.put('/api/blogs/:id', async (req, res) => {
+    try {
+      const blogs = await readBlogs();
+      const index = blogs.findIndex((item) => item.id === req.params.id);
+      if (index < 0) return res.status(404).json({ success: false, message: 'Blog not found' });
+
+      const normalized = normalizeBlogPayload(req.body);
+      const updated: BlogPost = { ...blogs[index], ...normalized, id: blogs[index].id };
+      blogs[index] = updated;
+      await writeBlogs(blogs);
+
+      return res.json({ success: true, data: updated });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to update blog';
+      return res.status(400).json({ success: false, message });
+    }
+  });
 
   // API routes FIRST
   app.post("/api/contact", async (req, res) => {
