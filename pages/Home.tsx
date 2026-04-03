@@ -86,19 +86,9 @@ const CLIENTS = [
     logo: "https://kyptec-lifestyle.com/cdn/shop/files/kyptec-lifestyle-logo.png"
   },
   {
-    name: "Loni Mobility",
-    url: "https://lonimobillity.com",
-    logo: "https://i.ibb.co/GfNjH1Dd/LONI.jpg"
-  },
-  {
     name: "Onestop",
     url: "https://onestopretail.in",
     logo: "https://onestopretail.in/cdn/shop/files/Onestop-logo_142x74.png"
-  },
-  {
-    name: "Able Landscape",
-    url: "https://www.indiamart.com/able-landscape/profile.html",
-    logo: "https://5.imimg.com/data5/SELLER/Logo/2025/12/569746941/BD/NK/BH/131787160/be06081f-9c9f-4f9f-a967-6fcadce9d571-120x120.jpeg"
   },
   {
     name: "Gift by Category",
@@ -106,19 +96,9 @@ const CLIENTS = [
     logo: "https://giftsomatic.in/wp-content/uploads/2023/02/cropped-Giftsomatic.jpg"
   },
   {
-    name: "KRS Textiles",
-    url: "https://www.krstextiles.in",
-    logo: "https://www.krstextiles.in/images/logo.png"
-  },
-  {
     name: "Enhanced Essentials",
     url: "https://www.indiamart.com/shreesundram-agencies-indore",
     logo: "https://images.aasaan.shop/stores/enhancedessentials/social_post/images/social_post_1767049242444.png"
-  },
-  {
-    name: "Formost UAE",
-    url: "https://www.amazon.ae/s?k=FORMOST&ref=bl_dp_s_web_0",
-    logo: "https://formost.ae/cdn/shop/files/formost-logo.png?v=1728651545&width=105"
   },
   {
     name: "Eskag Pharma",

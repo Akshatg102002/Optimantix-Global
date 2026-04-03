@@ -19,7 +19,7 @@ export const GoogleWorkspace: React.FC = () => {
     {
       title: "Free Email Migration Support",
       description: "Migrating from cPanel, Zoho Mail, Outlook, or GoDaddy? Our team handles the full migration — emails, contacts, and calendars — with minimal to zero downtime.",
-      icon: <Mail className="w-6 h-6" />
+      icon: <Zap className="w-6 h-6" />
     },
     {
       title: "End-to-End Onboarding & Setup",

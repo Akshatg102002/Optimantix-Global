@@ -45,7 +45,6 @@ export const LoadingSpinner: React.FC<Props> = ({ isGlobal = false }) => {
               transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
               className="mt-6 text-sm font-bold text-primary uppercase tracking-[0.2em]"
             >
-              Optimantix
             </MotionP>
           </div>
         </div>
