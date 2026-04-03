@@ -45,7 +45,7 @@ export interface BlogPost {
   title: string;
   slug: string;
   excerpt: string;
-  content: string;
+  content: string; // HTML content
   author: string;
   date: string;
   imageUrl: string;
@@ -53,6 +53,7 @@ export interface BlogPost {
   categoryId?: string;
   metaTitle?: string;
   metaDescription?: string;
+  metaKeywords?: string;
   tags?: string[];
   isPublished?: boolean;
 }

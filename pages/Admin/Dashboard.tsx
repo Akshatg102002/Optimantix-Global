@@ -9,6 +9,8 @@ import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft
 import { Icon } from '../../components/Icon';
 import { BlogPost, CaseStudy, Service, SubService } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
+import { RichTextEditor } from '../../components/Admin/RichTextEditor';
+import { generateSlug, normalizeBlogPayload } from '../../utils/blog';
 
 // Tabs
 const TABS = {
@@ -68,7 +70,7 @@ export const AdminDashboard: React.FC = () => {
   const initialBlogForm: Partial<BlogPost> = { 
     title: '', slug: '', excerpt: '', content: '', author: 'Admin', 
     imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800',
-    categoryId: '', metaTitle: '', metaDescription: '', isPublished: true 
+    categoryId: '', metaTitle: '', metaDescription: '', metaKeywords: '', isPublished: true 
   };
   const [blogForm, setBlogForm] = useState<Partial<BlogPost>>(initialBlogForm);
   const [isSubmittingBlog, setIsSubmittingBlog] = useState(false);
@@ -146,8 +148,9 @@ export const AdminDashboard: React.FC = () => {
     e.preventDefault();
     setIsSubmittingBlog(true);
     try {
+        const normalized = normalizeBlogPayload(blogForm);
         await addBlogPost({
-            ...blogForm as BlogPost,
+            ...normalized,
             date: new Date().toISOString()
         });
         alert("Blog Posted Successfully!");
@@ -178,13 +181,29 @@ export const AdminDashboard: React.FC = () => {
     setBlogView(BLOG_VIEWS.EDIT);
   };
 
+  const handleCreateBlog = () => {
+    setEditingBlog(null);
+    const savedDraft = localStorage.getItem('opt_blog_autosave_v1');
+    if (savedDraft) {
+      try {
+        setBlogForm(JSON.parse(savedDraft));
+      } catch {
+        setBlogForm(initialBlogForm);
+      }
+    } else {
+      setBlogForm(initialBlogForm);
+    }
+    setBlogView(BLOG_VIEWS.EDIT);
+  };
+
   const handleUpdateBlog = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingBlog) return;
 
     setIsSubmittingBlog(true);
     try {
-      await updateBlogPost({ ...editingBlog, ...blogForm });
+      const normalized = normalizeBlogPayload(blogForm);
+      await updateBlogPost({ ...editingBlog, ...normalized });
       alert("Blog Updated Successfully!");
       setEditingBlog(null);
       setBlogForm(initialBlogForm);
@@ -204,9 +223,21 @@ export const AdminDashboard: React.FC = () => {
     alert("Project Added!");
   };
 
-  const generateSlug = (text: string) => {
-      return text.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+  const uploadFeaturedImage = async (file: File) => {
+    return await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.readAsDataURL(file);
+    });
   };
+
+  useEffect(() => {
+    if (blogView !== BLOG_VIEWS.EDIT) return;
+    const t = window.setTimeout(() => {
+      localStorage.setItem('opt_blog_autosave_v1', JSON.stringify(blogForm));
+    }, 800);
+    return () => window.clearTimeout(t);
+  }, [blogForm, blogView]);
 
   if (!isAuthenticated) return null;
 
@@ -442,7 +473,7 @@ export const AdminDashboard: React.FC = () => {
                         <button onClick={() => setBlogView(BLOG_VIEWS.CATEGORIES)} className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition">
                             Categories
                         </button>
-                        <button onClick={() => setBlogView(BLOG_VIEWS.EDIT)} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-secondary transition flex items-center gap-2 shadow-lg shadow-primary/20">
+                        <button onClick={handleCreateBlog} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-secondary transition flex items-center gap-2 shadow-lg shadow-primary/20">
                             <Plus size={16} /> New Blog
                         </button>
                        </>
@@ -559,15 +590,12 @@ export const AdminDashboard: React.FC = () => {
 
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Blog Content</label>
-                                <textarea 
-                                    required
-                                    rows={12}
-                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none leading-relaxed"
-                                    placeholder="Write your article content here..."
-                                    value={blogForm.content}
-                                    onChange={e => setBlogForm({...blogForm, content: e.target.value})}
+                                <RichTextEditor
+                                    value={blogForm.content || ''}
+                                    onChange={(content) => setBlogForm({ ...blogForm, content })}
+                                    onImageUpload={uploadFeaturedImage}
                                 />
-                                <p className="text-xs text-gray-400 mt-1">Basic text formatting supported.</p>
+                                <p className="text-xs text-gray-400 mt-1">Supports headings, lists, links, alignment, image insert and HTML code mode.</p>
                             </div>
 
                             <div>
@@ -603,6 +631,15 @@ export const AdminDashboard: React.FC = () => {
                                     placeholder="SEO Description (defaults to excerpt)"
                                     value={blogForm.metaDescription}
                                     onChange={e => setBlogForm({...blogForm, metaDescription: e.target.value})}
+                                />
+                             </div>
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Keywords</label>
+                                <input
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="keyword1, keyword2, keyword3"
+                                    value={blogForm.metaKeywords || ''}
+                                    onChange={e => setBlogForm({...blogForm, metaKeywords: e.target.value})}
                                 />
                              </div>
                         </div>
@@ -653,12 +690,54 @@ export const AdminDashboard: React.FC = () => {
                                     value={blogForm.imageUrl}
                                     onChange={e => setBlogForm({...blogForm, imageUrl: e.target.value})}
                                 />
+                                <label className="mt-2 inline-flex text-xs text-primary hover:underline cursor-pointer font-bold">
+                                  Upload image
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (!file) return;
+                                      const imageUrl = await uploadFeaturedImage(file);
+                                      setBlogForm({ ...blogForm, imageUrl });
+                                      e.target.value = '';
+                                    }}
+                                  />
+                                </label>
                                 {blogForm.imageUrl && (
                                     <div className="mt-3 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100">
                                         <img src={blogForm.imageUrl} className="w-full h-full object-cover" alt="Preview" onError={(e) => (e.currentTarget.style.display = 'none')} />
                                     </div>
                                 )}
                              </div>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                                <div className="flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => setBlogForm({ ...blogForm, isPublished: false })}
+                                    className={`px-3 py-2 rounded-lg text-sm font-bold border ${blogForm.isPublished === false ? 'bg-amber-500 text-white border-amber-500' : 'border-gray-300 dark:border-gray-700'}`}
+                                  >
+                                    Draft
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setBlogForm({ ...blogForm, isPublished: true })}
+                                    className={`px-3 py-2 rounded-lg text-sm font-bold border ${blogForm.isPublished !== false ? 'bg-green-600 text-white border-green-600' : 'border-gray-300 dark:border-gray-700'}`}
+                                  >
+                                    Publish
+                                  </button>
+                                </div>
+                             </div>
+
+                             {(blogForm.content || '').trim() && (
+                              <details className="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                                <summary className="cursor-pointer text-sm font-bold">Preview</summary>
+                                <div className="prose dark:prose-invert max-w-none mt-3" dangerouslySetInnerHTML={{ __html: blogForm.content || '' }} />
+                              </details>
+                             )}
 
                              <button 
                                 type="submit" 
