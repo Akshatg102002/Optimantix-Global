@@ -429,8 +429,6 @@ export const Home: React.FC = () => {
                 </div>
                 <div className="p-8 flex flex-col flex-grow">
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
-                     <span>{new Date(blog.date).toLocaleDateString()}</span>
-                     <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                      <span>{blog.author}</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">

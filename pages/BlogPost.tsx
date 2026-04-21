@@ -7,6 +7,7 @@ import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ShareButtons } from '../components/ShareButtons';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 
 export const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -42,6 +43,7 @@ export const BlogPost: React.FC = () => {
             
             <div className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
               <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
                 components={{
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   h2: ({node, ...props}) => <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mt-12 mb-6" {...props} />,
