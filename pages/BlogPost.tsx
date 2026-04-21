@@ -2,12 +2,13 @@
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ShareButtons } from '../components/ShareButtons';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import { Helmet } from 'react-helmet-async';
 
 export const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -21,12 +22,75 @@ export const BlogPost: React.FC = () => {
   // Get max 4 recent blogs excluding the current one
   const recentBlogs = blogs.filter(b => b.slug !== slug).slice(0, 4);
 
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  
+  // JSON-LD for Breadcrumbs
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": typeof window !== 'undefined' ? window.location.origin : ''
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": typeof window !== 'undefined' ? `${window.location.origin}/blog` : ''
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": blog.title,
+        "item": currentUrl
+      }
+    ]
+  };
+
+  // JSON-LD for BlogPosting
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": blog.title,
+    "image": blog.imageUrl,
+    "author": {
+      "@type": "Person",
+      "name": blog.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Optimantix Global",
+      "logo": {
+        "@type": "ImageObject",
+        "url": typeof window !== 'undefined' ? `${window.location.origin}/logo.png` : ''
+      }
+    },
+    "datePublished": blog.date,
+    "dateModified": blog.date, // update this logically if there's a modified date
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": currentUrl
+    }
+  };
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
         title={blog.metaTitle || blog.title} 
         description={blog.metaDescription || blog.excerpt}
+        type="article"
+        image={blog.imageUrl}
+        url={currentUrl}
+        author={blog.author}
+        publishedTime={blog.date}
       />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(blogSchema)}</script>
+      </Helmet>
 
       <ParallaxHero 
          title={blog.title}
@@ -36,7 +100,16 @@ export const BlogPost: React.FC = () => {
          overlayOpacity={0.7}
       />
 
-      <div className="container mx-auto px-4 md:px-6 py-12">
+      <div className="container mx-auto px-4 md:px-6 py-6">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center text-sm text-gray-500 font-medium mb-6">
+          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <Link to="/blog" className="hover:text-primary transition-colors">Blog</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <span className="text-gray-900 dark:text-white line-clamp-1 truncate">{blog.title}</span>
+        </nav>
+
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Main Content */}
           <article className="flex-1 bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden p-8 md:p-12">
@@ -65,12 +138,14 @@ export const BlogPost: React.FC = () => {
                   li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-primary pl-4 italic my-6 text-gray-700 dark:text-gray-300" {...props} />,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  img: ({node, ...props}) => <img loading="lazy" className="rounded-lg shadow-sm mx-auto my-8 max-w-full h-auto" alt={props.alt || blog.title} {...props} />
                 }}
               >
                 {blog.content}
               </ReactMarkdown>
               
-              <ShareButtons title={blog.title} url={window.location.href} />
+              <ShareButtons title={blog.title} url={currentUrl} />
             </div>
 
             <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500 gap-4">
@@ -86,13 +161,14 @@ export const BlogPost: React.FC = () => {
             <aside className="lg:w-[350px] flex-shrink-0">
               <div className="sticky top-24">
                 <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-4">
-                  Recent Posts
+                  Related Posts
                 </h3>
                 <div className="space-y-6">
                   {recentBlogs.map(rb => (
                     <Link key={rb.id} to={`/blog/${rb.slug}`} className="group flex gap-4 items-start bg-white dark:bg-dark-card p-4 rounded-xl border border-gray-50 dark:border-gray-800 hover:shadow-md transition-all duration-300">
                       <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
                         <img 
+                          loading="lazy"
                           src={rb.imageUrl} 
                           alt={rb.title} 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 

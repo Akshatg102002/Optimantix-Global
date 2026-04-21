@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { Calendar, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 
