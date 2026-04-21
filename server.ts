@@ -5,13 +5,15 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, query } from 'firebase/firestore';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Very basic configuration since we just need to read public data strictly for sitemap
 // Note: Normally we'd use Firebase Admin for server-side, but the client credentials will work for public reads
-import firebaseConfig from './firebase-applet-config.json' assert { type: 'json' };
+const configPath = path.resolve(__dirname, 'firebase-applet-config.json');
+const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 const appFirebase = initializeApp(firebaseConfig);
 const db = getFirestore(appFirebase, firebaseConfig.firestoreDatabaseId);
