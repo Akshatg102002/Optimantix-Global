@@ -16,19 +16,19 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ title, url }) => {
       name: 'Twitter',
       icon: Twitter,
       href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-      color: 'hover:text-[#1DA1F2]'
+      color: 'text-[#1DA1F2] hover:opacity-80'
     },
     {
       name: 'LinkedIn',
       icon: Linkedin,
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-      color: 'hover:text-[#0A66C2]'
+      color: 'text-[#0A66C2] hover:opacity-80'
     },
     {
       name: 'Facebook',
       icon: Facebook,
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-      color: 'hover:text-[#1877F2]'
+      color: 'text-[#1877F2] hover:opacity-80'
     }
   ];
 
@@ -47,7 +47,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ title, url }) => {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-gray-400 transition-colors duration-200 ${link.color}`}
+            className={`transition-opacity duration-200 ${link.color}`}
             title={`Share on ${link.name}`}
           >
             <link.icon size={20} />
@@ -55,7 +55,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ title, url }) => {
         ))}
         <button
           onClick={copyToClipboard}
-          className="text-gray-400 hover:text-primary transition-colors duration-200"
+          className="text-gray-500 hover:text-primary transition-colors duration-200"
           title="Copy Link"
         >
           <LinkIcon size={20} />

@@ -4,7 +4,6 @@ import { Service, BlogPost, Lead, Project, BlogCategory, CaseStudy } from '../ty
 import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
 import { db, auth } from '../lib/firebase';
 import firebase from 'firebase/compat/app';
-import { normalizeBlogPayload } from '../utils/blog';
 
 interface DataContextType {
   services: Service[];
@@ -337,13 +336,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
-    const normalizedPost = normalizeBlogPayload(postData);
     const tempId = 'temp-' + Date.now();
-    const newPost = { ...normalizedPost, id: tempId } as BlogPost;
+    const newPost = { ...postData, id: tempId } as BlogPost;
     setBlogs(prev => [newPost, ...prev]);
 
     try {
-      const docRef = await db.collection("blogs").add(normalizedPost);
+      const docRef = await db.collection("blogs").add(postData);
       setBlogs(prev => prev.map(b => b.id === tempId ? { ...b, id: docRef.id } : b));
     } catch (e) {
       console.error("Error adding blog: ", e);
@@ -364,11 +362,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updateBlogPost = async (post: BlogPost) => {
-    const normalizedPost = { id: post.id, ...normalizeBlogPayload(post) };
-    setBlogs(prev => prev.map(b => b.id === post.id ? normalizedPost : b));
+    setBlogs(prev => prev.map(b => b.id === post.id ? post : b));
     try {
       if (!post.id.startsWith('temp-')) {
-        await db.collection("blogs").doc(post.id).update(normalizedPost);
+        await db.collection("blogs").doc(post.id).update(post);
       }
     } catch (e) {
       console.error("Error updating blog: ", e);

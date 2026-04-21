@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Check, Zap, Users, Globe, Layout, Database, HelpCircle, ArrowRight } from 'lucide-react';
+import { Check, Zap, Users, Globe, Layout, Database, HelpCircle, ArrowRight, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
 
@@ -19,7 +19,7 @@ export const GoogleWorkspace: React.FC = () => {
     {
       title: "Free Email Migration Support",
       description: "Migrating from cPanel, Zoho Mail, Outlook, or GoDaddy? Our team handles the full migration — emails, contacts, and calendars — with minimal to zero downtime.",
-      icon: <Zap className="w-6 h-6" />
+      icon: <Mail className="w-6 h-6" />
     },
     {
       title: "End-to-End Onboarding & Setup",
