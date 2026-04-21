@@ -13,10 +13,20 @@ const __dirname = path.dirname(__filename);
 // Very basic configuration since we just need to read public data strictly for sitemap
 // Note: Normally we'd use Firebase Admin for server-side, but the client credentials will work for public reads
 const configPath = path.resolve(__dirname, 'firebase-applet-config.json');
-const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+let db: any = null;
 
-const appFirebase = initializeApp(firebaseConfig);
-const db = getFirestore(appFirebase, firebaseConfig.firestoreDatabaseId);
+try {
+  if (fs.existsSync(configPath)) {
+    const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const appFirebase = initializeApp(firebaseConfig);
+    db = getFirestore(appFirebase, firebaseConfig.firestoreDatabaseId);
+    console.log('Firebase initialized successfully for sitemap generation.');
+  } else {
+    console.warn('firebase-applet-config.json not found. Dynamic sitemap generation will be limited.');
+  }
+} catch (error) {
+  console.warn('Failed to load firebase config:', error);
+}
 
 async function startServer() {
   const app = express();
@@ -77,34 +87,40 @@ async function startServer() {
       `;
 
       // Fetch dynamic blogs directly from Firestore
-      const blogsSnap = await getDocs(query(collection(db, 'blogs')));
-      blogsSnap.forEach(doc => {
-        const data = doc.data();
-        if (data.slug) {
-          urls += `
-            <url>
-              <loc>${baseUrl}/blog/${data.slug}</loc>
-              <changefreq>weekly</changefreq>
-              <priority>0.8</priority>
-            </url>
-          `;
-        }
-      });
+      if (db) {
+        try {
+          const blogsSnap = await getDocs(query(collection(db, 'blogs')));
+          blogsSnap.forEach(doc => {
+            const data = doc.data();
+            if (data.slug) {
+              urls += `
+                <url>
+                  <loc>${baseUrl}/blog/${data.slug}</loc>
+                  <changefreq>weekly</changefreq>
+                  <priority>0.8</priority>
+                </url>
+              `;
+            }
+          });
 
-      // Fetch dynamic services 
-      const servicesSnap = await getDocs(query(collection(db, 'services')));
-      servicesSnap.forEach(doc => {
-        const data = doc.data();
-        if (data.slug) {
-           urls += `
-            <url>
-              <loc>${baseUrl}/services/${data.slug}</loc>
-              <changefreq>monthly</changefreq>
-              <priority>0.8</priority>
-            </url>
-          `;
+          // Fetch dynamic services 
+          const servicesSnap = await getDocs(query(collection(db, 'services')));
+          servicesSnap.forEach(doc => {
+            const data = doc.data();
+            if (data.slug) {
+               urls += `
+                <url>
+                  <loc>${baseUrl}/services/${data.slug}</loc>
+                  <changefreq>monthly</changefreq>
+                  <priority>0.8</priority>
+                </url>
+              `;
+            }
+          });
+        } catch (dbError) {
+          console.warn('Error fetching dynamic routes for sitemap:', dbError);
         }
-      });
+      }
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
