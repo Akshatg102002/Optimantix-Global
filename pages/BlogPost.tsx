@@ -58,7 +58,8 @@ export const BlogPost: React.FC = () => {
     "image": blog.imageUrl,
     "author": {
       "@type": "Person",
-      "name": blog.author
+      "name": blog.author,
+      "url": typeof window !== 'undefined' ? `${window.location.origin}/about` : ''
     },
     "publisher": {
       "@type": "Organization",
@@ -76,6 +77,19 @@ export const BlogPost: React.FC = () => {
     }
   };
 
+  // Person Schema (Author Bio representation)
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": blog.author,
+    "url": typeof window !== 'undefined' ? `${window.location.origin}/about` : '',
+    "jobTitle": "Digital Marketing & Technology Expert",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Optimantix Global"
+    }
+  };
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
@@ -90,6 +104,7 @@ export const BlogPost: React.FC = () => {
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(blogSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(personSchema)}</script>
       </Helmet>
 
       <ParallaxHero 
@@ -152,7 +167,17 @@ export const BlogPost: React.FC = () => {
               <Link to="/blog" className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-primary transition font-medium">
                 <ArrowLeft size={16} className="mr-2" /> Back to Blog
               </Link>
-              <span>Author: {blog.author}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-primary font-bold overflow-hidden">
+                  {blog.author.charAt(0)}
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-gray-900 dark:text-white">By {blog.author}</span>
+                  <Link to="/about" className="text-xs hover:text-primary transition-colors">
+                    Digital Strategy Expert
+                  </Link>
+                </div>
+              </div>
             </div>
           </article>
 

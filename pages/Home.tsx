@@ -189,7 +189,32 @@ export const Home: React.FC = () => {
     <div className="bg-light dark:bg-dark text-slate-900 dark:text-gray-100 transition-colors duration-300">
       <SEO
         title="Home"
-        description="Optimantix Global - Driving Growth Through Innovation. Empowering businesses with result-driven strategies in SEO, Marketplace Management, and Web Development."
+        description="Get tailored digital growth with Optimantix Global. We empower business strategies in SEO, Marketplace Management, and tailored Web Development for higher ROI."
+        schemaMarkup={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Optimantix Global",
+            "url": "https://optimantix-global.com",
+            "logo": "https://optimantix-global.com/logo.png",
+            "sameAs": [
+              "https://twitter.com/optimantix",
+              "https://www.linkedin.com/company/optimantix"
+            ]
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": FAQS.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          }
+        ]}
       />
       <LeadModal />
 

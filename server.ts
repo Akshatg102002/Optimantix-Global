@@ -3,18 +3,118 @@ import { createServer as createViteServer } from "vite";
 import { Resend } from 'resend';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, query } from 'firebase/firestore';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Very basic configuration since we just need to read public data strictly for sitemap
+// Note: Normally we'd use Firebase Admin for server-side, but the client credentials will work for public reads
+import firebaseConfig from './firebase-applet-config.json' assert { type: 'json' };
+
+const appFirebase = initializeApp(firebaseConfig);
+const db = getFirestore(appFirebase, firebaseConfig.firestoreDatabaseId);
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Initialize Resend
   const resend = new Resend(process.env.RESEND_API_KEY || 're_VDxHSd9Q_KDURrtak3UEbnE6n1bvB5Eep');
 
   app.use(express.json());
+
+  // Enforce Trailing Slash Canonicalization via 301 Redirect for SEO consistency
+  app.use((req, res, next) => {
+    if (req.path.endsWith('/') && req.path.length > 1) {
+      const query = req.url.slice(req.path.length);
+      const safePath = req.path.slice(0, -1).replace(/\/+/g, '/');
+      res.redirect(301, safePath + query);
+    } else {
+      next();
+    }
+  });
+
+  // Dynamic Sitemap Generator
+  app.get('/sitemap.xml', async (req, res) => {
+    try {
+      res.header('Content-Type', 'application/xml');
+      
+      const baseUrl = 'https://optimantix-global.com';
+      let urls = `
+        <url>
+          <loc>${baseUrl}</loc>
+          <changefreq>daily</changefreq>
+          <priority>1.0</priority>
+        </url>
+        <url>
+          <loc>${baseUrl}/services</loc>
+          <changefreq>weekly</changefreq>
+          <priority>0.9</priority>
+        </url>
+        <url>
+          <loc>${baseUrl}/portfolio</loc>
+          <changefreq>weekly</changefreq>
+          <priority>0.8</priority>
+        </url>
+        <url>
+          <loc>${baseUrl}/about</loc>
+          <changefreq>monthly</changefreq>
+          <priority>0.7</priority>
+        </url>
+        <url>
+          <loc>${baseUrl}/contact</loc>
+          <changefreq>monthly</changefreq>
+          <priority>0.7</priority>
+        </url>
+        <url>
+          <loc>${baseUrl}/blog</loc>
+          <changefreq>daily</changefreq>
+          <priority>0.9</priority>
+        </url>
+      `;
+
+      // Fetch dynamic blogs directly from Firestore
+      const blogsSnap = await getDocs(query(collection(db, 'blogs')));
+      blogsSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.slug) {
+          urls += `
+            <url>
+              <loc>${baseUrl}/blog/${data.slug}</loc>
+              <changefreq>weekly</changefreq>
+              <priority>0.8</priority>
+            </url>
+          `;
+        }
+      });
+
+      // Fetch dynamic services 
+      const servicesSnap = await getDocs(query(collection(db, 'services')));
+      servicesSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.slug) {
+           urls += `
+            <url>
+              <loc>${baseUrl}/services/${data.slug}</loc>
+              <changefreq>monthly</changefreq>
+              <priority>0.8</priority>
+            </url>
+          `;
+        }
+      });
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          ${urls}
+        </urlset>`;
+      
+      res.send(sitemap);
+    } catch (e) {
+      console.error('Failed to generate sitemap', e);
+      res.status(500).end();
+    }
+  });
 
   // API routes FIRST
   app.post("/api/contact", async (req, res) => {

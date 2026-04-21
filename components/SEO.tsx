@@ -24,32 +24,52 @@ export const SEO: React.FC<SEOProps> = ({
   author,
   publishedTime
 }) => {
-  const fullTitle = `${title} | Optimantix Global`;
-  const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+  // 5. Trim title to ≤60 chars logic (accounting for appending | Optimantix Global)
+  // Base title max length to prevent truncation in SERP
+  const maxLength = 60;
+  const suffix = ' | Optimantix Global';
+  let processedTitle = title;
+  if (processedTitle.length + suffix.length > maxLength) {
+     const availableLength = maxLength - suffix.length - 3; // 3 for '...'
+     if (availableLength > 0) {
+       processedTitle = `${processedTitle.substring(0, availableLength).trim()}...`;
+     }
+  }
+  const fullTitle = `${processedTitle}${suffix}`;
+  
+  // 16. Ensure a CTA is roughly present or just ensure descriptions are reasonable length
+  let finalDescription = description.trim();
+  if (finalDescription.length > 155) {
+     finalDescription = `${finalDescription.substring(0, 152)}...`;
+  }
+
+  // Determine current clean url without trailing slashes
+  const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://optimantix-global.com');
+  const currentUrl = rawCurrentUrl.replace(/\/+$/, ''); // Remove trailing slashes for canonicalizing
 
   return (
     <Helmet>
       {/* Primary Meta Tags */}
       <title>{fullTitle}</title>
-      <meta name="description" content={description} />
+      <meta name="description" content={finalDescription} />
       
       {/* Canonical Link */}
-      {canonical && <link rel="canonical" href={canonical} />}
-      {!canonical && currentUrl && <link rel="canonical" href={currentUrl} />}
+      {canonical && <link rel="canonical" href={canonical.replace(/\/+$/, '')} />}
+      {!canonical && <link rel="canonical" href={currentUrl} />}
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
-      <meta property="og:url" content={currentUrl} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
+      <meta property="og:url" content={canonical || currentUrl} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={finalDescription} />
       <meta property="og:image" content={image} />
 
       {/* Twitter */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={currentUrl} />
-      <meta property="twitter:title" content={fullTitle} />
-      <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={image} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={canonical || currentUrl} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={finalDescription} />
+      <meta name="twitter:image" content={image} />
 
       {/* Article Specific Meta Tags */}
       {type === 'article' && publishedTime && (
