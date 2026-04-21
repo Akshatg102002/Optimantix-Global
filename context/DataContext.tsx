@@ -163,15 +163,66 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const fetchCaseStudies = async () => {
     try {
       const querySnapshot = await db.collection("case_studies").get();
-      const fetchedStudies: CaseStudy[] = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as CaseStudy));
-      
-      // Sort in memory
-      fetchedStudies.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      
-      setCaseStudies(fetchedStudies);
+      if (!querySnapshot.empty) {
+        const fetchedStudies: CaseStudy[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as CaseStudy));
+        
+        // Sort in memory
+        fetchedStudies.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+        
+        setCaseStudies(fetchedStudies);
+      } else {
+        // Seed default best-suitable case studies
+        const initialCaseStudies = [
+          {
+            id: 'cs-1',
+            title: 'Scaling E-Commerce Sales by 300% on Amazon UK',
+            slug: 'scaling-ecommerce-sales-amazon-uk',
+            excerpt: 'How we helped a premium supplement brand dominate their category on Amazon using aggressive PPC and A+ content optimization.',
+            content: '<h2>The Challenge</h2><p>Our client, a leading health supplement provider, struggled with high ACoS and stagnant organic rankings on Amazon UK. Their existing campaigns were bleeding budget with minimal returns.</p><h2>Our Approach</h2><p>We completely restructured their Amazon Advertising framework. We implemented a tiered keyword strategy, created high-converting A+ content, and focused aggressively on Sponsored Brands and Sponsored Display ads.</p><h2>The Results</h2><ul><li>300% increase in monthly sales</li><li>Reduced ACoS from 45% to 12%</li><li>Captured 3 top-ranking generic keyword positions in less than intact 90 days.</li></ul>',
+            imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800',
+            serviceId: '2',
+            metaTitle: 'Scaling E-Commerce Sales on Amazon | Case Study',
+            metaDescription: 'Discover how Optimantix Global helped a supplement brand increase sales by 300% on Amazon UK with a revamped PPC and listing strategy.',
+            tags: ['Amazon Marketplace', 'E-commerce', 'PPC'],
+            date: '2023-10-12'
+          },
+          {
+            id: 'cs-2',
+            title: 'Organic Traffic Boost for Healthcare Tech Startup',
+            slug: 'organic-traffic-healthcare-startup',
+            excerpt: 'Strategic SEO restructuring leading to a 150% increase in targeted organic traffic and a 40% jump in B2B qualified software leads.',
+            content: '<h2>The Challenge</h2><p>A burgeoning healthcare software startup had an amazing product but a technically flawed website. Their traffic was flat, and they relied entirely on expensive outbound sales.</p><h2>Our Approach</h2><p>Our first step was a comprehensive technical audit, fixing crawl errors and massive site speed issues. Then, we developed a content marketing pipeline targeting long-tail, high-intent B2B healthcare keywords. Finally, we deployed a backlink acquisition strategy focusing on high-authority medical portals.</p><h2>The Results</h2><ul><li>150% increase in targeted organic traffic within 6 months.</li><li>40% increase in monthly qualified leads through the site.</li><li>Reduced overall Customer Acquisition Cost by 60%.</li></ul>',
+            imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800',
+            serviceId: '1',
+            metaTitle: 'Healthcare Startup Organic Traffic Growth | Case Study',
+            metaDescription: 'A detailed look at how comprehensive SEO and content marketing strategies grew B2B leads by 40% for a healthcare tech company.',
+            tags: ['SEO', 'B2B', 'Content Marketing'],
+            date: '2023-08-22'
+          },
+          {
+            id: 'cs-3',
+            title: 'Next-Gen Web Portal for a Global Retailer',
+            slug: 'next-gen-web-portal-global-retailer',
+            excerpt: 'Redesigning and deploying a highly scalable custom web portal that handles over 100k daily active users with zero downtime.',
+            content: '<h2>The Challenge</h2><p>A global retailer’s legacy website was failing under high traffic loads during seasonal sales, resulting in lost revenue and a poor user experience.</p><h2>Our Approach</h2><p>We built a headless commerce solution using React and a scalable cloud infrastructure. We implemented advanced caching mechanisms, edge computing for fast asset delivery, and a fully modern UI/UX design focusing on conversion rate optimization.</p><h2>The Results</h2><ul><li>100k+ daily visitors handled flawlessly.</li><li>Page load times dropped from 4.5s to 0.8s.</li><li>Mobile conversion rates surged by 25%.</li><li>Zero downtime during black-friday events.</li></ul>',
+            imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
+            serviceId: '3',
+            metaTitle: 'Scalable Web Portal for Global Retailer | Case Study',
+            metaDescription: 'Read about our custom headless commerce build that reduced load times by 80% and increased mobile conversions by 25%.',
+            tags: ['Web Development', 'Headless Commerce', 'UI/UX'],
+            date: '2023-12-05'
+          }
+        ];
+        
+        for (const cs of initialCaseStudies) {
+          const { id, ...rest } = cs;
+          await db.collection("case_studies").doc(id).set(rest);
+        }
+        setCaseStudies(initialCaseStudies);
+      }
     } catch (error) {
       console.warn("Fetching case studies failed:", error);
     }

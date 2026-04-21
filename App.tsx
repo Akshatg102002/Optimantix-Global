@@ -19,6 +19,7 @@ const CaseStudyList = lazy(() => import('./pages/CaseStudyList').then(module => 
 const CaseStudyTemplate = lazy(() => import('./pages/CaseStudyTemplate').then(module => ({ default: module.CaseStudyTemplate })));
 const GoogleWorkspace = lazy(() => import('./pages/GoogleWorkspace').then(module => ({ default: module.GoogleWorkspace })));
 const HostingSolutions = lazy(() => import('./pages/HostingSolutions').then(module => ({ default: module.HostingSolutions })));
+const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
 const AdminLogin = lazy(() => import('./pages/Admin/Login').then(module => ({ default: module.AdminLogin })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
@@ -42,6 +43,7 @@ const App: React.FC = () => {
               <Route path="/case-studies/:slug" element={<CaseStudyTemplate />} />
               <Route path="/google-workspace" element={<GoogleWorkspace />} />
               <Route path="/hosting" element={<HostingSolutions />} />
+              <Route path="/contact" element={<Contact />} />
               
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 

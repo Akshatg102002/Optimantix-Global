@@ -15,10 +15,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-// Check if apps already initialized to prevent re-initialization error in HMR or re-renders
 const app = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
 const db = firebase.firestore();
-const analytics = firebase.analytics();
+
+// Apply Long Polling to prevent network connection blockers in local test environments
+db.settings({
+  experimentalForceLongPolling: true
+});
+
+const analytics = typeof window !== "undefined" ? firebase.analytics() : null;
 const auth = firebase.auth();
 
 export { app, db, analytics, auth };
