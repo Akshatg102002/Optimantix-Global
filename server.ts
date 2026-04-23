@@ -47,6 +47,11 @@ async function startServer() {
     }
   });
 
+  // Redirect /sitemap to /sitemap.xml
+  app.get('/sitemap', (req, res) => {
+    res.redirect(301, '/sitemap.xml');
+  });
+
   // Dynamic Sitemap Generator
   app.get('/sitemap.xml', async (req, res) => {
     try {

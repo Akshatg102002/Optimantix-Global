@@ -7,6 +7,7 @@ import { LeadModal } from '../components/LeadModal';
 import { SEO } from '../components/SEO';
 import { WORK_PROCESS, INDUSTRIES } from '../constants';
 import { motion, AnimatePresence } from 'framer-motion';
+import { GoogleReviewsSlider } from '../components/GoogleReviewsSlider';
 
 const PARTNERS = [
   { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
@@ -592,8 +593,8 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      
-
+      {/* Google Reviews Slider */}
+      <GoogleReviewsSlider />
 
     </div>
   );
