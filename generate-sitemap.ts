@@ -21,7 +21,7 @@ async function generateSitemap() {
     console.warn('Failed to load firebase config:', error);
   }
 
-  const baseUrl = 'https://optimantix-global.com';
+  const baseUrl = 'https://optimantix.com';
   let urls = `
     <url>
       <loc>${baseUrl}</loc>

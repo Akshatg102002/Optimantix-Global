@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://optimantix-global.com/sitemap.xml
+Sitemap: https://optimantix.com/sitemap.xml

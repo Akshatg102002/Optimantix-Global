@@ -57,7 +57,7 @@ async function startServer() {
     try {
       res.header('Content-Type', 'application/xml');
       
-      const baseUrl = 'https://optimantix-global.com';
+      const baseUrl = 'https://optimantix.com';
       let urls = `
         <url>
           <loc>${baseUrl}</loc>

@@ -18,7 +18,7 @@ export const SEO: React.FC<SEOProps> = ({
   description, 
   canonical, 
   type = 'website', 
-  image = 'https://optimantix-global.com/default-og-image.jpg', 
+  image = 'https://optimantix.com/default-og-image.jpg', 
   url,
   schemaMarkup,
   author,
@@ -44,7 +44,7 @@ export const SEO: React.FC<SEOProps> = ({
   }
 
   // Determine current clean url without trailing slashes
-  const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://optimantix-global.com');
+  const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://optimantix.com');
   const currentUrl = rawCurrentUrl.replace(/\/+$/, ''); // Remove trailing slashes for canonicalizing
 
   return (
