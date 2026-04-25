@@ -130,20 +130,32 @@ const CLIENTS = [
 
 const FAQS = [
   {
-    question: "How long does it take to see results from SEO?",
-    answer: "SEO is a long-term strategy. Typically, noticeable improvements in ranking and traffic can be seen within 3 to 6 months, depending on the competitiveness of your industry and the current state of your website."
+    question: "What services does Optimantix offer?",
+    answer: "At Optimantix, we provide end-to-end digital growth solutions including SEO, Website Development, PPC, Social Media Marketing, Marketplace Management and Branding. Our strategies are designed to increase traffic, generate leads, and deliver measurable ROI."
   },
   {
-    question: "Do you offer custom development solutions?",
-    answer: "Yes, absolutely. We specialize in custom web development tailored to your specific business requirements, rather than relying solely on templates."
+    question: "How long does it take to see results from digital marketing?",
+    answer: "The timeline depends on the strategy you choose. SEO typically takes 3–6 months, while paid ads (Google & Meta) can generate leads within days. We focus on both short-term wins and long-term growth."
   },
   {
-    question: "What platforms do you support for Marketplace Management?",
-    answer: "We provide end-to-end management for major platforms including Amazon (Global), Flipkart, Meesho, Nykaa, Blinkit, and Zepto."
+    question: "Do you create customized marketing strategies?",
+    answer: "Yes, every business is different. We create data-driven, fully customized strategies based on your goals, audience, and competition to ensure maximum ROI and growth."
   },
   {
-    question: "How do you handle project communication?",
-    answer: "We believe in transparency. You will be assigned a dedicated project manager and will receive weekly updates via email or Slack. We also schedule bi-weekly review calls."
+    question: "Which industries do you work with?",
+    answer: "We work with a wide range of industries including e-commerce, healthcare, real estate, education, fashion, and SaaS businesses, helping them scale their online presence effectively."
+  },
+  {
+    question: "Can digital marketing help small businesses or startups?",
+    answer: "Absolutely. Digital marketing is one of the most cost-effective ways for startups and small businesses to build brand visibility, generate leads, and compete with larger brands."
+  },
+  {
+    question: "How much does digital marketing cost?",
+    answer: "The cost depends on your goals, industry, and competition. We offer flexible pricing plans tailored to your business needs and budget. For a better understanding, you can request digital marketing pricing consultation where our experts will analyze your requirements and suggest the best plan."
+  },
+  {
+    question: "Why should I choose Optimantix over other agencies?",
+    answer: "We focus on:\n• Data-driven strategies\n• Measurable ROI\n• Transparent reporting\n• Long-term growth approach\n\nOur goal is simple — help your business scale sustainably online."
   }
 ];
 
@@ -533,7 +545,7 @@ export const Home: React.FC = () => {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-6 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-800">
+                      <div className="p-6 pt-0 text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-800 whitespace-pre-line">
                         {faq.answer}
                       </div>
                     </MotionDiv>
