@@ -89,6 +89,11 @@ async function startServer() {
           <changefreq>daily</changefreq>
           <priority>0.9</priority>
         </url>
+        <url>
+          <loc>${baseUrl}/case-studies</loc>
+          <changefreq>weekly</changefreq>
+          <priority>0.9</priority>
+        </url>
       `;
 
       // Fetch dynamic blogs directly from Firestore
@@ -116,6 +121,21 @@ async function startServer() {
                urls += `
                 <url>
                   <loc>${baseUrl}/services/${data.slug}</loc>
+                  <changefreq>monthly</changefreq>
+                  <priority>0.8</priority>
+                </url>
+              `;
+            }
+          });
+
+          // Fetch dynamic case studies
+          const caseStudiesSnap = await getDocs(query(collection(db, 'case_studies')));
+          caseStudiesSnap.forEach(doc => {
+            const data = doc.data();
+            if (data.slug) {
+              urls += `
+                <url>
+                  <loc>${baseUrl}/case-studies/${data.slug}</loc>
                   <changefreq>monthly</changefreq>
                   <priority>0.8</priority>
                 </url>

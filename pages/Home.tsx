@@ -15,9 +15,9 @@ const PARTNERS = [
   { name: "Shopify", logo: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg" },
   { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" },
   { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" },
-  { name: "HubSpot", logo: "https://upload.wikimedia.org/wikipedia/commons/1/15/HubSpot_Logo.svg" },
+  { name: "HubSpot", logo: "https://1000logos.net/wp-content/uploads/2022/12/HubSpot-Logo.png" },
   { name: "Salesforce", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" },
-  { name: "Adobe", logo: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Adobe_Corporate_Logo.svg" },
+  { name: "Adobe", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHYJ-GN9cxdOpfXszYyZ8ZaMKacp7BmrQ-Ag&s" },
 ];
 
 const CLIENTS = [
@@ -208,8 +208,8 @@ export const Home: React.FC = () => {
             "@context": "https://schema.org",
             "@type": "Organization",
             "name": "Optimantix Global",
-            "url": "https://optimantix-global.com",
-            "logo": "https://optimantix-global.com/logo.png",
+            "url": "https://optimantix.com",
+            "logo": "https://optimantix.com/logo.png",
             "sameAs": [
               "https://twitter.com/optimantix",
               "https://www.linkedin.com/company/optimantix"

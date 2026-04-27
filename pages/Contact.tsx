@@ -41,7 +41,7 @@ export const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-1">Email Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400">info@optimantix-global.com</p>
+                  <p className="text-gray-600 dark:text-gray-400">info@optimantix.com</p>
                 </div>
               </div>
               

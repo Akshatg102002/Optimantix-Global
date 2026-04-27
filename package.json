@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "tsx server.ts",
     "start": "node server.ts",
-    "build": "tsc && vite build && tsx generate-sitemap.ts",
-    "postbuild": "tsx generate-sitemap.ts",
+    "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
