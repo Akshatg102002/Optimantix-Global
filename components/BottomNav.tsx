@@ -15,7 +15,7 @@ export const BottomNav: React.FC = () => {
     { path: '/case-studies', label: 'Projects', icon: Briefcase },
   ];
 
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[60] md:hidden">

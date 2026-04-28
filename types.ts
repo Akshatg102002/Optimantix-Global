@@ -2,17 +2,63 @@
 export interface SubService {
   id: string;
   slug: string;
-  title: string;
-  shortDescription: string;
-  fullDescription: string;
-  features: string[];
-  benefits: string[];
+  
+  // Legacy fields (keeping them optional for backward compatibility until user updates all)
+  title?: string;
+  shortDescription?: string;
+  fullDescription?: string;
+  features?: string[];
+  benefits?: string[];
   phases?: { title: string; description: string }[];
   stats?: { label: string; value: string; desc: string }[];
-  // SEO
   metaTitle?: string;
   metaDescription?: string;
   tags?: string[];
+
+  // New JSON Structure Fields
+  page_title?: string;
+  hero_section?: {
+    badge: string;
+    headline: string;
+    lead_text: string;
+    call_to_action_buttons: { text: string; prompt: string }[];
+  };
+  statistics_section?: {
+    stats: { value: string; label: string }[];
+  };
+  services_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    services_grid: { title: string; description: string }[];
+  };
+  process_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    steps: { step_number: string; title: string; description: string }[];
+  };
+  why_us_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    features_grid: { title: string; description: string }[];
+  };
+  testimonials_section?: {
+    section_label: string;
+    title: string;
+    testimonials: { quote: string; author: string }[];
+  };
+  faq_section?: {
+    section_label: string;
+    title: string;
+    questions: { question: string; answer: string }[];
+  };
+  bottom_cta_section?: {
+    title: string;
+    description: string;
+    call_to_action_button: { text: string; prompt: string };
+  };
 }
 
 export interface Service {

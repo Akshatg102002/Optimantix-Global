@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
   const { services, isDark, toggleTheme, setGlobalLoading } = useData();
   const location = useLocation();
 
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
 
   useEffect(() => {
     // Force close on any location change

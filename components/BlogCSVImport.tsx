@@ -27,7 +27,7 @@ export const BlogCSVImport: React.FC = () => {
       skipEmptyLines: true,
       complete: async (results) => {
         try {
-          const posts = results.data as any[];
+          const posts = results.data as Record<string, string>[];
           let successCount = 0;
           let errorCount = 0;
 

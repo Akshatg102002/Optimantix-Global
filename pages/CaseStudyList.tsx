@@ -15,7 +15,7 @@ export const CaseStudyList: React.FC = () => {
     ? caseStudies 
     : caseStudies.filter(s => s.serviceId === selectedServiceId);
 
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
 
   return (
     <div className="min-h-screen bg-light dark:bg-dark">

@@ -9,8 +9,8 @@ interface Props {
 
 export const LoadingSpinner: React.FC<Props> = ({ isGlobal = false }) => {
   const { globalLoading } = useData();
-  const MotionDiv = motion.div as any;
-  const MotionP = motion.p as any;
+  const MotionDiv = motion.div as React.ElementType;
+  const MotionP = motion.p as React.ElementType;
 
   // If used as a component (Suspense fallback) it always shows.
   // If used globally, it respects the context state.

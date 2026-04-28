@@ -14,9 +14,9 @@ interface Props {
   serviceName: string;
 }
 
-export const ServiceGrowthChart: React.FC<Props> = ({ stats, serviceName }) => {
-  const MotionPath = motion.path as any;
-  const MotionDiv = motion.div as any;
+export const ServiceGrowthChart: React.FC<Props> = ({ stats }) => {
+  const MotionPath = motion.path as React.ElementType;
+  const MotionDiv = motion.div as React.ElementType;
 
   return (
     <div className="space-y-12">

@@ -21,9 +21,9 @@ export const AdminLogin: React.FC = () => {
     try {
       await login(password);
       navigate('/admin');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Invalid Password");
+      setError(err instanceof Error ? err.message : "Invalid Password");
     } finally {
       setLoading(false);
     }

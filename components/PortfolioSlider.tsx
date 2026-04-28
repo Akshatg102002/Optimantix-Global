@@ -13,7 +13,7 @@ const PORTFOLIO_IMAGES = [
 ];
 
 export const PortfolioSlider: React.FC = () => {
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (

@@ -6,7 +6,7 @@ import { ContactForm } from './ContactForm';
 export const LeadModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const MotionDiv = motion.div as any;
+  const MotionDiv = motion.div as React.ElementType;
 
   useEffect(() => {
     const timer = setTimeout(() => {

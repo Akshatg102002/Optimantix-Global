@@ -1,6 +1,6 @@
 
 import { Service, BlogPost, Project } from './types';
-import { Users, Trophy, Globe, Zap, BarChart } from 'lucide-react';
+import { Users, Globe, Zap, BarChart } from 'lucide-react';
 
 export const INITIAL_SERVICES: Service[] = [
   {
@@ -97,23 +97,157 @@ export const INITIAL_SERVICES: Service[] = [
     deliverables: ['Listing Quality Audit', 'Sales & Inventory Reports', 'PPC Campaign Strategy', 'Customer Feedback Analysis'],
     subServices: [
         {
-            id: 'mm-1',
-            slug: 'amazon',
-            title: 'Amazon Management',
-            shortDescription: 'End-to-end Seller Central & AMS management.',
-            fullDescription: 'Dominate the world’s largest marketplace. We handle Amazon SEO, A+ Content (EBC), Storefront design, and PPC (Sponsored Products, Brands, Display) to maximize your sales on Amazon.',
-            features: ['Seller Central Management', 'Amazon Advertising (AMS)', 'FBA Consultation', 'Brand Registry'],
-            benefits: ['Global Reach', 'Prime eligibility consulting', 'Optimized ad spend'],
-            phases: [
-                { title: 'Audit & Compliance', description: 'Ensuring your listings meet Amazon guidelines and fixing suppression issues.' },
-                { title: 'SEO & Content', description: 'Optimizing titles, bullets, and A+ content for high search ranking.' },
-                { title: 'PPC Launch', description: 'Running aggressive Sponsored Product campaigns to boost ranking.' },
-                { title: 'Brand Defense', description: 'Protecting your brand keywords and winning the Buy Box.' }
-            ],
-            stats: [
-                { label: 'Sales Growth', value: '200%', desc: 'Year-over-Year growth' },
-                { label: 'ACOS', value: '15%', desc: 'Targeted Advertising Cost' }
-            ]
+            id: 'amazon-management-services',
+            slug: 'amazon-management-services',
+            page_title: 'Amazon Management Services',
+            hero_section: {
+              badge: 'Amazon Management Services',
+              headline: 'Your Amazon store, managed like it\'s our own.',
+              lead_text: 'Most sellers leave serious revenue on the table — not because the product is wrong, but because managing Amazon at scale is a full-time job. Our dedicated amazon account management services team handles every layer of your Seller Central, so you can focus on what you do best.',
+              call_to_action_buttons: [
+                {
+                  text: 'Get a Free Account Audit ↗',
+                  prompt: 'I want to get a free Amazon account audit from Optimantix'
+                },
+                {
+                  text: 'See How It Works',
+                  prompt: 'Tell me more about Optimantix Amazon management pricing and packages'
+                }
+              ]
+            },
+            statistics_section: {
+              stats: [
+                { value: '300%', label: 'Average ROI increase within 90 days' },
+                { value: '1.2M+', label: 'In ad spend managed profitably' },
+                { value: '50+', label: 'Brands scaled across global marketplaces' },
+                { value: '98%', label: 'Client retention rate' }
+              ]
+            },
+            services_section: {
+              section_label: 'Our Core Services',
+              title: 'A complete Amazon ecosystem under one roof',
+              description: 'Whether you\'re launching your first product or scaling an established catalogue, we provide end-to-end management.',
+              services_grid: [
+                {
+                  title: 'Account Audit & Strategy',
+                  description: 'We diagnose why your listings aren\'t converting and build a customized roadmap. We cover suppressed listings, stranded inventory, and account health checks.'
+                },
+                {
+                  title: 'SEO & Listing Optimization',
+                  description: 'Amazon is a search engine. We optimize titles, bullet points, and backend search terms with high-volume, relevant keywords to maximize organic rank.'
+                },
+                {
+                  title: 'A+ Content & Storefront Design',
+                  description: 'Visuals sell. Our design team creates high-converting A+ Content (EBC) and premium Amazon Storefronts that tell your brand story and increase basket size.'
+                },
+                {
+                  title: 'Amazon PPC Advertising',
+                  description: 'No more wasted ad spend. We structure, manage, and scale Sponsored Products, Sponsored Brands, and Sponsored Display ads using data-driven bid management.'
+                },
+                {
+                  title: 'Inventory & FBA Management',
+                  description: 'Avoid stockouts and storage fees. We help forecast demand, plan shipments, and navigate Amazon\'s complex FBA requirements.'
+                },
+                {
+                  title: 'Account Health & Reinstatement',
+                  description: 'Account suspensions can destroy a business. We proactively monitor account health and handle appeals and PoAs (Plans of Action) if issues arise.'
+                }
+              ]
+            },
+            process_section: {
+              section_label: 'Our Approach',
+              title: 'How we grow your Amazon business',
+              description: 'We don\'t do guesswork. We follow a proven, systematic methodology to scale your brand predictably.',
+              steps: [
+                {
+                  step_number: '1',
+                  title: 'Deep-Dive Audit',
+                  description: 'We analyse your account health, keyword indexation, competitor landscape, and historical ad performance.'
+                },
+                {
+                  step_number: '2',
+                  title: 'Fix & Foundation',
+                  description: 'Before running ads, we fix the basics: SEO optimization, image enhancements, and resolving backend catalog issues.'
+                },
+                {
+                  step_number: '3',
+                  title: 'Aggressive Growth',
+                  description: 'We launch targeted PPC campaigns to push organic ranking, capture market share, and defend your brand terms.'
+                },
+                {
+                  step_number: '4',
+                  title: 'Scale & Optimize',
+                  description: 'We continuously A/B test creatives, refine ad targeting, and expand into new product variations or global marketplaces.'
+                }
+              ]
+            },
+            why_us_section: {
+              section_label: 'Why Optimantix?',
+              title: 'Beyond standard management',
+              description: 'We treat your Amazon business like an asset, not an experiment.',
+              features_grid: [
+                {
+                  title: 'Data-Obsessed Approach',
+                  description: 'Every decision we make—from keyword selection to bid adjustments—is backed by hard data and advanced tools.'
+                },
+                {
+                  title: 'Dedicated Account Managers',
+                  description: 'You get a true Amazon partner, not a junior rep navigating a script.'
+                },
+                {
+                  title: 'Transparent Reporting',
+                  description: 'No vanity metrics. We report on true profitability, TACOS (Total ACOS), and organic vs. paid sales.'
+                },
+                {
+                  title: 'Holistic Strategy',
+                  description: 'We look at the whole picture—inventory, margins, advertising, and branding—to ensure sustainable growth.'
+                }
+              ]
+            },
+            testimonials_section: {
+              section_label: 'Client Success',
+              title: 'Don\'t just take our word for it',
+              testimonials: [
+                {
+                  quote: 'Optimantix completely turned our Amazon account around. Our ACOS dropped by half, and sales doubled in three months.',
+                  author: 'Arjun M., Founder, HealthTech India'
+                },
+                {
+                  quote: 'They handle everything so I can focus on manufacturing. True experts in the Amazon space.',
+                  author: 'Priya S., CEO, Urban Home Decor'
+                }
+              ]
+            },
+            faq_section: {
+              section_label: 'FAQs',
+              title: 'Common questions',
+              questions: [
+                {
+                  question: 'Do you guarantee sales?',
+                  answer: 'While nobody can guarantee specific sales figures on Amazon due to algorithm changes and competition, we guarantee a data-driven strategy and flawless execution that historically leads to significant growth.'
+                },
+                {
+                  question: 'What is your pricing model?',
+                  answer: 'We offer a base retainer plus a small performance percentage. We believe in tying our success to your growth.'
+                },
+                {
+                  question: 'Do I lose control of my Seller Central account?',
+                  answer: 'Absolutely not. You retain full ownership. We operate via sub-user access with the permissions necessary to manage the account.'
+                },
+                {
+                  question: 'How long does it take to see results?',
+                  answer: 'Initial improvements in listing quality and indexing take 2-4 weeks. Significant sales growth and PPC optimization usually hit their stride around months 2 and 3.'
+                }
+              ]
+            },
+            bottom_cta_section: {
+              title: 'Ready to dominate your category?',
+              description: 'Stop letting competitors steal your sales. Let\'s build a predictable revenue engine on Amazon.',
+              call_to_action_button: {
+                text: 'Schedule a Free Clarity Call →',
+                prompt: 'I want to schedule a free clarity call regarding Amazon account management'
+              }
+            }
         },
         {
             id: 'mm-2',
