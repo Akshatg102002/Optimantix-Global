@@ -120,6 +120,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchServices = async () => {
     try {
+      // Force sync: overwrite every reload during development
+      for (const service of INITIAL_SERVICES) {
+        const { id, ...rest } = service;
+        await db.collection("services").doc(id).set(rest, { merge: true });
+      }
+      
       const querySnapshot = await db.collection("services").get();
       if (!querySnapshot.empty) {
         const fetchedServices: Service[] = querySnapshot.docs.map(doc => ({
@@ -128,11 +134,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } as Service));
         setServices(fetchedServices);
       } else {
-        // Seed initial services if empty
-        for (const service of INITIAL_SERVICES) {
-          const { id, ...rest } = service;
-          await db.collection("services").doc(id).set(rest);
-        }
+        setServices(INITIAL_SERVICES);
       }
     } catch (error) {
       console.warn("Fetching services failed:", error);
