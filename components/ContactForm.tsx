@@ -101,12 +101,29 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/contact", {
+      // NOTE: To change the email address where submissions are sent, 
+      // replace 'akshatg2024@gmail.com' below with your desired email.
+      // First time you submit to a new email, you will receive an activation request to that email.
+      const response = await fetch("https://formsubmit.co/ajax/akshatg2024@gmail.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          _subject: `New Lead from ${data.fullName} for ${data.serviceSubCategory}`,
+          _template: "table",
+          Name: data.fullName,
+          Company: data.companyName,
+          Email: data.workEmail,
+          Phone: data.workPhone,
+          Category: data.serviceCategory,
+          Service: data.serviceSubCategory,
+          Timeline: data.timeline,
+          Budget: data.budget,
+          Goals: data.goals,
+          Message: data.message
+        }),
       });
 
       const result = await response.json();
