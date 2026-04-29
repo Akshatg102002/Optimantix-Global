@@ -1,78 +1,63 @@
-import React, { useEffect } from 'react';
 import { ContactForm } from '../components/ContactForm';
 import { SEO } from '../components/SEO';
-import { ParallaxHero } from '../components/ParallaxHero';
-import { Mail, MapPin, Phone } from 'lucide-react';
 
-export const Contact: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+export const Contact = () => {
   return (
-    <div className="bg-light dark:bg-dark min-h-screen text-slate-900 dark:text-gray-100 transition-colors duration-300">
+    <div className="bg-primary py-20 relative overflow-hidden">
       <SEO 
         title="Contact Us" 
-        description="Get in touch with Optimantix Global. We are ready to help you scale your business with tailored digital solutions." 
+        description="Get in touch with Optimantix Global. We're here to help you with your next project." 
       />
-      
-      <ParallaxHero 
-        title="Contact Us"
-        subtitle="Let's build something remarkable together."
-        imageUrl="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&q=80&w=2000"
-        height="50vh"
-      />
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Details Side */}
-          <div className="flex flex-col justify-center space-y-8">
-            <div>
-              <h2 className="text-3xl font-bold mb-4">We'd love to hear from you</h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Whether you have a question about our services, pricing, need a demo, or anything else, our team is ready to answer all your questions.
-              </p>
+      <div className="container mx-auto px-4 relative z-10 mt-16 md:mt-24 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="text-white">
+            <div className="mb-8">
+              <img 
+                src="https://plus.unsplash.com/premium_photo-1675842663249-a8b70103dbaa?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                alt="Contact Us" 
+                className="w-full max-w-md rounded-2xl shadow-2xl border border-white/10"
+              />
             </div>
-            
+            <h2 className="text-4xl font-bold mb-6">Contact Us</h2>
+            <p className="text-white/80 text-lg mb-10 leading-relaxed max-w-lg">
+              We're here to help you with your next project. Fill out the form and we'll get back to you shortly.
+            </p>
             <div className="space-y-6">
-              <div className="flex items-start">
-                <div className="p-3 bg-primary/10 text-primary rounded-xl mr-4 flex-shrink-0">
-                   <Mail size={24} />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+                    <span className="text-xl">📧</span>
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm uppercase font-bold tracking-wider">Email</p>
+                    <p className="text-white font-medium">info@optimantix.com</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-1">Email Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400">info@optimantix.com</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+                    <span className="text-xl">📞</span>
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm uppercase font-bold tracking-wider">Phone (India)</p>
+                    <p className="text-white font-medium">+91 9910343016</p>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex items-start">
-                <div className="p-3 bg-primary/10 text-primary rounded-xl mr-4 flex-shrink-0">
-                   <Phone size={24} />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+                    <span className="text-xl">🇺🇸</span>
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm uppercase font-bold tracking-wider">Phone (US)</p>
+                    <p className="text-white font-medium">+1 802 995 2844</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-1">Call Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400">+91 (123) 456-7890</p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <div className="p-3 bg-primary/10 text-primary rounded-xl mr-4 flex-shrink-0">
-                   <MapPin size={24} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-1">Visit Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    New Delhi, India<br />
-                    Global Operations Support
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
-
-          {/* Form Side */}
-          <div className="bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-2 sm:p-4">
-             <ContactForm />
+          <div className="lg:pl-8">
+            <ContactForm />
           </div>
         </div>
       </div>
