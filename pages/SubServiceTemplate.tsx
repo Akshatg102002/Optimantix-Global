@@ -6,7 +6,6 @@ import { ServiceGrowthChart } from '../components/ServiceGrowthChart';
 import { Check, ArrowLeft, Star, Zap, Map, ArrowRight, LayoutGrid, Quote, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SEO } from '../components/SEO';
-import { ParallaxHero } from '../components/ParallaxHero';
 
 export const SubServiceTemplate: React.FC = () => {
   const { slug, subSlug } = useParams<{ slug: string; subSlug: string }>();
@@ -39,26 +38,50 @@ export const SubServiceTemplate: React.FC = () => {
 
   const isNewLayout = !!subService.page_title;
 
+  const title = isNewLayout
+      ? subService.hero_section?.headline || subService.page_title
+      : subService.title;
+
+  const subtitle = isNewLayout
+      ? subService.hero_section?.lead_text || ''
+      : subService.shortDescription;
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
       <SEO 
-        title={`${isNewLayout ? subService.page_title : subService.title} - ${service.title}`} 
-        description={(isNewLayout ? subService.hero_section?.lead_text : subService.shortDescription) || ''}
+        title={subService.seo?.meta_title || `${title} - ${service.title}`} 
+        description={subService.seo?.meta_description || subtitle || ''}
       />
       
-      {isNewLayout ? (
-        <ParallaxHero 
-          title={subService.hero_section?.headline || subService.page_title!}
-          subtitle={subService.hero_section?.lead_text || ''}
-          imageUrl={getServiceImage(service.slug)}
-        />
-      ) : (
-        <ParallaxHero 
-          title={subService.title!}
-          subtitle={subService.shortDescription!}
-          imageUrl={getServiceImage(service.slug)}
-        />
-      )}
+      {/* 🔹 TOP BANNER (IMAGE ONLY) */}
+      <div className="hidden md:block w-full h-[320px] bg-cover bg-center" style={{ backgroundImage: `url(${subService.banners?.desktop || getServiceImage(service.slug)})` }} />
+      <div className="md:hidden w-full h-[320px] bg-cover bg-center" style={{ backgroundImage: `url(${subService.banners?.mobile || getServiceImage(service.slug)})` }} />
+
+      {/* 🔹 TITLE SECTION BELOW BANNER */}
+      <div
+          style={{
+              textAlign: "center",
+              padding: "40px 20px",
+              backgroundColor: "white",
+          }}
+          className="dark:bg-dark"
+      >
+          <h1
+              style={{ margin: 0 }}
+              className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
+          >
+              {title}
+          </h1>
+
+          {subtitle && (
+              <p
+                  style={{ marginTop: "12px" }}
+                  className="text-lg text-gray-600 dark:text-gray-400 w-full px-4 max-w-4xl mx-auto"
+              >
+                  {subtitle}
+              </p>
+          )}
+      </div>
 
       <div className="container mx-auto px-4 md:px-6 py-16">
         <Link to={`/services/${service.slug}`} className="inline-flex items-center text-primary font-medium hover:underline mb-8">

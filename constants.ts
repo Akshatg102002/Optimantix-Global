@@ -100,6 +100,15 @@ export const INITIAL_SERVICES: Service[] = [
             id: 'amazon-management-services',
             slug: 'amazon-management-services',
             page_title: 'Amazon Management Services',
+            seo: {
+              meta_title: 'Amazon Management Services | Optimantix',
+              meta_description: 'Expert Amazon account management services covering SEO, PPC, inventory, and Brand Registry to scale your Amazon business.',
+              focus_keyphrase: 'amazon account management services'
+            },
+            banners: {
+              desktop: 'https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?auto=format&fit=crop&q=80&w=2000',
+              mobile: 'https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?auto=format&fit=crop&q=80&w=800'
+            },
             hero_section: {
               badge: 'Amazon Management Services',
               headline: 'Your Amazon store, managed like it\'s our own.',

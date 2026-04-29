@@ -51,7 +51,7 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const STORAGE_KEYS = {
-    SERVICES: 'opt_services_v5',
+    SERVICES: 'opt_services_v6',
     LEADS: 'opt_leads_v5',
     PROJECTS: 'opt_projects_v5',
     CASE_STUDIES: 'opt_case_studies_v1',

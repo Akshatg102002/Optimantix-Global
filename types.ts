@@ -17,6 +17,15 @@ export interface SubService {
 
   // New JSON Structure Fields
   page_title?: string;
+  banners?: {
+    desktop: string;
+    mobile: string;
+  };
+  seo?: {
+    meta_title: string;
+    meta_description: string;
+    focus_keyphrase: string;
+  };
   hero_section?: {
     badge: string;
     headline: string;
