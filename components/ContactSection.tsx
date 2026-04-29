@@ -12,7 +12,7 @@ export const ContactSection = () => {
           <div className="text-white">
             <div className="mb-8">
               <img 
-                src="https://images.unsplash.com/photo-1557426272-fc759fbbad95?auto=format&fit=crop&q=80&w=800" 
+                src="https://plus.unsplash.com/premium_photo-1675842663249-a8b70103dbaa?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                 alt="Contact Us" 
                 className="w-full max-w-md rounded-2xl shadow-2xl border border-white/10"
               />

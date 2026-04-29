@@ -251,6 +251,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       root.classList.remove('dark');
       localStorage.setItem(STORAGE_KEYS.THEME, 'light');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
@@ -293,6 +294,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       unsubscribe();
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // --- LOGIN LOGIC ---
@@ -359,12 +361,17 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setTimeout(() => setCaseStudies(JSON.parse(storedCaseStudies)), 0);
         } catch (e) { console.error(e); }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services)); }, [services]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads)); }, [leads]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects)); }, [projects]);
   useEffect(() => { localStorage.setItem('opt_blogs_v1', JSON.stringify(blogs)); }, [blogs]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.CASE_STUDIES, JSON.stringify(caseStudies)); }, [caseStudies]);
 
   // --- ACTION HANDLERS ---
@@ -543,6 +550,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useData = () => {
   const context = useContext(DataContext);
   if (!context) {

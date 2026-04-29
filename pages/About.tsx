@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { MessageSquare, User, CheckCircle, Sparkles, Linkedin, Target, Eye, Award, Users, TrendingUp, BarChart } from 'lucide-react';
+import { CheckCircle, Sparkles, Linkedin, Target, Eye, Award, Users, TrendingUp, BarChart } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';

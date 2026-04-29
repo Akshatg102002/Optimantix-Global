@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Facebook, Linkedin, Instagram, Mail, Phone, MapPin, ChevronRight, Lock } from 'lucide-react';
+import { Facebook, Linkedin, Instagram, Mail, Phone, MapPin, Lock } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();

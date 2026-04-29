@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Check, Zap, Users, Globe, Layout, Database, HelpCircle, ArrowRight, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -115,18 +114,21 @@ export const GoogleWorkspace: React.FC = () => {
   ];
 
   const apps = [
-    { name: "Gmail", icon: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" },
-    { name: "Drive", icon: "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" },
-    { name: "Docs", icon: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Google_Docs_icon_%282020%29.svg" },
-    { name: "Sheets", icon: "https://upload.wikimedia.org/wikipedia/commons/3/30/Google_Sheets_icon_%282020%29.svg" },
-    { name: "Slides", icon: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Google_Slides_icon_%282020%29.svg" },
-    { name: "Meet", icon: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" },
-    { name: "Calendar", icon: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" },
-    { name: "Chat", icon: "https://upload.wikimedia.org/wikipedia/commons/d/de/Google_Chat_icon_%282020%29.svg" },
-    { name: "Forms", icon: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_Forms_icon_%282020%29.svg" },
-    { name: "Sites", icon: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Google_Sites_icon_%282020%29.svg" },
-    { name: "Keep", icon: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Google_Keep_icon_%282020%29.svg" },
-    { name: "Gemini AI", icon: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" },
+    { name: "Gmail", icon: "https://cdn.simpleicons.org/gmail" },
+    { name: "Drive", icon: "https://cdn.simpleicons.org/googledrive" },
+    { name: "Docs", icon: "https://cdn.simpleicons.org/googledocs" },
+    { name: "Sheets", icon: "https://cdn.simpleicons.org/googlesheets" },
+    { name: "Slides", icon: "https://cdn.simpleicons.org/googleslides" },
+    { name: "Meet", icon: "https://cdn.simpleicons.org/googlemeet" },
+    { name: "Calendar", icon: "https://cdn.simpleicons.org/googlecalendar" },
+    { name: "Chat", icon: "https://cdn.simpleicons.org/googlechat" },
+    { name: "Forms", icon: "https://cdn.simpleicons.org/googleforms" },
+{ 
+  name: "Tasks", 
+  icon: "https://cdn.simpleicons.org/googletasks" 
+},
+    { name: "Keep", icon: "https://cdn.simpleicons.org/googlekeep" },
+    { name: "Gemini AI", icon: "https://cdn.simpleicons.org/google" }, // fallback for Gemini
   ];
 
   const steps = [
@@ -148,8 +150,8 @@ export const GoogleWorkspace: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-dark min-h-screen">
-      <SEO 
-        title="Google Workspace Reseller India | INR Billing & GST Invoices" 
+      <SEO
+        title="Google Workspace Reseller India | INR Billing & GST Invoices"
         description="Optimantix is an authorized Google Workspace reseller in India. Get INR billing, GST invoices, free migration, and local support at best prices."
       />
 
@@ -157,14 +159,14 @@ export const GoogleWorkspace: React.FC = () => {
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-dark">
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight"
             >
               Power Your Business with Google Workspace — at the <span className="text-primary">Best Prices in India</span>
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -172,7 +174,7 @@ export const GoogleWorkspace: React.FC = () => {
             >
               Optimantix is an authorized Google Workspace reseller in India. We offer INR billing, GST-compliant invoices, free migration support, and dedicated local assistance — so your team can collaborate from anywhere.
             </motion.p>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -186,7 +188,7 @@ export const GoogleWorkspace: React.FC = () => {
               </a>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -263,7 +265,7 @@ export const GoogleWorkspace: React.FC = () => {
                   {plan.price !== 'Custom' && <span className="text-gray-500 text-sm font-normal"> /user/mo</span>}
                 </div>
                 {plan.intro && <p className="text-xs text-green-600 dark:text-green-400 font-medium mb-6">{plan.intro}</p>}
-                
+
                 <div className="space-y-3 mb-8">
                   {plan.features.map((feature, fidx) => (
                     <div key={fidx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -274,7 +276,7 @@ export const GoogleWorkspace: React.FC = () => {
                 </div>
 
                 <a href="/contact" className={`block w-full text-center py-3 rounded-xl font-bold transition ${plan.popular ? 'bg-primary text-white hover:bg-secondary' : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700'}`}>
-                  {plan.price === 'Custom' ? 'Contact Us' : 'Get Started'}
+                  {plan.price === 'Custom' ? 'Get Started' : 'Get Started'}
                 </a>
               </div>
             ))}
@@ -327,10 +329,10 @@ export const GoogleWorkspace: React.FC = () => {
             {apps.map((app, idx) => (
               <div key={idx} className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col items-center text-center hover:shadow-md transition-shadow">
                 <div className="mb-4">
-                  <img 
-                    src={app.icon} 
-                    alt={app.name} 
-                    className="w-12 h-12 object-contain" 
+                  <img
+                    src={app.icon}
+                    alt={app.name}
+                    className="w-12 h-12 object-contain"
                     referrerPolicy="no-referrer"
                   />
                 </div>

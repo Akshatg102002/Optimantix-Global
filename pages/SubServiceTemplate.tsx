@@ -59,28 +59,25 @@ export const SubServiceTemplate: React.FC = () => {
 
       {/* 🔹 TITLE SECTION BELOW BANNER */}
       <div
-          style={{
-              textAlign: "center",
-              padding: "40px 20px",
-              backgroundColor: "white",
-          }}
-          className="dark:bg-dark"
+          className="bg-white dark:bg-dark text-center py-10 px-4 flex flex-col items-center justify-center relative overflow-hidden"
       >
-          <h1
-              style={{ margin: 0 }}
-              className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
-          >
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
               {title}
           </h1>
 
           {subtitle && (
-              <p
-                  style={{ marginTop: "12px" }}
-                  className="text-lg text-gray-600 dark:text-gray-400 w-full px-4 max-w-4xl mx-auto"
-              >
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8 leading-relaxed">
                   {subtitle}
               </p>
           )}
+          
+          <Link 
+              to="/contact" 
+              className="inline-flex items-center justify-center bg-primary hover:bg-secondary text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg shadow-primary/20 hover:scale-105"
+          >
+              Connect With Us <ArrowRight className="ml-2 w-5 h-5" />
+          </Link>
       </div>
 
       <div className="container mx-auto px-4 md:px-6 py-16">

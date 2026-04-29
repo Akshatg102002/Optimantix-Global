@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLocation } from "react-router-dom";
 import { ArrowRight, TrendingUp, Users, ShieldCheck, Clock, ChevronDown, BarChart, Zap, Globe, Building, ShoppingBag, Heart, GraduationCap, Cpu, Shirt } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { LeadModal } from '../components/LeadModal';

@@ -24,14 +24,17 @@ const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module 
 const AdminLogin = lazy(() => import('./pages/Admin/Login').then(module => ({ default: module.AdminLogin })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
+import { ErrorBoundary } from './components/ErrorBoundary';
+
 const App: React.FC = () => {
   return (
-    <DataProvider>
-      <Router>
-        <ScrollToTop />
-        <Layout>
-          <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
+    <ErrorBoundary>
+      <DataProvider>
+        <Router>
+          <ScrollToTop />
+          <Layout>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<ServicesPage />} />
@@ -62,6 +65,7 @@ const App: React.FC = () => {
         </Layout>
       </Router>
     </DataProvider>
+    </ErrorBoundary>
   );
 };
 
