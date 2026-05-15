@@ -1,9 +1,8 @@
-
 export interface SubService {
   id: string;
   slug: string;
-  
-  // Legacy fields (keeping them optional for backward compatibility until user updates all)
+
+  // ─── Legacy fields (kept optional for backward compatibility) ───────────────
   title?: string;
   shortDescription?: string;
   fullDescription?: string;
@@ -15,58 +14,226 @@ export interface SubService {
   metaDescription?: string;
   tags?: string[];
 
-  // New JSON Structure Fields
+  // ─── Shared top-level fields ────────────────────────────────────────────────
   page_title?: string;
+
   banners?: {
     desktop: string;
     mobile: string;
   };
+
   seo?: {
     meta_title: string;
     meta_description: string;
     focus_keyphrase: string;
+    secondary_keyphrases?: string[];
   };
+
+  // ─── Hero ───────────────────────────────────────────────────────────────────
   hero_section?: {
-    badge: string;
+    badge?: string;
     headline: string;
     lead_text: string;
-    call_to_action_buttons: { text: string; prompt: string }[];
+    /** Trust strip pill items (e.g. Nykaa, Ecommerce pages) */
+    trust_items?: string[];
+    call_to_action_buttons?: {
+      text: string;
+      /** Chat sendPrompt trigger — marketplace pages */
+      prompt?: string;
+      /** Hard URL navigation — dev/non-chat pages */
+      url?: string;
+      type?: 'primary' | 'outline' | string;
+    }[];
   };
+
+  // ─── Intro Section (WordPress dev page) ─────────────────────────────────────
+  intro_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    call_to_action_button?: {
+      text: string;
+      prompt?: string;
+      url?: string;
+      type?: 'primary' | 'outline' | string;
+    };
+  };
+
+  // ─── Statistics ─────────────────────────────────────────────────────────────
   statistics_section?: {
     stats: { value: string; label: string }[];
   };
+
+  // ─── Services grid ──────────────────────────────────────────────────────────
   services_section?: {
     section_label: string;
     title: string;
     description: string;
-    services_grid: { title: string; description: string }[];
+    services_grid: {
+      title: string;
+      description: string;
+      /** Lucide icon slug (e.g. "search-optimization", "advertising") */
+      icon?: string;
+      /** Display number badge (e.g. "01") — ecommerce dev page */
+      number?: string;
+      /** Per-card sendPrompt trigger (e.g. Nykaa service cards) */
+      prompt?: string;
+    }[];
   };
+
+  // ─── Timeline (Nykaa week-by-week results) ──────────────────────────────────
+  timeline_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    items: {
+      period: string;
+      title: string;
+      description: string;
+    }[];
+  };
+
+  // ─── Comparison table (Nykaa DIY vs Generic vs Optimantix) ─────────────────
+  comparison_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    columns: string[];
+    rows: {
+      feature: string;
+      diy: { value: boolean; note: string };
+      generic: { value: boolean; note: string };
+      optimantix: { value: boolean; note: string };
+    }[];
+  };
+
+  // ─── Platforms (ecommerce dev page) ─────────────────────────────────────────
+  platforms_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    platforms: {
+      icon: string;
+      title: string;
+      description: string;
+    }[];
+  };
+
+  // ─── Process / How it works ──────────────────────────────────────────────────
   process_section?: {
     section_label: string;
     title: string;
     description: string;
-    steps: { step_number: string; title: string; description: string }[];
+    steps: {
+      step_number: string;
+      title: string;
+      description: string;
+      /** Timeline badge shown on dev page steps (e.g. "Week 1–2") */
+      tag?: string;
+    }[];
   };
+
+  // ─── Why us ─────────────────────────────────────────────────────────────────
   why_us_section?: {
     section_label: string;
     title: string;
     description: string;
-    features_grid: { title: string; description: string }[];
+    /** Large hero metric (e.g. "98% on-time delivery") — ecommerce dev page */
+    headline_metric?: {
+      value: string;
+      label: string;
+      note?: string;
+    };
+    /** Small 2×2 metric grid — ecommerce dev page */
+    mini_metrics?: {
+      value: string;
+      label: string;
+    }[];
+    features_grid: {
+      title: string;
+      description: string;
+    }[];
   };
+
+  // ─── Tech stack (ecommerce dev page) ────────────────────────────────────────
+  tech_stack_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    technologies: {
+      icon: string;
+      name: string;
+      description?: string;
+    }[];
+    capabilities?: string[];
+  };
+
+  // ─── Results / Case results (ecommerce dev page) ────────────────────────────
+  results_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    case_results: {
+      metric: string;
+      title: string;
+      description: string;
+    }[];
+    performance_benchmarks?: {
+      label: string;
+      target: string;
+      /** Width percentage for the animated bar (0–100) */
+      bar_percent: number;
+    }[];
+  };
+
+  // ─── Testimonials ────────────────────────────────────────────────────────────
   testimonials_section?: {
     section_label: string;
     title: string;
-    testimonials: { quote: string; author: string }[];
+    description?: string;
+    testimonials: {
+      quote: string;
+      author: string;
+      /** Avatar initials (e.g. "AV") — ecommerce dev page */
+      initials?: string;
+      /** Job title / company string (e.g. "Founder, GlowBotanica Skincare") */
+      role?: string;
+      location?: string;
+      category?: string;
+    }[];
   };
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
   faq_section?: {
     section_label: string;
     title: string;
-    questions: { question: string; answer: string }[];
+    description?: string;
+    questions: {
+      question: string;
+      answer: string;
+      links?: { text: string; url: string }[];
+    }[];
   };
+
+  // ─── Bottom CTA ──────────────────────────────────────────────────────────────
   bottom_cta_section?: {
     title: string;
     description: string;
-    call_to_action_button: { text: string; prompt: string };
+    /** Small disclaimer line below buttons (ecommerce dev page) */
+    sub_note?: string;
+    call_to_action_button: {
+      text: string;
+      prompt?: string;
+      url?: string;
+      type?: 'primary' | 'outline' | string;
+    };
+    /** Second button (ecommerce dev page — "All Dev Services") */
+    secondary_button?: {
+      text: string;
+      prompt?: string;
+      url?: string;
+      type?: 'primary' | 'outline' | string;
+    };
   };
 }
 

@@ -102,9 +102,9 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
 
     try {
       // NOTE: To change the email address where submissions are sent, 
-      // replace 'akshatg2024@gmail.com' below with your desired email.
+      // replace 'optimantixglobal@gmail.com' below with your desired email.
       // First time you submit to a new email, you will receive an activation request to that email.
-      const response = await fetch("https://formsubmit.co/ajax/akshatg2024@gmail.com", {
+      const response = await fetch("https://formsubmit.co/ajax/optimantixglobal@gmail.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
