@@ -41,11 +41,9 @@ interface FormData {
   companyName: string;
   workEmail: string;
   workPhone: string;
-  serviceCategory: string;
   serviceSubCategory: string;
   timeline: string;
   budget: string;
-  goals: string;
   message: string;
 }
 
@@ -59,37 +57,16 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null);
   const captchaRef = useRef<CaptchaRef>(null);
 
-  const selectedCategory = watch('serviceCategory');
-  const [subServices, setSubServices] = useState<string[]>([]);
+  const [subServices, setSubServices] = useState<string[]>(Object.values(SERVICES_DATA).flat());
 
   useEffect(() => {
     if (defaultService) {
-      for (const [category, services] of Object.entries(SERVICES_DATA)) {
-        if (services.includes(defaultService)) {
-          setValue('serviceCategory', category);
-          setSubServices(services);
-          setValue('serviceSubCategory', defaultService);
-          return;
-        }
-        if (category === defaultService) {
-             setValue('serviceCategory', category);
-             setSubServices(SERVICES_DATA[category]);
-             return;
-        }
+      const allServices = Object.values(SERVICES_DATA).flat();
+      if (allServices.includes(defaultService)) {
+        setValue('serviceSubCategory', defaultService);
       }
     }
   }, [defaultService, setValue]);
-
-  const onCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = e.target.value;
-    if (category && SERVICES_DATA[category]) {
-      setSubServices(SERVICES_DATA[category]);
-      setValue('serviceSubCategory', '');
-    } else {
-      setSubServices([]);
-      setValue('serviceSubCategory', '');
-    }
-  };
 
   const onSubmit = async (data: FormData) => {
     setSubmitResult(null);
@@ -117,11 +94,9 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
           Company: data.companyName,
           Email: data.workEmail,
           Phone: data.workPhone,
-          Category: data.serviceCategory,
           Service: data.serviceSubCategory,
           Timeline: data.timeline,
           Budget: data.budget,
-          Goals: data.goals,
           Message: data.message
         }),
       });
@@ -181,29 +156,9 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
 
         {/* Services Required */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
+            <div className="md:col-span-2">
                 <div className="relative">
-                    <select 
-                      {...register('serviceCategory', { 
-                        required: 'Category is required',
-                        onChange: onCategoryChange 
-                      })} 
-                      className={selectClasses}
-                    >
-                        <option value="">Select Category*</option>
-                        {Object.keys(SERVICES_DATA).map(category => (
-                            <option key={category} value={category}>{category}</option>
-                        ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
-                    </div>
-                </div>
-                {errors.serviceCategory && <span className="text-xs text-red-500 mt-1 block">{errors.serviceCategory.message}</span>}
-            </div>
-            <div>
-                <div className="relative">
-                    <select {...register('serviceSubCategory', { required: 'Service is required' })} className={selectClasses} disabled={!selectedCategory}>
+                    <select {...register('serviceSubCategory', { required: 'Service is required' })} className={selectClasses}>
                         <option value="">Select Service*</option>
                         {subServices.map(service => (
                             <option key={service} value={service}>{service}</option>
@@ -233,38 +188,9 @@ export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
                 </div>
                 {errors.timeline && <span className="text-xs text-red-500 mt-1 block">{errors.timeline.message}</span>}
             </div>
-            <div className="relative">
-                <select {...register('budget', { required: 'Budget is required' })} className={selectClasses}>
-                <option value="">Select Budget*</option>
-                <option value="0-50k">₹0 – ₹50,000</option>
-                <option value="50k-1L">₹50,000 – ₹1,00,000</option>
-                <option value="1L-5L">₹1,00,000 – ₹5,00,000</option>
-                <option value="5L+">₹5,00,000 and Above</option>
-                <option value="TBD">Prefer to Discuss</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
-                </div>
+            <div>
+                <input {...register('budget', { required: 'Budget is required' })} className={inputClasses} placeholder="Estimated Budget*" />
                 {errors.budget && <span className="text-xs text-red-500 mt-1 block">{errors.budget.message}</span>}
-            </div>
-        </div>
-
-        {/* Project Goals */}
-        <div>
-            <label className="text-sm font-bold text-gray-700 mb-1 block">Goals</label>
-            <div className="relative">
-                <select {...register('goals')} className={selectClasses}>
-                    <option value="">Select Primary Goal</option>
-                    <option value="Generate Leads">Generate Leads</option>
-                    <option value="Increase Sales">Increase Sales</option>
-                    <option value="Brand Awareness">Brand Awareness</option>
-                    <option value="New Product Launch">New Product Launch</option>
-                    <option value="Online Presence">Online Presence</option>
-                    <option value="Other">Other</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
-                </div>
             </div>
         </div>
 
