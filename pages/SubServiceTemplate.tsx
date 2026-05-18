@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import type { SubService } from '../types';
 
 // ─── Icon resolver ─────────────────────────────────────────────────────────────
@@ -93,7 +94,7 @@ const SectionHeader: React.FC<{
 // ─── Main component ────────────────────────────────────────────────────────────
 export const SubServiceTemplate: React.FC = () => {
   const { slug, subSlug } = useParams<{ slug: string; subSlug: string }>();
-  const { services, caseStudies } = useData();
+  const { services } = useData();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const service = services.find(s => s.slug === slug);
@@ -103,7 +104,7 @@ export const SubServiceTemplate: React.FC = () => {
 
   if (!service || !subService) return <Navigate to="/404" replace />;
 
-  const relevantCaseStudies = caseStudies.filter(cs => cs.subServiceId === subService.id);
+  const relevantCaseStudies = AUTHENTIC_CASE_STUDIES.filter(cs => cs.subServiceId === subService.id);
 
   const getServiceImage = (s: string) => {
     const map: Record<string, string> = {
@@ -826,7 +827,7 @@ export const SubServiceTemplate: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {relevantCaseStudies.map(study => (
                     <Link
-                      to={`/case-studies/${study.slug}`}
+                      to={`/case/${study.slug}`}
                       key={study.id}
                       className="group block bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition"
                     >

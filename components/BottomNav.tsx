@@ -12,7 +12,7 @@ export const BottomNav: React.FC = () => {
     { path: '/', label: 'Home', icon: Home },
     { path: '/services', label: 'Solutions', icon: Layers },
     { path: '/blog', label: 'Blog', icon: FileText },
-    { path: '/case-studies', label: 'Projects', icon: Briefcase },
+    { path: '/case', label: 'Projects', icon: Briefcase },
   ];
 
   const MotionDiv = motion.div as React.ElementType;

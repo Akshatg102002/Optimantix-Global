@@ -6,12 +6,13 @@ import { Icon } from '../components/Icon';
 import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { PortfolioSlider } from '../components/PortfolioSlider';
 
 export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { services, caseStudies } = useData();
+  const { services } = useData();
   const service = services.find(s => s.slug === slug);
   
   const MotionDiv = motion.div as React.ElementType;
@@ -20,7 +21,7 @@ export const ServiceTemplate: React.FC = () => {
     return <Navigate to="/" replace />;
   }
 
-  const relevantCaseStudies = caseStudies.filter(cs => cs.serviceId === service.id);
+  const relevantCaseStudies = AUTHENTIC_CASE_STUDIES.filter(cs => cs.serviceId === service.id);
 
   // Helper to get image based on slug (fallback if not in data object)
   const getServiceImage = (slug: string) => {
@@ -173,7 +174,7 @@ export const ServiceTemplate: React.FC = () => {
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Success Stories</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {relevantCaseStudies.map(study => (
-                            <Link to={`/case-studies/${study.slug}`} key={study.id} className="group block bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
+                            <Link to={`/case/${study.slug}`} key={study.id} className="group block bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
                                 <div className="h-48 overflow-hidden">
                                     <img src={study.imageUrl} alt={study.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                                 </div>
