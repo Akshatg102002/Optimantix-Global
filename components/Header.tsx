@@ -48,7 +48,10 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pb-4 bg-[#020514]">
+      <div className="bg-primary text-white text-sm py-2 px-4 text-center fixed top-0 w-full z-[60] font-syne tracking-wide flex items-center justify-center gap-2 max-w-[100vw] overflow-hidden truncate">
+          <span className="truncate">Ready to rank higher?</span> <Link to="/free-seo-audit" className="font-bold underline hover:text-blue-200 shrink-0">Get your Free SEO Audit today →</Link>
+      </div>
+      <header className="fixed top-9 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pb-4 bg-[#020514]">
         <nav className="max-w-7xl mx-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg relative">
           <div className="flex justify-between items-center h-20 px-6">
             {/* Logo - Left */}

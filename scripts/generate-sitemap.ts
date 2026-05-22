@@ -12,6 +12,8 @@ async function generateSitemap() {
   let urls = `
     <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
     <url><loc>${baseUrl}/services</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+    <url><loc>${baseUrl}/services/digital-marketing/seo</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+    <url><loc>${baseUrl}/free-seo-audit</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
     <url><loc>${baseUrl}/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
     <url><loc>${baseUrl}/case-studies</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
     <url><loc>${baseUrl}/google-workspace</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

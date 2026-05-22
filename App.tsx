@@ -22,6 +22,8 @@ const HostingSolutions = lazy(() => import('./pages/HostingSolutions').then(modu
 const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
 const CaseStudies = lazy(() => import('./pages/CaseStudies').then(module => ({ default: module.CaseStudies })));
 const CaseDetails = lazy(() => import('./pages/CaseDetails').then(module => ({ default: module.CaseDetails })));
+const SeoPage = lazy(() => import('./pages/SeoPage').then(module => ({ default: module.SeoPage })));
+const SeoAudit = lazy(() => import('./pages/SeoAudit').then(module => ({ default: module.SeoAudit })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
 const AdminLogin = lazy(() => import('./pages/Admin/Login').then(module => ({ default: module.AdminLogin })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
@@ -40,8 +42,10 @@ const App: React.FC = () => {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services/digital-marketing/seo" element={<SeoPage />} />
               <Route path="/services/:slug" element={<ServiceTemplate />} />
               <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />
+              <Route path="/free-seo-audit" element={<SeoAudit />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/case-studies" element={<CaseStudyList />} />
