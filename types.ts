@@ -392,4 +392,14 @@ export interface Lead {
   date: string;
 }
 
+export interface PageSEO {
+  id: string;
+  path: string;
+  metaTitle: string;
+  metaDescription: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+}
+
 export type IconName = 'Megaphone' | 'ShoppingBag' | 'Code' | 'Palette' | 'Server' | 'MessageCircle';

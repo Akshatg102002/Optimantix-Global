@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useData } from '../context/DataContext';
 
 interface SEOProps {
   title: string;
@@ -24,11 +25,24 @@ export const SEO: React.FC<SEOProps> = ({
   author,
   publishedTime
 }) => {
+  const { seoPages } = useData();
+
+  // Find dynamic SEO override for the current page
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+  const seoOverride = seoPages?.find(page => page.id === currentPath || page.path === currentPath);
+
+  // Apply overrides
+  const finalTitle = seoOverride?.metaTitle || title;
+  const rawDescription = seoOverride?.metaDescription || description;
+  const ogTitle = seoOverride?.ogTitle || seoOverride?.metaTitle || title;
+  const ogDescription = seoOverride?.ogDescription || rawDescription;
+  const ogImage = seoOverride?.ogImage || image;
+
   // 5. Trim title to ≤60 chars logic (accounting for appending | Optimantix Global)
   // Base title max length to prevent truncation in SERP
   const maxLength = 60;
   const suffix = ' | Optimantix Global';
-  let processedTitle = title;
+  let processedTitle = finalTitle;
   if (processedTitle.length + suffix.length > maxLength) {
      const availableLength = maxLength - suffix.length - 3; // 3 for '...'
      if (availableLength > 0) {
@@ -38,9 +52,14 @@ export const SEO: React.FC<SEOProps> = ({
   const fullTitle = `${processedTitle}${suffix}`;
   
   // 16. Ensure a CTA is roughly present or just ensure descriptions are reasonable length
-  let finalDescription = description.trim();
+  let finalDescription = rawDescription.trim();
   if (finalDescription.length > 155) {
      finalDescription = `${finalDescription.substring(0, 152)}...`;
+  }
+
+  let finalOgDescription = ogDescription.trim();
+  if (finalOgDescription.length > 155) {
+    finalOgDescription = `${finalOgDescription.substring(0, 152)}...`;
   }
 
   // Determine current clean url without trailing slashes
@@ -60,16 +79,16 @@ export const SEO: React.FC<SEOProps> = ({
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={canonical || currentUrl} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={finalDescription} />
-      <meta property="og:image" content={image} />
+      <meta property="og:title" content={ogTitle} />
+      <meta property="og:description" content={finalOgDescription} />
+      <meta property="og:image" content={ogImage} />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={canonical || currentUrl} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={finalDescription} />
-      <meta name="twitter:image" content={image} />
+      <meta name="twitter:title" content={ogTitle} />
+      <meta name="twitter:description" content={finalOgDescription} />
+      <meta name="twitter:image" content={ogImage} />
 
       {/* Article Specific Meta Tags */}
       {type === 'article' && publishedTime && (

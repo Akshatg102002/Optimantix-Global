@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { AdminMedia } from './Media';
+import { AdminSeoPages } from './SeoPages';
 import { MediaPicker } from '../../components/MediaManager/MediaPicker';
 import { MediaFile } from '../../hooks/useMedia';
-import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen, Globe } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 import { BlogPost, CaseStudy, Service, SubService } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
@@ -17,7 +18,8 @@ const TABS = {
   BLOG: 'BLOG',
   PORTFOLIO: 'PORTFOLIO',
   CASE_STUDIES: 'CASE_STUDIES',
-  MEDIA: 'MEDIA'
+  MEDIA: 'MEDIA',
+  SEO_PAGES: 'SEO_PAGES'
 };
 
 const BLOG_VIEWS = {
@@ -244,6 +246,9 @@ export const AdminDashboard: React.FC = () => {
           </button>
           <button onClick={() => setActiveTab(TABS.MEDIA)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.MEDIA ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <ImageIcon size={20} /> Media
+          </button>
+          <button onClick={() => setActiveTab(TABS.SEO_PAGES)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.SEO_PAGES ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+            <Globe size={20} /> SEO Management
           </button>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -971,6 +976,13 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === TABS.MEDIA && (
           <div className="animate-fadeIn">
             <AdminMedia />
+          </div>
+        )}
+
+        {/* SEO PAGES TAB */}
+        {activeTab === TABS.SEO_PAGES && (
+          <div className="animate-fadeIn">
+            <AdminSeoPages />
           </div>
         )}
 

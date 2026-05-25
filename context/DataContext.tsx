@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Service, BlogPost, Lead, Project, BlogCategory, CaseStudy } from '../types';
+import { Service, BlogPost, Lead, Project, BlogCategory, CaseStudy, PageSEO } from '../types';
 import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
 import { db, auth } from '../lib/firebase';
 import firebase from 'firebase/compat/app';
@@ -12,6 +12,9 @@ interface DataContextType {
   leads: Lead[];
   projects: Project[];
   caseStudies: CaseStudy[];
+  seoPages: PageSEO[];
+  fetchSeoPages: () => Promise<void>;
+  updateSeoPage: (page: PageSEO) => Promise<void>;
   isDark: boolean;
   toggleTheme: () => void;
   isAuthenticated: boolean;
@@ -65,6 +68,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [leads, setLeads] = useState<Lead[]>([]);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
+  const [seoPages, setSeoPages] = useState<PageSEO[]>([]);
   const [globalLoading, setGlobalLoading] = useState(false);
   
   // Helper to parse various date formats
@@ -230,6 +234,21 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const fetchSeoPages = async () => {
+    try {
+      const querySnapshot = await db.collection("seo_pages").get();
+      if (!querySnapshot.empty) {
+        const fetchedSeoPages: PageSEO[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as PageSEO));
+        setSeoPages(fetchedSeoPages);
+      }
+    } catch (error) {
+      console.warn("Fetching seo pages failed:", error);
+    }
+  };
+
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
@@ -267,6 +286,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         fetchServices();
         fetchProjects();
         fetchCaseStudies();
+        fetchSeoPages();
       }
     });
     
@@ -288,6 +308,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       fetchServices();
       fetchProjects();
       fetchCaseStudies();
+      fetchSeoPages();
     }, 500); // Small delay to allow auth to initialize
 
     return () => {
@@ -517,6 +538,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateSeoPage = async (page: PageSEO) => {
+    // If it exists, update it. Else add it.
+    const existing = seoPages.find(p => p.id === page.id);
+    if (existing) {
+      setSeoPages(prev => prev.map(p => p.id === page.id ? page : p));
+    } else {
+      setSeoPages(prev => [...prev, page]);
+    }
+    
+    try {
+      await db.collection("seo_pages").doc(page.id).set(page, { merge: true });
+    } catch (e) {
+      console.error("Error updating seo page: ", e);
+    }
+  };
+
   const deleteCaseStudy = async (id: string) => {
     setCaseStudies(prev => prev.filter(s => s.id !== id));
     try {
@@ -534,7 +571,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <DataContext.Provider value={{ 
-      services, blogs, blogCategories, leads, projects, caseStudies,
+      services, blogs, blogCategories, leads, projects, caseStudies, seoPages,
       isDark, toggleTheme,
       isAuthenticated, 
       currentUser,
@@ -543,6 +580,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       addProject, deleteProject, updateProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
       addCaseStudy, updateCaseStudy, deleteCaseStudy,
       fetchProjects, fetchCaseStudies, fetchServices,
+      fetchSeoPages, updateSeoPage,
       globalLoading, setGlobalLoading
     }}>
       {children}
