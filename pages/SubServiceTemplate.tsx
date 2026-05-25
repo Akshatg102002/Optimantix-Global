@@ -58,8 +58,8 @@ const resolveCtaAction = (
 ): (() => void) | undefined => {
   if (btn.prompt) {
     return () => {
-      if (typeof window !== 'undefined' && (window as any).sendPrompt) {
-        (window as any).sendPrompt(btn.prompt);
+      if (typeof window !== 'undefined' && (window as unknown as { sendPrompt?: (p: string) => void }).sendPrompt) {
+        (window as unknown as { sendPrompt?: (p: string) => void }).sendPrompt!(btn.prompt!);
       }
     };
   }

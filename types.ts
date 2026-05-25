@@ -78,7 +78,68 @@ export interface SubService {
       number?: string;
       /** Per-card sendPrompt trigger (e.g. Nykaa service cards) */
       prompt?: string;
+      /** Category badge label (e.g. "Foundation", "Creative") — SMM page */
+      badge?: string;
     }[];
+  };
+
+  // ─── Problem section (SMM page) ─────────────────────────────────────────────
+  problem_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    problems_grid: {
+      title: string;
+      description: string;
+    }[];
+  };
+
+  // ─── Who we serve (SMM page) ─────────────────────────────────────────────────
+  who_we_serve_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    segments: {
+      title: string;
+      description: string;
+      keyword?: string;
+    }[];
+  };
+
+  // ─── Use cases (WhatsApp API page) ───────────────────────────────────────────
+  use_cases_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    use_cases: {
+      title: string;
+      description: string;
+      keyword?: string;
+    }[];
+  };
+
+  // ─── ROI Calculator (Nykaa page) ─────────────────────────────────────────────
+  roi_calculator_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    inputs: {
+      id: string;
+      label: string;
+      min: number;
+      max: number;
+      step: number;
+      default: number;
+      unit?: string;
+      display_id?: string;
+    }[];
+    outputs: {
+      id: string;
+      label: string;
+      /** "primary" | "positive" | "default" */
+      type?: string;
+    }[];
+    disclaimer?: string;
   };
 
   // ─── Timeline (Nykaa week-by-week results) ──────────────────────────────────
@@ -107,13 +168,14 @@ export interface SubService {
     }[];
   };
 
-  // ─── Platforms (ecommerce dev page) ─────────────────────────────────────────
+  // ─── Platforms (SMM / ecommerce dev page) ───────────────────────────────────
   platforms_section?: {
     section_label: string;
     title: string;
     description: string;
     platforms: {
-      icon: string;
+      /** Lucide icon slug or emoji */
+      icon?: string;
       title: string;
       description: string;
     }[];
@@ -183,6 +245,18 @@ export interface SubService {
       target: string;
       /** Width percentage for the animated bar (0–100) */
       bar_percent: number;
+    }[];
+  };
+
+  // ─── Statistics results (SMM proven results section) ────────────────────────
+  statistics_results_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    stats: {
+      value: string;
+      label: string;
+      description?: string;
     }[];
   };
 

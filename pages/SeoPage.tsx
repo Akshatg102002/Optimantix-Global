@@ -1,7 +1,6 @@
 import React from 'react';
 import { SEO } from '../components/SEO';
 import { SEO_PDP_DATA } from '../data/seoConstants';
-import { ShareButtons } from '../components/ShareButtons';
 import { Link } from 'react-router-dom';
 
 export const SeoPage: React.FC = () => {

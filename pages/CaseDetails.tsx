@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
-import { ArrowLeft, Calendar, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { ShareButtons } from '../components/ShareButtons';

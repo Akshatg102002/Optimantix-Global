@@ -52,12 +52,12 @@ interface ContactFormProps {
 }
 
 export const ContactForm: React.FC<ContactFormProps> = ({ defaultService }) => {
-  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null);
   const captchaRef = useRef<CaptchaRef>(null);
 
-  const [subServices, setSubServices] = useState<string[]>(Object.values(SERVICES_DATA).flat());
+  const [subServices] = useState<string[]>(Object.values(SERVICES_DATA).flat());
 
   useEffect(() => {
     if (defaultService) {

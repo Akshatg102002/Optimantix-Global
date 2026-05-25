@@ -1,6 +1,6 @@
 import React from 'react';
 import { SEO } from '../components/SEO';
-import { MapPin, Phone, MessageSquare, Clock, Globe2, Building2, ArrowDown, Users } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Clock, Globe2, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const Contact = () => {
