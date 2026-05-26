@@ -15,6 +15,7 @@ interface DataContextType {
   seoPages: PageSEO[];
   fetchSeoPages: () => Promise<void>;
   updateSeoPage: (page: PageSEO) => Promise<void>;
+  deleteSeoPage: (id: string) => Promise<void>;
   isDark: boolean;
   toggleTheme: () => void;
   isAuthenticated: boolean;
@@ -554,6 +555,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const deleteSeoPage = async (id: string) => {
+    setSeoPages(prev => prev.filter(p => p.id !== id));
+    try {
+      await db.collection("seo_pages").doc(id).delete();
+    } catch (e) {
+      console.error("Error deleting seo page: ", e);
+    }
+  };
+
   const deleteCaseStudy = async (id: string) => {
     setCaseStudies(prev => prev.filter(s => s.id !== id));
     try {
@@ -580,7 +590,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       addProject, deleteProject, updateProject, fetchBlogs, addBlogCategory, deleteBlogCategory,
       addCaseStudy, updateCaseStudy, deleteCaseStudy,
       fetchProjects, fetchCaseStudies, fetchServices,
-      fetchSeoPages, updateSeoPage,
+      fetchSeoPages, updateSeoPage, deleteSeoPage,
       globalLoading, setGlobalLoading
     }}>
       {children}

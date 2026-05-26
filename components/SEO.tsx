@@ -37,6 +37,8 @@ export const SEO: React.FC<SEOProps> = ({
   const ogTitle = seoOverride?.ogTitle || seoOverride?.metaTitle || title;
   const ogDescription = seoOverride?.ogDescription || rawDescription;
   const ogImage = seoOverride?.ogImage || image;
+  const keywords = seoOverride?.keywords || '';
+  const finalCanonical = seoOverride?.canonicalUrl || canonical;
 
   // 5. Trim title to ≤60 chars logic (accounting for appending | Optimantix Global)
   // Base title max length to prevent truncation in SERP
@@ -71,21 +73,22 @@ export const SEO: React.FC<SEOProps> = ({
       {/* Primary Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={finalDescription} />
+      {keywords && <meta name="keywords" content={keywords} />}
       
       {/* Canonical Link */}
-      {canonical && <link rel="canonical" href={canonical.replace(/\/+$/, '')} />}
-      {!canonical && <link rel="canonical" href={currentUrl} />}
+      {finalCanonical && <link rel="canonical" href={finalCanonical.replace(/\/+$/, '')} />}
+      {!finalCanonical && <link rel="canonical" href={currentUrl} />}
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
-      <meta property="og:url" content={canonical || currentUrl} />
+      <meta property="og:url" content={finalCanonical || currentUrl} />
       <meta property="og:title" content={ogTitle} />
       <meta property="og:description" content={finalOgDescription} />
       <meta property="og:image" content={ogImage} />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={canonical || currentUrl} />
+      <meta name="twitter:url" content={finalCanonical || currentUrl} />
       <meta name="twitter:title" content={ogTitle} />
       <meta name="twitter:description" content={finalOgDescription} />
       <meta name="twitter:image" content={ogImage} />
