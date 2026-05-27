@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useData } from '../context/DataContext';
+import { useLocation } from 'react-router-dom';
 
 interface SEOProps {
   title: string;
@@ -26,10 +27,16 @@ export const SEO: React.FC<SEOProps> = ({
   publishedTime
 }) => {
   const { seoPages } = useData();
+  const location = useLocation();
 
   // Find dynamic SEO override for the current page
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
-  const seoOverride = seoPages?.find(page => page.id === currentPath || page.path === currentPath);
+  const rawPath = location.pathname || '/';
+  const currentPath = rawPath.endsWith('/') && rawPath.length > 1 ? rawPath.slice(0, -1) : rawPath;
+  
+  const seoOverride = seoPages?.find(page => {
+    const definedPath = page.path?.endsWith('/') && page.path.length > 1 ? page.path.slice(0, -1) : page.path;
+    return definedPath === currentPath || page.id === currentPath;
+  });
 
   // Apply overrides
   const finalTitle = seoOverride?.metaTitle || title;

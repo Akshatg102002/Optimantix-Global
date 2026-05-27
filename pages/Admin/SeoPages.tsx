@@ -159,7 +159,8 @@ export const AdminSeoPages: React.FC = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-500">Path (Route) <span className="text-red-500">*</span></label>
-                          <input type="text" name="path" value={formState.path || ''} onChange={handleChange} className="w-full p-2 bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded text-sm disabled:opacity-50" disabled={defaultPaths.includes(page.id)} />
+                          <input type="text" name="path" value={formState.path || ''} onChange={handleChange} className="w-full p-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded text-sm disabled:opacity-50 cursor-not-allowed" disabled={true} />
+                          <p className="text-[10px] text-gray-400">Path cannot be changed after creation. Delete and recreate if needed.</p>
                         </div>
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-500">Canonical URL</label>

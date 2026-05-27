@@ -235,14 +235,19 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const getSeoDocId = (path: string) => encodeURIComponent(path);
+
   const fetchSeoPages = async () => {
     try {
       const querySnapshot = await db.collection("seo_pages").get();
       if (!querySnapshot.empty) {
-        const fetchedSeoPages: PageSEO[] = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as PageSEO));
+        const fetchedSeoPages: PageSEO[] = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            ...data,
+            id: data.id || data.path || doc.id,
+          } as PageSEO;
+        });
         setSeoPages(fetchedSeoPages);
       }
     } catch (error) {
@@ -541,24 +546,27 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const updateSeoPage = async (page: PageSEO) => {
     // If it exists, update it. Else add it.
-    const existing = seoPages.find(p => p.id === page.id);
+    const existing = seoPages.find(p => p.id === page.id || p.path === page.path);
     if (existing) {
-      setSeoPages(prev => prev.map(p => p.id === page.id ? page : p));
+      setSeoPages(prev => prev.map(p => (p.id === page.id || p.path === page.path) ? page : p));
     } else {
       setSeoPages(prev => [...prev, page]);
     }
     
     try {
-      await db.collection("seo_pages").doc(page.id).set(page, { merge: true });
+      await db.collection("seo_pages").doc(getSeoDocId(page.path)).set(page, { merge: true });
     } catch (e) {
       console.error("Error updating seo page: ", e);
     }
   };
 
   const deleteSeoPage = async (id: string) => {
+    const pageToDelete = seoPages.find(p => p.id === id);
     setSeoPages(prev => prev.filter(p => p.id !== id));
     try {
-      await db.collection("seo_pages").doc(id).delete();
+      if (pageToDelete) {
+        await db.collection("seo_pages").doc(getSeoDocId(pageToDelete.path)).delete();
+      }
     } catch (e) {
       console.error("Error deleting seo page: ", e);
     }
