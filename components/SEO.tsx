@@ -39,13 +39,13 @@ export const SEO: React.FC<SEOProps> = ({
   });
 
   // Apply overrides
-  const finalTitle = seoOverride?.metaTitle || title;
-  const rawDescription = seoOverride?.metaDescription || description;
-  const ogTitle = seoOverride?.ogTitle || seoOverride?.metaTitle || title;
-  const ogDescription = seoOverride?.ogDescription || rawDescription;
-  const ogImage = seoOverride?.ogImage || image;
+  const finalTitle = (seoOverride?.metaTitle && seoOverride.metaTitle.trim() !== '') ? seoOverride.metaTitle : title;
+  const rawDescription = (seoOverride?.metaDescription && seoOverride.metaDescription.trim() !== '') ? seoOverride.metaDescription : description;
+  const ogTitle = (seoOverride?.ogTitle && seoOverride.ogTitle.trim() !== '') ? seoOverride.ogTitle : ((seoOverride?.metaTitle && seoOverride.metaTitle.trim() !== '') ? seoOverride.metaTitle : title);
+  const ogDescription = (seoOverride?.ogDescription && seoOverride.ogDescription.trim() !== '') ? seoOverride.ogDescription : rawDescription;
+  const ogImage = (seoOverride?.ogImage && seoOverride.ogImage.trim() !== '') ? seoOverride.ogImage : image;
   const keywords = seoOverride?.keywords || '';
-  const finalCanonical = seoOverride?.canonicalUrl || canonical;
+  const finalCanonical = (seoOverride?.canonicalUrl && seoOverride.canonicalUrl.trim() !== '') ? seoOverride.canonicalUrl : canonical;
 
   // 5. Trim title to ≤60 chars logic (accounting for appending | Optimantix Global)
   // Base title max length to prevent truncation in SERP

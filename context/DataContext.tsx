@@ -244,8 +244,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const fetchedSeoPages: PageSEO[] = querySnapshot.docs.map(doc => {
           const data = doc.data();
           return {
-            ...data,
             id: data.id || data.path || doc.id,
+            path: data.path || '',
+            metaTitle: data.metaTitle || '',
+            metaDescription: data.metaDescription || '',
+            keywords: data.keywords || '',
+            canonicalUrl: data.canonicalUrl || '',
+            ogTitle: data.ogTitle || '',
+            ogDescription: data.ogDescription || '',
+            ogImage: data.ogImage || '',
           } as PageSEO;
         });
         setSeoPages(fetchedSeoPages);
@@ -256,7 +263,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Auth State
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return typeof window !== 'undefined' ? localStorage.getItem('opt_admin_auth') === 'true' : false;
+  });
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
   
   // Theme State

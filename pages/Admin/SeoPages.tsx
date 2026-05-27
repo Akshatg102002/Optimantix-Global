@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { PageSEO } from '../../types';
 import { Check, Edit, X, Trash2 } from 'lucide-react';
+import { SeoCSVImport } from '../../components/SeoCSVImport';
 
 export const AdminSeoPages: React.FC = () => {
   const { seoPages, updateSeoPage, deleteSeoPage } = useData();
@@ -22,6 +23,11 @@ export const AdminSeoPages: React.FC = () => {
         path: path,
         metaTitle: '',
         metaDescription: '',
+        keywords: '',
+        canonicalUrl: '',
+        ogTitle: '',
+        ogDescription: '',
+        ogImage: '',
       });
     }
   });
@@ -98,6 +104,8 @@ export const AdminSeoPages: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <SeoCSVImport />
+      
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">SEO Management</h2>
