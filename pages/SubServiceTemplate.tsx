@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { createFAQPage } from '../utils/schemaGenerator';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import type { SubService } from '../types';
 
@@ -129,11 +130,43 @@ export const SubServiceTemplate: React.FC = () => {
       statCount === 3 ? 'sm:grid-cols-3' :
         'sm:grid-cols-4';
 
+  // Generate FAQ schema from faq_section if available
+  let faqSchema = undefined;
+  if (subService.faq_section?.questions && subService.faq_section.questions.length > 0) {
+    const faqs = subService.faq_section.questions.map(q => ({
+      question: q.question,
+      answer: q.answer,
+    }));
+    faqSchema = createFAQPage(faqs);
+  } else {
+    // Generate default FAQs if none provided
+    const defaultFAQs = [
+      {
+        question: `What is ${title}?`,
+        answer: subService.intro_section?.description || subtitle || 'Expert service to help your business grow.',
+      },
+      {
+        question: `How can ${title} benefit my business?`,
+        answer: `${title} helps improve your online presence and achieve your business objectives. We use proven strategies to deliver measurable results.`,
+      },
+      {
+        question: `What's your approach to ${title}?`,
+        answer: 'We use a data-driven, customized approach based on thorough analysis of your business needs and goals.',
+      },
+      {
+        question: `How soon will I see results?`,
+        answer: 'Results vary based on your starting point. Most clients see improvements within 3-6 months of implementation.',
+      },
+    ];
+    faqSchema = createFAQPage(defaultFAQs);
+  }
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen pt-16">
       <SEO
         title={subService.seo?.meta_title || `${title} - ${service.title}`}
         description={subService.seo?.meta_description || subtitle || ''}
+        schemaMarkup={faqSchema}
       />
 
       {/* ── BANNER IMAGE ───────────────────────────────────────────────────── */}

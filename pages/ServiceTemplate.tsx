@@ -6,6 +6,7 @@ import { Icon } from '../components/Icon';
 import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { createFAQPage } from '../utils/schemaGenerator';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { PortfolioSlider } from '../components/PortfolioSlider';
@@ -41,11 +42,36 @@ export const ServiceTemplate: React.FC = () => {
   const hasBenefits = service.benefits && service.benefits.length > 0;
   const hasDeliverables = service.deliverables && service.deliverables.length > 0;
 
+  // Generate service-specific FAQs
+  const serviceFAQs = [
+    {
+      question: `What is ${service.title}?`,
+      answer: service.fullDescription || service.shortDescription,
+    },
+    {
+      question: `Why is ${service.title} important for my business?`,
+      answer: `${service.title} helps businesses improve their online presence, increase visibility, and achieve their digital goals. Our approach focuses on delivering measurable results and sustainable growth.`,
+    },
+    {
+      question: `How do we approach ${service.title}?`,
+      answer: `We use a data-driven, customized approach tailored to your business needs. Our team conducts thorough analysis, implements proven strategies, and continuously optimizes for better performance.`,
+    },
+    {
+      question: `What results can I expect from ${service.title}?`,
+      answer: `Results vary based on your starting point and goals. Typically, clients see improvements in visibility, engagement, traffic, and conversions within 3-6 months of implementing our strategies.`,
+    },
+    {
+      question: `How long does ${service.title} take to show results?`,
+      answer: `While some results may appear within weeks, comprehensive improvements typically manifest over 3-6 months. We focus on sustainable, long-term growth rather than quick fixes.`,
+    },
+  ];
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      <SEO 
-        title={service.title} 
+      <SEO
+        title={service.title}
         description={service.shortDescription}
+        schemaMarkup={createFAQPage(serviceFAQs)}
       />
       
       <ParallaxHero 
