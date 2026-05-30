@@ -7,6 +7,7 @@ import { FloatingContact } from './FloatingContact';
 import { Chatbot } from './Chatbot';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useLocation } from 'react-router-dom';
+import { SEOMetadataSync } from './SEOMetadataSync';
 
 import { ContactSection } from './ContactSection';
 
@@ -24,6 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-light font-sans">
+      <SEOMetadataSync />
       <LoadingSpinner isGlobal={true} />
       <Header />
       <main className="flex-grow pt-20 pb-20 md:pb-0">
