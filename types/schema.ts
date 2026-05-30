@@ -39,7 +39,7 @@ export interface Person {
 }
 
 export interface Organization {
-  '@context': 'https://schema.org';
+  '@context'?: 'https://schema.org';
   '@type': 'Organization';
   name: string;
   url: string;
@@ -74,7 +74,7 @@ export interface Service {
 }
 
 export interface WebSite {
-  '@context': 'https://schema.org';
+  '@context'?: 'https://schema.org';
   '@type': 'WebSite';
   name: string;
   url: string;
@@ -86,7 +86,7 @@ export interface WebSite {
       '@type': 'EntryPoint';
       urlTemplate: string;
     };
-    query?: string;
+    'query-input'?: string;
   };
 }
 
