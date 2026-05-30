@@ -130,7 +130,7 @@ export const SubServiceTemplate: React.FC = () => {
         'sm:grid-cols-4';
 
   return (
-    <div className="bg-light dark:bg-dark min-h-screen">
+    <div className="bg-light dark:bg-dark min-h-screen pt-16">
       <SEO
         title={subService.seo?.meta_title || `${title} - ${service.title}`}
         description={subService.seo?.meta_description || subtitle || ''}

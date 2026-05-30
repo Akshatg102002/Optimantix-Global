@@ -12,7 +12,7 @@ export const SeoAudit: React.FC = () => {
             `}} />
             
             {/* HERO + FORM */}
-            <section className="hero-bg pt-14 pb-14 px-6 md:px-10 lg:pl-16 lg:pr-10">
+            <section className="hero-bg pt-20 pb-14 px-6 md:px-10 lg:pl-16 lg:pr-10">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                     <div className="hero-left pb-8 lg:pb-14">
                         <div className="hero-badge inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/30 rounded px-3.5 py-1.5 mb-5">

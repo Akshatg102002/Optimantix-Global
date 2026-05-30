@@ -72,7 +72,7 @@ export interface SubService {
     services_grid: {
       title: string;
       description: string;
-      /** Lucide icon slug (e.g. "search-optimization", "advertising") */
+      /** Lucide icon slug or emoji */
       icon?: string;
       /** Display number badge (e.g. "01") — ecommerce dev page */
       number?: string;
@@ -94,7 +94,7 @@ export interface SubService {
     }[];
   };
 
-  // ─── Who we serve (SMM page) ─────────────────────────────────────────────────
+  // ─── Who we serve / Industries (SMM, packaging, email pages) ────────────────
   who_we_serve_section?: {
     section_label: string;
     title: string;
@@ -181,6 +181,58 @@ export interface SubService {
     }[];
   };
 
+  // ─── Google Ads deep-dive (PPC page) ────────────────────────────────────────
+  google_ads_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    features: {
+      number: string;
+      title: string;
+      description: string;
+    }[];
+  };
+
+  // ─── Meta Ads deep-dive (PPC page) ──────────────────────────────────────────
+  meta_ads_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    features: {
+      number: string;
+      title: string;
+      description: string;
+    }[];
+    /** 4 live metric boxes shown below the feature list */
+    metrics?: {
+      value: string;
+      label: string;
+      delta?: string;
+      positive?: boolean;
+    }[];
+  };
+
+  // ─── Channel strategy / budget allocation (PPC page) ────────────────────────
+  channel_strategy_section?: {
+    section_label: string;
+    title: string;
+    description: string;
+    /** Donut chart segments — percentages should sum to 100 */
+    allocation: {
+      channel: string;
+      percentage: number;
+      /** Hex color for the donut segment and legend dot */
+      color: string;
+    }[];
+    /** Right-side platform breakdown cards */
+    platform_cards: {
+      platform: string;
+      subtitle: string;
+      description: string;
+      badge: string;
+    }[];
+  };
+
   // ─── Process / How it works ──────────────────────────────────────────────────
   process_section?: {
     section_label: string;
@@ -217,7 +269,7 @@ export interface SubService {
     }[];
   };
 
-  // ─── Tech stack (ecommerce dev page) ────────────────────────────────────────
+  // ─── Tech stack (ecommerce dev page, VPS, cloud pages) ──────────────────────
   tech_stack_section?: {
     section_label: string;
     title: string;

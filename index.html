@@ -1,93 +1,107 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Optimantix Global - Top Digital Marketing & Web Development Agency</title>
-    <meta name="description" content="Optimantix Global is a premier digital marketing, web development, and performance scaling agency. Transform your digital presence today." />
-    <!-- Default Open Graph Metadata -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Optimantix Global - Top Digital Marketing & Web Development Agency" />
-    <meta property="og:description" content="Optimantix Global is a premier digital marketing, web development, and performance scaling agency. Transform your digital presence today." />
-    <meta property="og:url" content="https://optimantix.com" />
-    <meta property="og:image" content="https://optimantix.com/default-og-image.jpg" />
-    <!-- Default Twitter Card Metadata -->
-    <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Polyfill/interceptor to prevent Uncaught TypeError: Cannot set property fetch of #<Window> -->
-    <script>
-      (function() {
-        const fetchDescriptor = Object.getOwnPropertyDescriptor(window, 'fetch') || Object.getOwnPropertyDescriptor(window.constructor.prototype, 'fetch');
-        if (fetchDescriptor && fetchDescriptor.get && !fetchDescriptor.set && fetchDescriptor.configurable) {
-          const originalGet = fetchDescriptor.get;
-          Object.defineProperty(window, 'fetch', {
-            get: originalGet,
-            set: function() { console.warn("Ignored window.fetch assignment"); },
-            configurable: true
-          });
-        }
-      })();
-    </script>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          container: {
-            center: true,
-            padding: '1rem',
-            screens: {
-              sm: '640px',
-              md: '768px',
-              lg: '1024px',
-              xl: '1200px',
-              '2xl': '1200px',
-            },
-          },
-          extend: {
-            colors: {
-              primary: '#0056b3',
-              secondary: '#004494', 
-              dark: '#121212',
-              light: '#f8fafc',
-              'dark-card': '#111111', // Darker card background for the specific look
-              'dark-lighter': '#1a1a1a' // For hover states
-            },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Optimantix Global: Digital Marketing Agency in Noida</title>
+
+  <meta name="description"
+    content="Optimantix Global is a premier digital marketing, web development, and performance scaling agency. Transform your digital presence today." />
+
+  <!-- Site Icon / Favicon -->
+  <link rel="icon" type="image/png"
+    href="https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png" />
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png" />
+
+  <!-- Open Graph Metadata -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Optimantix Global: Digital Marketing Agency in Noida" />
+  <meta property="og:description"
+    content="Grow faster with expert SEO, Google Ads, Meta Ads & Marketplace Management. Trusted by 100s of brands. 10+ years of proven results. Get a free consultation today!" />
+  <meta property="og:url" content="https://optimantix.com" />
+  <meta property="og:image" content="https://i.ibb.co/FkFfTxxC/opti.png" />
+
+  <!-- Twitter Card Metadata -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Polyfill/interceptor to prevent Uncaught TypeError: Cannot set property fetch of #<Window> -->
+  <script>
+    (function () {
+      const fetchDescriptor = Object.getOwnPropertyDescriptor(window, 'fetch') || Object.getOwnPropertyDescriptor(window.constructor.prototype, 'fetch');
+      if (fetchDescriptor && fetchDescriptor.get && !fetchDescriptor.set && fetchDescriptor.configurable) {
+        const originalGet = fetchDescriptor.get;
+        Object.defineProperty(window, 'fetch', {
+          get: originalGet,
+          set: function () { console.warn("Ignored window.fetch assignment"); },
+          configurable: true
+        });
+      }
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        container: {
+          center: true,
+          padding: '1rem',
+          screens: {
+            sm: '640px',
+            md: '768px',
+            lg: '1024px',
+            xl: '1200px',
+            '2xl': '1200px',
           },
         },
-      }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
-      }
-      .dark body {
-        background-color: #121212;
-        color: #f8fafc;
-      }
-      /* Hide scrollbar for cleaner stacking effect if desired, optional */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-      .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-      }
-    </style>
-    <!-- Global Error Handler -->
-    <script>
-      window.onerror = function(message, source, lineno, colno, error) {
-        console.error("Global Error:", message, error);
-        const root = document.getElementById('root');
-        if (root && (!root.hasChildNodes() || root.innerText === "")) {
-             document.body.innerHTML = `
+        extend: {
+          colors: {
+            primary: '#0056b3',
+            secondary: '#004494',
+            dark: '#121212',
+            light: '#f8fafc',
+            'dark-card': '#111111', // Darker card background for the specific look
+            'dark-lighter': '#1a1a1a' // For hover states
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+
+    .dark body {
+      background-color: #121212;
+      color: #f8fafc;
+    }
+
+    /* Hide scrollbar for cleaner stacking effect if desired, optional */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <!-- Global Error Handler -->
+  <script>
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.error("Global Error:", message, error);
+      const root = document.getElementById('root');
+      if (root && (!root.hasChildNodes() || root.innerText === "")) {
+        document.body.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; color: #333;">
                     <h1 style="color: #0056b3; font-size: 2rem; margin-bottom: 1rem;">Something went wrong</h1>
                     <p style="max-width: 500px; line-height: 1.5; color: #64748b;">The application encountered an error while loading. This could be due to a missing dependency or a syntax error.</p>
@@ -96,13 +110,14 @@
                     </div>
                 </div>
             `;
-        }
-      };
-    </script>
+      }
+    };
+  </script>
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
-    
