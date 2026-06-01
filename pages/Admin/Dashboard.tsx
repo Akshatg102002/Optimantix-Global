@@ -8,7 +8,7 @@ import { MediaPicker } from '../../components/MediaManager/MediaPicker';
 import { MediaFile } from '../../hooks/useMedia';
 import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen, Globe } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { BlogPost, CaseStudy, Service, SubService } from '../../types';
+import { BlogPost, CaseStudy, Service, SubService, Page } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
 import { RichTextEditor } from '../../components/RichTextEditor';
 
@@ -17,6 +17,7 @@ const TABS = {
   OVERVIEW: 'OVERVIEW',
   SERVICES: 'SERVICES',
   BLOG: 'BLOG',
+  PAGES: 'PAGES',
   PORTFOLIO: 'PORTFOLIO',
   CASE_STUDIES: 'CASE_STUDIES',
   MEDIA: 'MEDIA',
@@ -30,6 +31,11 @@ const BLOG_VIEWS = {
   IMPORT: 'IMPORT'
 };
 
+const PAGE_VIEWS = {
+  LIST: 'LIST',
+  EDIT: 'EDIT'
+};
+
 const CASE_STUDY_VIEWS = {
   LIST: 'LIST',
   EDIT: 'EDIT'
@@ -38,18 +44,30 @@ const CASE_STUDY_VIEWS = {
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TABS.OVERVIEW);
   const [blogView, setBlogView] = useState(BLOG_VIEWS.LIST);
+  const [pageView, setPageView] = useState(PAGE_VIEWS.LIST);
 
-  const { 
-    services, blogs, blogCategories, projects, caseStudies,
-    updateService, 
+  const {
+    services, blogs, blogCategories, projects, caseStudies, pages,
+    updateService,
     addBlogPost, deleteBlogPost, updateBlogPost,
     addBlogCategory, deleteBlogCategory,
-    addProject, deleteProject, 
+    addProject, deleteProject,
     addCaseStudy, updateCaseStudy, deleteCaseStudy,
-    isAuthenticated, logout 
+    addPage, updatePage, deletePage,
+    isAuthenticated, logout
   } = useData();
 
   const navigate = useNavigate();
+
+  // Page State
+  const initialPageForm: Partial<Page> = {
+    title: '', slug: '', excerpt: '', content: '', imageUrl: '', imageAltText: '',
+    metaTitle: '', metaDescription: '', focusKeyword: '', isPublished: true,
+    schemaType: 'WebPage'
+  };
+  const [pageForm, setPageForm] = useState<Partial<Page>>(initialPageForm);
+  const [editingPage, setEditingPage] = useState<Page | null>(null);
+  const [isSubmittingPage, setIsSubmittingPage] = useState(false);
 
   // Case Study State
   const [caseStudyView, setCaseStudyView] = useState(CASE_STUDY_VIEWS.LIST);
@@ -86,7 +104,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Media Picker State
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
-  const [mediaPickerTarget, setMediaPickerTarget] = useState<'blog' | 'project' | 'caseStudy' | null>(null);
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<'blog' | 'project' | 'caseStudy' | 'page' | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -130,6 +148,40 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteCaseStudy = (id: string) => {
     if (window.confirm("Are you sure you want to delete this case study?")) {
       deleteCaseStudy(id);
+    }
+  };
+
+  // --- Page Handlers ---
+  const handleSavePage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingPage(true);
+    try {
+      if (editingPage) {
+        await updatePage({ ...editingPage, ...pageForm } as Page);
+        alert("Page Updated!");
+      } else {
+        await addPage({ ...pageForm, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as any);
+        alert("Page Created!");
+      }
+      setPageForm(initialPageForm);
+      setEditingPage(null);
+      setPageView(PAGE_VIEWS.LIST);
+    } catch {
+      alert("Failed to save page");
+    } finally {
+      setIsSubmittingPage(false);
+    }
+  };
+
+  const handleEditPage = (page: Page) => {
+    setEditingPage(page);
+    setPageForm(page);
+    setPageView(PAGE_VIEWS.EDIT);
+  };
+
+  const handleDeletePage = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this page?")) {
+      deletePage(id);
     }
   };
 
@@ -238,6 +290,9 @@ export const AdminDashboard: React.FC = () => {
           </button>
           <button onClick={() => { setActiveTab(TABS.BLOG); setBlogView(BLOG_VIEWS.LIST); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.BLOG ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <FileText size={20} /> Blog
+          </button>
+          <button onClick={() => { setActiveTab(TABS.PAGES); setPageView(PAGE_VIEWS.LIST); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PAGES ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+            <FileText size={20} /> Pages
           </button>
           <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <Briefcase size={20} /> Portfolio
@@ -689,6 +744,220 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
+        {/* PAGES TAB */}
+        {activeTab === TABS.PAGES && (
+          <div className="animate-fadeIn">
+            {/* PAGES VIEW: LIST */}
+            {pageView === PAGE_VIEWS.LIST && (
+                <div>
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-2xl font-bold">Pages</h1>
+                        <button
+                            onClick={() => { setPageForm(initialPageForm); setEditingPage(null); setPageView(PAGE_VIEWS.EDIT); }}
+                            className="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-secondary transition flex items-center gap-2 shadow-lg shadow-primary/20"
+                        >
+                            <Plus size={20} /> New Page
+                        </button>
+                    </div>
+                    <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                        <table className="w-full text-sm">
+                            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                <tr>
+                                    <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Title</th>
+                                    <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Slug</th>
+                                    <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Status</th>
+                                    <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Created</th>
+                                    <th className="p-4 text-right font-bold text-gray-700 dark:text-gray-300">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                {pages.length === 0 && (
+                                    <tr>
+                                        <td colSpan={5} className="p-8 text-center text-gray-500">No pages yet. Create one to get started.</td>
+                                    </tr>
+                                )}
+                                {pages.map(page => (
+                                    <tr key={page.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                                        <td className="p-4 font-medium text-gray-900 dark:text-white">{page.title}</td>
+                                        <td className="p-4 text-gray-600 dark:text-gray-400 font-mono text-xs">/{page.slug}</td>
+                                        <td className="p-4"><span className={`px-3 py-1 rounded-full text-xs font-bold ${page.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'}`}>{page.isPublished ? 'Published' : 'Draft'}</span></td>
+                                        <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(page.createdAt).toLocaleDateString()}</td>
+                                        <td className="p-4 text-right flex items-center justify-end gap-2">
+                                            <button onClick={() => handleEditPage(page)} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition"><Save size={18} /></button>
+                                            <button onClick={() => handleDeletePage(page.id)} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition"><XCircle size={18} /></button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+
+            {/* PAGES VIEW: EDIT */}
+            {pageView === PAGE_VIEWS.EDIT && (
+                <form onSubmit={handleSavePage} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
+                            <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Content</h2>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Page Title</label>
+                                <input
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none text-lg font-medium"
+                                    placeholder="Enter page title..."
+                                    value={pageForm.title}
+                                    onChange={e => setPageForm({...pageForm, title: e.target.value, slug: generateSlug(e.target.value)})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Slug (URL)</label>
+                                <input
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm text-gray-500 font-mono"
+                                    value={pageForm.slug}
+                                    onChange={e => setPageForm({...pageForm, slug: generateSlug(e.target.value)})}
+                                />
+                                <p className="text-xs text-gray-400 mt-1">Will be accessible at /pages/{pageForm.slug}</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Page Content</label>
+                                <RichTextEditor
+                                    value={pageForm.content || ''}
+                                    onChange={(html) => setPageForm({...pageForm, content: html})}
+                                    placeholder="Write your page content here..."
+                                />
+                                <p className="text-xs text-gray-400 mt-2">Full HTML editor with formatting, images, and links.</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Short Excerpt</label>
+                                <textarea
+                                    required
+                                    rows={3}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="Brief summary..."
+                                    value={pageForm.excerpt}
+                                    onChange={e => setPageForm({...pageForm, excerpt: e.target.value})}
+                                />
+                            </div>
+                        </div>
+
+                        {/* SEO Section */}
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
+                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 flex items-center gap-2"><Tag size={18} /> SEO Settings</h2>
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Title <span className="text-xs text-gray-500">({(pageForm.metaTitle || '').length}/60)</span></label>
+                                <input
+                                    maxLength={60}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="SEO Title"
+                                    value={pageForm.metaTitle}
+                                    onChange={e => setPageForm({...pageForm, metaTitle: e.target.value})}
+                                />
+                             </div>
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Description <span className="text-xs text-gray-500">({(pageForm.metaDescription || '').length}/160)</span></label>
+                                <textarea
+                                    maxLength={160}
+                                    rows={2}
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="SEO Description"
+                                    value={pageForm.metaDescription}
+                                    onChange={e => setPageForm({...pageForm, metaDescription: e.target.value})}
+                                />
+                             </div>
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Focus Keyword (Optional)</label>
+                                <input
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="Primary keyword to target"
+                                    value={pageForm.focusKeyword}
+                                    onChange={e => setPageForm({...pageForm, focusKeyword: e.target.value})}
+                                />
+                             </div>
+                        </div>
+                    </div>
+
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4 sticky top-6">
+                             <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">Settings</h2>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-2"><ImageIcon size={16}/> Featured Image</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => { setMediaPickerTarget('page'); setIsMediaPickerOpen(true); }}
+                                    className="text-xs text-primary hover:underline font-bold"
+                                  >
+                                    Select from Library
+                                  </button>
+                                </label>
+                                <input
+                                    required
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
+                                    value={pageForm.imageUrl}
+                                    onChange={e => setPageForm({...pageForm, imageUrl: e.target.value})}
+                                />
+                                {pageForm.imageUrl && (
+                                    <div className="mt-3 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100">
+                                        <img src={pageForm.imageUrl} className="w-full h-full object-cover" alt="Preview" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                    </div>
+                                )}
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Image Alt Text</label>
+                                <input
+                                  type="text"
+                                  className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
+                                  placeholder="Describe the image for accessibility..."
+                                  value={pageForm.imageAltText || ''}
+                                  onChange={e => setPageForm({...pageForm, imageAltText: e.target.value})}
+                                />
+                                <p className="text-xs text-gray-400 mt-1">Defaults to page title if left empty.</p>
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Schema Type</label>
+                                <select
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    value={pageForm.schemaType || 'WebPage'}
+                                    onChange={e => setPageForm({...pageForm, schemaType: e.target.value as 'Article' | 'WebPage'})}
+                                >
+                                    <option value="WebPage">WebPage</option>
+                                    <option value="Article">Article</option>
+                                </select>
+                             </div>
+
+                             <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
+                                <input
+                                    type="checkbox"
+                                    checked={pageForm.isPublished}
+                                    onChange={e => setPageForm({...pageForm, isPublished: e.target.checked})}
+                                    className="w-5 h-5 accent-primary cursor-pointer"
+                                />
+                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Published</label>
+                             </div>
+
+                             <button
+                                type="submit"
+                                disabled={isSubmittingPage}
+                                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-secondary transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-md"
+                            >
+                                {isSubmittingPage ? 'Saving...' : <><Save size={18} /> {editingPage ? 'Update Page' : 'Create Page'}</>}
+                             </button>
+                        </div>
+                    </div>
+                </form>
+            )}
+          </div>
+        )}
+
         {/* PORTFOLIO TAB */}
         {activeTab === TABS.PORTFOLIO && (
           <div className="animate-fadeIn grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1016,6 +1285,8 @@ export const AdminDashboard: React.FC = () => {
               setNewProjectForm(prev => ({ ...prev, imageUrl: file.data }));
             } else if (mediaPickerTarget === 'caseStudy') {
               setCaseStudyForm(prev => ({ ...prev, imageUrl: file.data }));
+            } else if (mediaPickerTarget === 'page') {
+              setPageForm(prev => ({ ...prev, imageUrl: file.data }));
             }
           }}
         />

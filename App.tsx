@@ -24,6 +24,7 @@ const CaseStudies = lazy(() => import('./pages/CaseStudies').then(module => ({ d
 const CaseDetails = lazy(() => import('./pages/CaseDetails').then(module => ({ default: module.CaseDetails })));
 const SeoPage = lazy(() => import('./pages/SeoPage').then(module => ({ default: module.SeoPage })));
 const SeoAudit = lazy(() => import('./pages/SeoAudit').then(module => ({ default: module.SeoAudit })));
+const PageTemplate = lazy(() => import('./pages/PageTemplate').then(module => ({ default: module.PageTemplate })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
 const AdminLogin = lazy(() => import('./pages/Admin/Login').then(module => ({ default: module.AdminLogin })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
@@ -48,6 +49,7 @@ const App: React.FC = () => {
               <Route path="/free-seo-audit" element={<SeoAudit />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/pages/:slug" element={<PageTemplate />} />
               <Route path="/case-studies" element={<CaseStudyList />} />
               <Route path="/case-studies/:slug" element={<CaseStudyTemplate />} />
               <Route path="/case" element={<CaseStudies />} />
