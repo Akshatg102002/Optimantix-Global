@@ -10,14 +10,16 @@ interface ParallaxHeroProps {
   title: string;
   subtitle?: string;
   imageUrl: string;
+  imageAltText?: string;
   height?: string;
   overlayOpacity?: number;
 }
 
-export const ParallaxHero: React.FC<ParallaxHeroProps> = ({ 
-  title, 
-  subtitle, 
-  imageUrl, 
+export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
+  title,
+  subtitle,
+  imageUrl,
+  imageAltText,
   height = "60vh",
   overlayOpacity = 0.6
 }) => {
@@ -56,10 +58,10 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
     <div ref={containerRef} className="relative w-full overflow-hidden">
        <div ref={heroRef} className={`relative flex items-center justify-center overflow-hidden`} style={{ height }}>
         <div className="absolute inset-0 z-0 h-[120%] -top-[10%]">
-           <img 
+           <img
              ref={heroBgRef}
-             src={imageUrl} 
-             alt={title} 
+             src={imageUrl}
+             alt={imageAltText || title}
              className="w-full h-full object-cover"
            />
            <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity }}></div>

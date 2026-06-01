@@ -10,6 +10,7 @@ import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft
 import { Icon } from '../../components/Icon';
 import { BlogPost, CaseStudy, Service, SubService } from '../../types';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
+import { RichTextEditor } from '../../components/RichTextEditor';
 
 // Tabs
 const TABS = {
@@ -53,7 +54,7 @@ export const AdminDashboard: React.FC = () => {
   // Case Study State
   const [caseStudyView, setCaseStudyView] = useState(CASE_STUDY_VIEWS.LIST);
   const initialCaseStudyForm: Partial<CaseStudy> = {
-    title: '', slug: '', excerpt: '', content: '', imageUrl: '',
+    title: '', slug: '', excerpt: '', content: '', imageUrl: '', imageAltText: '',
     serviceId: '', subServiceId: '',
     metaTitle: '', metaDescription: '', tags: [],
     date: new Date().toISOString()
@@ -67,10 +68,10 @@ export const AdminDashboard: React.FC = () => {
   const [editServiceForm, setEditServiceForm] = useState<Partial<Service>>({ title: '', shortDescription: '' });
 
   // Blog Form
-  const initialBlogForm: Partial<BlogPost> = { 
-    title: '', slug: '', excerpt: '', content: '', author: 'Admin', 
+  const initialBlogForm: Partial<BlogPost> = {
+    title: '', slug: '', excerpt: '', content: '', author: 'Admin', imageAltText: '',
     imageUrl: 'https://images.unsplash.com/photo-1499750310159-52f0f835497a?auto=format&fit=crop&q=80&w=800',
-    categoryId: '', metaTitle: '', metaDescription: '', isPublished: true 
+    categoryId: '', metaTitle: '', metaDescription: '', isPublished: true
   };
   const [blogForm, setBlogForm] = useState<Partial<BlogPost>>(initialBlogForm);
   const [isSubmittingBlog, setIsSubmittingBlog] = useState(false);
@@ -563,16 +564,13 @@ export const AdminDashboard: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Blog Content</label>
-                                <textarea 
-                                    required
-                                    rows={12}
-                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none leading-relaxed"
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Blog Content</label>
+                                <RichTextEditor
+                                    value={blogForm.content || ''}
+                                    onChange={(html) => setBlogForm({...blogForm, content: html})}
                                     placeholder="Write your article content here..."
-                                    value={blogForm.content}
-                                    onChange={e => setBlogForm({...blogForm, content: e.target.value})}
                                 />
-                                <p className="text-xs text-gray-400 mt-1">Basic text formatting supported.</p>
+                                <p className="text-xs text-gray-400 mt-2">Full HTML editor with formatting, images, and links.</p>
                             </div>
 
                             <div>
@@ -663,6 +661,18 @@ export const AdminDashboard: React.FC = () => {
                                         <img src={blogForm.imageUrl} className="w-full h-full object-cover" alt="Preview" onError={(e) => (e.currentTarget.style.display = 'none')} />
                                     </div>
                                 )}
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Image Alt Text</label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
+                                    placeholder="Describe the image for accessibility..."
+                                    value={blogForm.imageAltText || ''}
+                                    onChange={e => setBlogForm({...blogForm, imageAltText: e.target.value})}
+                                />
+                                <p className="text-xs text-gray-400 mt-1">Defaults to blog title if left empty.</p>
                              </div>
 
                              <button 
@@ -851,15 +861,13 @@ export const AdminDashboard: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Content</label>
-                                <textarea 
-                                    required
-                                    rows={12}
-                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none leading-relaxed"
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Content</label>
+                                <RichTextEditor
+                                    value={caseStudyForm.content || ''}
+                                    onChange={(html) => setCaseStudyForm({...caseStudyForm, content: html})}
                                     placeholder="Describe the problem, solution, and results..."
-                                    value={caseStudyForm.content}
-                                    onChange={e => setCaseStudyForm({...caseStudyForm, content: e.target.value})}
                                 />
+                                <p className="text-xs text-gray-400 mt-2">Full HTML editor with formatting, images, and links.</p>
                             </div>
 
                             <div>
@@ -956,6 +964,18 @@ export const AdminDashboard: React.FC = () => {
                                         <img src={caseStudyForm.imageUrl} className="w-full h-full object-cover" alt="Preview" onError={(e) => (e.currentTarget.style.display = 'none')} />
                                     </div>
                                 )}
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Image Alt Text</label>
+                                <input
+                                  type="text"
+                                  className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
+                                  placeholder="Describe the image for accessibility..."
+                                  value={caseStudyForm.imageAltText || ''}
+                                  onChange={e => setCaseStudyForm({...caseStudyForm, imageAltText: e.target.value})}
+                                />
+                                <p className="text-xs text-gray-400 mt-1">Defaults to case study title if left empty.</p>
                              </div>
 
                              <button 

@@ -107,10 +107,11 @@ export const BlogPost: React.FC = () => {
         <script type="application/ld+json">{JSON.stringify(personSchema)}</script>
       </Helmet>
 
-      <ParallaxHero 
+      <ParallaxHero
          title={blog.title}
          subtitle={`By ${blog.author}`}
          imageUrl={blog.imageUrl}
+         imageAltText={blog.imageAltText}
          height="60vh"
          overlayOpacity={0.7}
       />

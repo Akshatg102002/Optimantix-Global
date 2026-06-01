@@ -16,17 +16,13 @@ export function sanitizeHTML(html: string): string {
       'p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
       'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'div', 'span',
     ],
-    ALLOWED_ATTR: {
-      'a': ['href', 'target', 'rel'],
-      'img': ['src', 'alt', 'title', 'width', 'height'],
-      'div': ['class'],
-      'span': ['class', 'style'],
-    },
+    ALLOWED_ATTR: [
+      'href', 'target', 'rel', 'src', 'alt', 'title', 'width', 'height', 'class', 'style'
+    ],
     KEEP_CONTENT: true,
-    RETURN_TRUSTED_TYPE: false,
-  };
+  } as any;
 
-  return DOMPurify.sanitize(html, config);
+  return DOMPurify.sanitize(html, config) as unknown as string;
 }
 
 /**

@@ -78,9 +78,9 @@ export const CaseStudyList: React.FC = () => {
                     className="group block bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 dark:border-gray-800 h-full flex flex-col"
                   >
                     <div className="relative h-64 overflow-hidden">
-                      <img 
-                        src={study.imageUrl} 
-                        alt={study.title} 
+                      <img
+                        src={study.imageUrl}
+                        alt={study.imageAltText || study.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
