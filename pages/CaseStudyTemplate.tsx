@@ -5,8 +5,7 @@ import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw';
+import { RichContent } from '../components/RichContent';
 import { ShareButtons } from '../components/ShareButtons';
 
 export const CaseStudyTemplate: React.FC = () => {
@@ -74,32 +73,8 @@ export const CaseStudyTemplate: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 case-study-content">
-              <ReactMarkdown
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                  h2: ({node, ...props}) => <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mt-12 mb-6 border-l-4 border-primary pl-4" {...props} />,
-                  h3: ({node, ...props}) => <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-10 mb-4 border-l-4 border-primary pl-4" {...props} />,
-                  h4: ({node, ...props}) => <h4 className="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-3" {...props} />,
-                  h5: ({node, ...props}) => <h5 className="text-lg font-bold text-gray-900 dark:text-white mt-6 mb-2" {...props} />,
-                  h6: ({node, ...props}) => <h6 className="text-base font-bold text-gray-900 dark:text-white mt-6 mb-2" {...props} />,
-                  p: ({node, ...props}) => <p className="mb-5 whitespace-pre-line leading-relaxed text-base" {...props} />,
-                  ul: ({node, ...props}) => <ul className="mb-5 space-y-2" {...props} />,
-                  ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-5 space-y-2" {...props} />,
-                  li: ({node, ...props}) => (
-                    <li className="leading-relaxed ml-6 relative list-none before:content-['→'] before:absolute before:left-0 before:text-primary before:font-bold bg-gradient-to-r from-primary/5 to-transparent px-3 py-2 rounded-r-lg border-l-2 border-primary my-2">
-                      <span className="text-gray-900 dark:text-gray-100">{props.children}</span>
-                    </li>
-                  ),
-                  blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-primary pl-4 italic my-6 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/50 py-3 rounded-r-lg" {...props} />,
-                  img: ({node, ...props}) => <img loading="lazy" className="rounded-lg shadow-md mx-auto my-8 max-w-full h-auto border border-gray-200 dark:border-gray-700" alt={props.alt || study.title} {...props} />,
-                  strong: ({node, ...props}) => <strong className="text-gray-900 dark:text-white font-bold text-primary" {...props} />,
-                }}
-              >
-                {study.content}
-              </ReactMarkdown>
-              <ShareButtons title={study.title} url={window.location.href} />
-            </div>
+            <RichContent content={study.content} variant="case-study" imageAlt={study.title} />
+            <ShareButtons title={study.title} url={window.location.href} />
 
             {/* Tags */}
             {study.tags && study.tags.length > 0 && (

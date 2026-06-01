@@ -13,6 +13,9 @@
   <!-- Google Search Console Verification -->
   <meta name="google-site-verification" content="Fv4YicX392wMw9Ke1O15AjauwpZMedHoqQHQDsFonRc" />
 
+  <!-- Sitemap -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
   <!-- Site Icon / Favicon -->
   <link rel="icon" type="image/svg+xml" href="https://res.cloudinary.com/dusvykklu/image/upload/v1780136082/favicon_guwuu5.svg" />
   <link rel="icon" type="image/png" sizes="96x96" href="https://res.cloudinary.com/dusvykklu/image/upload/v1780136083/favicon-96x96_wyozi2.png" />
@@ -98,6 +101,80 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    /* ===========================================================
+       Rich text content styling (Blogs, Case Studies, Pages)
+       Tailwind is loaded via CDN without the typography plugin,
+       so `prose` classes do not apply — these scoped rules give
+       rendered rich-text/markdown content proper visual hierarchy.
+       =========================================================== */
+    .rich-content { color: #2d2d2d; }
+    .dark .rich-content { color: #cbd5e1; }
+
+    /* Section headings with brand accent border */
+    .rich-content h2 { font-size: 1.875rem; font-weight: 700; color: #1a1a1a; margin-top: 2.5rem; margin-bottom: 1rem; border-left: 4px solid #0056b3; padding-left: 14px; line-height: 1.25; }
+    .rich-content h3 { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; margin-top: 2rem; margin-bottom: 0.75rem; border-left: 4px solid #0056b3; padding-left: 14px; }
+    .rich-content h4 { font-size: 1.25rem; font-weight: 700; color: #1a1a1a; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    .rich-content h5, .rich-content h6 { font-weight: 700; color: #1a1a1a; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .dark .rich-content h2, .dark .rich-content h3, .dark .rich-content h4,
+    .dark .rich-content h5, .dark .rich-content h6 { color: #f8fafc; }
+
+    /* Body paragraphs */
+    .rich-content p { font-size: 16.5px; line-height: 1.85; margin-bottom: 1.2rem; }
+
+    /* Bold labels in brand colour */
+    .rich-content strong { color: #0056b3; font-weight: 700; letter-spacing: 0.2px; }
+    .dark .rich-content strong { color: #4d97ff; }
+
+    /* Bullet lists rendered as card-style rows */
+    .rich-content ul { list-style: none; padding: 0; margin: 0 0 1.5rem; }
+    .rich-content ul li { background: #f4f7ff; border-left: 3px solid #0056b3; padding: 10px 16px; border-radius: 6px; margin-bottom: 8px; line-height: 1.6; }
+    .dark .rich-content ul li { background: #181b20; }
+    .rich-content ol { padding-left: 1.25rem; margin-bottom: 1.5rem; }
+    .rich-content ol li { margin-bottom: 0.5rem; line-height: 1.7; }
+
+    /* Pull quote / highlight box */
+    .rich-content blockquote { position: relative; background: #f9fbff; padding: 24px 32px 24px 48px; border-radius: 8px; border-left: 4px solid #0056b3; font-style: italic; margin: 1.5rem 0; color: #333; }
+    .rich-content blockquote::before { content: '\201C'; font-size: 3rem; line-height: 1; color: #0056b3; position: absolute; left: 12px; top: 10px; opacity: 0.3; }
+    .dark .rich-content blockquote { background: #14181f; color: #cbd5e1; }
+
+    .rich-content img { border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin: 2rem auto; max-width: 100%; height: auto; }
+
+    /* Metrics / stat card grid (auto-rendered for case-study label:value lists) */
+    .rich-content .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin: 1.5rem 0 2rem; }
+    @media (max-width: 1024px) { .rich-content .stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 640px) { .rich-content .stat-grid { grid-template-columns: 1fr; } }
+    .rich-content .stat-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-top: 3px solid #0056b3; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; }
+    .dark .rich-content .stat-card { background: #161616; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+    .rich-content .stat-label { text-transform: uppercase; font-size: 11px; letter-spacing: 1px; color: #888; font-weight: 600; }
+    .rich-content .stat-value { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.15; }
+    .dark .rich-content .stat-value { color: #f8fafc; }
+
+    /* Before / After comparison layout */
+    .rich-content .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 1.5rem 0 2rem; }
+    @media (max-width: 640px) { .rich-content .ba-grid { grid-template-columns: 1fr; } }
+    .rich-content .ba-col { border-radius: 10px; padding: 18px 20px; }
+    .rich-content .ba-before { background: #f3f4f6; color: #6b7280; }
+    .rich-content .ba-after { background: rgba(0,86,179,0.08); border: 1px solid rgba(0,86,179,0.25); }
+    .dark .rich-content .ba-before { background: #1c1c1c; color: #9ca3af; }
+    .dark .rich-content .ba-after { background: rgba(77,151,255,0.12); }
+    .rich-content .ba-heading { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 10px; }
+    .rich-content .ba-after .ba-heading { color: #0056b3; }
+    .dark .rich-content .ba-after .ba-heading { color: #6ea8ff; }
+    .rich-content .ba-row { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; font-size: 14px; }
+    .rich-content .ba-after .ba-row { font-weight: 700; color: #15803d; }
+
+    /* Consistent hyperlink styling across all rich-text content areas */
+    .blog-content a, .case-study-content a, .page-content a {
+      color: #1a56db; font-weight: 500; text-decoration: underline; text-underline-offset: 3px;
+      transition: color .15s ease, background .15s ease;
+    }
+    .blog-content a:hover, .case-study-content a:hover, .page-content a:hover {
+      color: #1040b0; text-decoration: none; background: #eef3ff; border-radius: 3px; padding: 0 2px;
+    }
+    .dark .blog-content a, .dark .case-study-content a, .dark .page-content a { color: #6ea8ff; }
+    .dark .blog-content a:hover, .dark .case-study-content a:hover, .dark .page-content a:hover { color: #9cc2ff; background: rgba(110,168,255,0.12); }
+    .external-link-icon { display: inline-block; vertical-align: middle; margin-left: 3px; opacity: 0.8; }
   </style>
   <!-- Canonical URL -->
   <link rel="canonical" href="https://optimantix.com" />

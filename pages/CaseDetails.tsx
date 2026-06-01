@@ -4,7 +4,7 @@ import { SEO } from '../components/SEO';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import { RichContent } from '../components/RichContent';
 import { ShareButtons } from '../components/ShareButtons';
 
 export const CaseDetails: React.FC = () => {
@@ -87,9 +87,7 @@ export const CaseDetails: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
-                <ReactMarkdown>{study.content}</ReactMarkdown>
-            </div>
+            <RichContent content={study.content} variant="case-study" imageAlt={study.title} />
             
             <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800">
                 <ShareButtons title={study.title} url={window.location.href} />

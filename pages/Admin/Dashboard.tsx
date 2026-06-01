@@ -294,9 +294,10 @@ export const AdminDashboard: React.FC = () => {
           <button onClick={() => { setActiveTab(TABS.PAGES); setPageView(PAGE_VIEWS.LIST); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PAGES ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <FileText size={20} /> Pages
           </button>
-          <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+          {/* Portfolio tab hidden per client request — data and files preserved */}
+          {/* <button onClick={() => setActiveTab(TABS.PORTFOLIO)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.PORTFOLIO ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <Briefcase size={20} /> Portfolio
-          </button>
+          </button> */}
           <button onClick={() => { setActiveTab(TABS.CASE_STUDIES); setCaseStudyView(CASE_STUDY_VIEWS.LIST); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${activeTab === TABS.CASE_STUDIES ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
             <BookOpen size={20} /> Case Studies
           </button>
@@ -959,6 +960,7 @@ export const AdminDashboard: React.FC = () => {
         )}
 
         {/* PORTFOLIO TAB */}
+        {/* Portfolio tab hidden per client request — data and files preserved (nav entry removed above; this block is now unreachable but retained intentionally) */}
         {activeTab === TABS.PORTFOLIO && (
           <div className="animate-fadeIn grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">

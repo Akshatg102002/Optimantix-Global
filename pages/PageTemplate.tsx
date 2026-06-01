@@ -5,9 +5,9 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ShareButtons } from '../components/ShareButtons';
-import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw';
+import { RichContent } from '../components/RichContent';
 import { Helmet } from 'react-helmet-async';
+import { SEO_CONFIG } from '../utils/seoConfig';
 
 export const PageTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -45,8 +45,12 @@ export const PageTemplate: React.FC = () => {
     "@context": "https://schema.org",
     "@type": page.schemaType || "Article",
     "headline": page.title,
-    "description": page.excerpt,
+    "description": page.metaDescription || page.excerpt,
     "image": page.imageUrl,
+    "author": {
+      "@type": "Organization",
+      "name": SEO_CONFIG.siteName
+    },
     "datePublished": page.createdAt,
     "dateModified": page.updatedAt,
     "mainEntityOfPage": {
@@ -90,28 +94,8 @@ export const PageTemplate: React.FC = () => {
         </nav>
 
         <article className="flex-1 bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden p-8 md:p-12 max-w-4xl mx-auto">
-          <div className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
-            <ReactMarkdown
-              rehypePlugins={[rehypeRaw]}
-              components={{
-                h2: ({node, ...props}) => <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mt-12 mb-6" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-10 mb-4" {...props} />,
-                h4: ({node, ...props}) => <h4 className="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-3" {...props} />,
-                h5: ({node, ...props}) => <h5 className="text-lg font-bold text-gray-900 dark:text-white mt-6 mb-2" {...props} />,
-                h6: ({node, ...props}) => <h6 className="text-base font-bold text-gray-900 dark:text-white mt-6 mb-2" {...props} />,
-                p: ({node, ...props}) => <p className="mb-5 whitespace-pre-line leading-relaxed" {...props} />,
-                ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-5 space-y-2" {...props} />,
-                ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-5 space-y-2" {...props} />,
-                li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
-                blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-primary pl-4 italic my-6 text-gray-700 dark:text-gray-300" {...props} />,
-                img: ({node, ...props}) => <img loading="lazy" className="rounded-lg shadow-sm mx-auto my-8 max-w-full h-auto" alt={props.alt || page.title} {...props} />
-              }}
-            >
-              {page.content}
-            </ReactMarkdown>
-
-            <ShareButtons title={page.title} url={currentUrl} />
-          </div>
+          <RichContent content={page.content} variant="page" imageAlt={page.imageAltText || page.title} />
+          <ShareButtons title={page.title} url={currentUrl} />
 
           <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-sm text-gray-500">
             <Link to="/" className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-primary transition font-medium">

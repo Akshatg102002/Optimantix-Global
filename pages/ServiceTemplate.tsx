@@ -68,9 +68,12 @@ export const ServiceTemplate: React.FC = () => {
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
+      {/* Meta title/description fall back to the service record's own SEO fields;
+          the SEO component also overlays any per-path overrides set in the
+          admin "SEO Management" tab and emits canonical + Open Graph tags. */}
       <SEO
-        title={service.title}
-        description={service.shortDescription}
+        title={service.metaTitle || service.title}
+        description={service.metaDescription || service.shortDescription}
         schemaMarkup={createFAQPage(serviceFAQs)}
       />
       
