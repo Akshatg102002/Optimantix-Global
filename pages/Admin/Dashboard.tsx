@@ -151,6 +151,23 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Strips <!DOCTYPE>, <html>, <head>...</head>, <body> wrappers from pasted HTML,
+  // keeping only the inner body content. Used in Pages editor only.
+  const stripHtmlBoilerplate = (html: string): string => {
+    const trimmed = html.trim();
+    if (!trimmed.startsWith('<!DOCTYPE') && !trimmed.startsWith('<html') && !trimmed.toLowerCase().startsWith('<!doctype')) {
+      return html;
+    }
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      return doc.body.innerHTML;
+    } catch {
+      const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+      return bodyMatch ? bodyMatch[1] : html;
+    }
+  };
+
   // --- Page Handlers ---
   const handleSavePage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,7 +192,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleEditPage = (page: Page) => {
     setEditingPage(page);
-    setPageForm(page);
+    setPageForm({ ...page, content: stripHtmlBoilerplate(page.content || '') });
     setPageView(PAGE_VIEWS.EDIT);
   };
 
@@ -784,6 +801,7 @@ export const AdminDashboard: React.FC = () => {
                                         <td className="p-4"><span className={`px-3 py-1 rounded-full text-xs font-bold ${page.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'}`}>{page.isPublished ? 'Published' : 'Draft'}</span></td>
                                         <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(page.createdAt).toLocaleDateString()}</td>
                                         <td className="p-4 text-right flex items-center justify-end gap-2">
+                                            <a href={`/pages/${page.slug}`} target="_blank" rel="noopener noreferrer" title="View live page" className="text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 p-2 rounded-lg transition inline-flex"><ExternalLink size={18} /></a>
                                             <button onClick={() => handleEditPage(page)} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition"><Save size={18} /></button>
                                             <button onClick={() => handleDeletePage(page.id)} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition"><XCircle size={18} /></button>
                                         </td>
@@ -829,6 +847,7 @@ export const AdminDashboard: React.FC = () => {
                                 <RichTextEditor
                                     value={pageForm.content || ''}
                                     onChange={(html) => setPageForm({...pageForm, content: html})}
+                                    preprocessPaste={stripHtmlBoilerplate}
                                     placeholder="Write your page content here..."
                                 />
                                 <p className="text-xs text-gray-400 mt-2">Full HTML editor with formatting, images, and links.</p>
