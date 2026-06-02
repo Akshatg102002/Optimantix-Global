@@ -73,14 +73,9 @@ export const PageTemplate: React.FC = () => {
         title={page.metaTitle || page.title}
         description={page.metaDescription || page.excerpt}
         image={page.imageUrl}
+        url={currentUrl}
       />
       <Helmet>
-        <link rel="canonical" href={currentUrl} />
-        <meta property="og:title" content={page.title} />
-        <meta property="og:description" content={page.excerpt} />
-        <meta property="og:image" content={page.imageUrl} />
-        <meta property="og:url" content={currentUrl} />
-        <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(contentSchema)}</script>
       </Helmet>
