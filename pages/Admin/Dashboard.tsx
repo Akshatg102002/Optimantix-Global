@@ -168,16 +168,32 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Fixes Google search URLs in href attributes by extracting the actual URL
+  const fixGoogleSearchLinks = (html: string): string => {
+    return html.replace(/href="https:\/\/www\.google\.com\/search\?q=([^"]+)"/g, (match, encodedUrl) => {
+      try {
+        const actualUrl = decodeURIComponent(encodedUrl);
+        return `href="${actualUrl}"`;
+      } catch {
+        return match;
+      }
+    });
+  };
+
   // --- Page Handlers ---
   const handleSavePage = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingPage(true);
     try {
+      const cleanedPageForm = {
+        ...pageForm,
+        content: fixGoogleSearchLinks(pageForm.content || ''),
+      };
       if (editingPage) {
-        await updatePage({ ...editingPage, ...pageForm } as Page);
+        await updatePage({ ...editingPage, ...cleanedPageForm } as Page);
         alert("Page Updated!");
       } else {
-        await addPage({ ...pageForm, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as any);
+        await addPage({ ...cleanedPageForm, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as any);
         alert("Page Created!");
       }
       setPageForm(initialPageForm);
@@ -192,7 +208,8 @@ export const AdminDashboard: React.FC = () => {
 
   const handleEditPage = (page: Page) => {
     setEditingPage(page);
-    setPageForm({ ...page, content: stripHtmlBoilerplate(page.content || '') });
+    const cleanedContent = fixGoogleSearchLinks(stripHtmlBoilerplate(page.content || ''));
+    setPageForm({ ...page, content: cleanedContent });
     setPageView(PAGE_VIEWS.EDIT);
   };
 
