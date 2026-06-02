@@ -11,8 +11,16 @@ import { SEO_CONFIG } from '../utils/seoConfig';
 
 export const PageTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { pages } = useData();
+  const { pages, pagesLoaded } = useData();
   const page = pages.find(p => p.slug === slug && p.isPublished);
+
+  if (!pagesLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-light dark:bg-dark">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!page) {
     return <Navigate to="/404" replace />;

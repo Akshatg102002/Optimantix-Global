@@ -19,6 +19,7 @@ interface DataContextType {
   updateSeoPage: (page: PageSEO) => Promise<void>;
   deleteSeoPage: (id: string) => Promise<void>;
   // Page Actions
+  pagesLoaded: boolean;
   fetchPages: () => Promise<void>;
   addPage: (page: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updatePage: (page: Page) => Promise<void>;
@@ -78,6 +79,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [seoPages, setSeoPages] = useState<PageSEO[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
+  const [pagesLoaded, setPagesLoaded] = useState(false);
   const [globalLoading, setGlobalLoading] = useState(false);
   
   // Helper to parse various date formats
@@ -604,6 +606,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     } catch (error) {
       console.warn("Fetching pages failed:", error);
+    } finally {
+      setPagesLoaded(true);
     }
   };
 
@@ -680,7 +684,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <DataContext.Provider value={{
-      services, blogs, blogCategories, leads, projects, caseStudies, seoPages, pages,
+      services, blogs, blogCategories, leads, projects, caseStudies, seoPages, pages, pagesLoaded,
       isDark, toggleTheme,
       isAuthenticated,
       currentUser,
