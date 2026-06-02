@@ -43,9 +43,24 @@ const unescapeHTML = (html: string): string => {
   return html.replace(/&(?:amp|lt|gt|quot|#39|apos);/g, m => map[m]);
 };
 
+// Strip Google search URLs from href attributes and convert to direct links
+const stripGoogleSearchFromLinks = (html: string): string => {
+  // Match href="https://www.google.com/search?q=..." and extract the actual URL
+  return html.replace(/href="https:\/\/www\.google\.com\/search\?q=([^"]+)"/g, (match, encodedUrl) => {
+    try {
+      const actualUrl = decodeURIComponent(encodedUrl);
+      return `href="${actualUrl}"`;
+    } catch {
+      return match;
+    }
+  });
+};
+
 export const RichContent: React.FC<RichContentProps> = ({ content, variant = 'blog', imageAlt }) => {
+  // Strip Google search URLs from links and restore direct links
+  const cleanedContent = stripGoogleSearchFromLinks(content);
   // Unescape HTML entities in case content was stored escaped
-  const unescapedContent = unescapeHTML(content);
+  const unescapedContent = unescapeHTML(cleanedContent);
   const variantClass =
     variant === 'case-study' ? 'case-study-content' : variant === 'page' ? 'page-content' : 'blog-content';
 
