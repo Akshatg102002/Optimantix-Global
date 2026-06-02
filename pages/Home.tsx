@@ -201,6 +201,7 @@ export const Home: React.FC = () => {
     <div className="bg-light dark:bg-dark text-slate-900 dark:text-gray-100 transition-colors duration-300">
       <SEO
         title="Home"
+        url="https://optimantix.com/"
         description="Get tailored digital growth with Optimantix Global. We empower business strategies in SEO, Marketplace Management, and tailored Web Development for higher ROI."
         schemaMarkup={[
           {
