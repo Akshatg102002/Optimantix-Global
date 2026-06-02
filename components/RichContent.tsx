@@ -31,7 +31,21 @@ const getNodeText = (node: any): string => {
  * For case studies, consecutive "Label: value" bullet lists are auto-rendered
  * as a responsive stat-card grid.
  */
+const unescapeHTML = (html: string): string => {
+  const map: Record<string, string> = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&apos;': "'",
+  };
+  return html.replace(/&(?:amp|lt|gt|quot|#39|apos);/g, m => map[m]);
+};
+
 export const RichContent: React.FC<RichContentProps> = ({ content, variant = 'blog', imageAlt }) => {
+  // Unescape HTML entities in case content was stored escaped
+  const unescapedContent = unescapeHTML(content);
   const variantClass =
     variant === 'case-study' ? 'case-study-content' : variant === 'page' ? 'page-content' : 'blog-content';
 
@@ -89,7 +103,7 @@ export const RichContent: React.FC<RichContentProps> = ({ content, variant = 'bl
           ),
         }}
       >
-        {content}
+        {unescapedContent}
       </ReactMarkdown>
     </div>
   );

@@ -846,8 +846,7 @@ export const AdminDashboard: React.FC = () => {
                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Page Content</label>
                                 <RichTextEditor
                                     value={pageForm.content || ''}
-                                    onChange={(html) => setPageForm({...pageForm, content: html})}
-                                    preprocessPaste={stripHtmlBoilerplate}
+                                    onChange={(html) => setPageForm({...pageForm, content: stripHtmlBoilerplate(html)})}
                                     placeholder="Write your page content here..."
                                 />
                                 <p className="text-xs text-gray-400 mt-2">Full HTML editor with formatting, images, and links.</p>

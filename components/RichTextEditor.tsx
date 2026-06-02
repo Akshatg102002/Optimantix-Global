@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -16,7 +16,6 @@ interface RichTextEditorProps {
   onChange: (content: string) => void;
   placeholder?: string;
   disabled?: boolean;
-  preprocessPaste?: (html: string) => string;
 }
 
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({
@@ -24,10 +23,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   onChange,
   placeholder = 'Start typing...',
   disabled = false,
-  preprocessPaste,
 }) => {
-  const preprocessPasteRef = useRef(preprocessPaste);
-  preprocessPasteRef.current = preprocessPaste;
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -81,18 +77,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [editor]);
 
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    const preprocess = preprocessPasteRef.current;
-    if (!preprocess || !editor) return;
-    const html = e.clipboardData.getData('text/html');
-    if (!html) return;
-    const cleaned = preprocess(html);
-    if (cleaned === html) return;
-    e.preventDefault();
-    e.stopPropagation();
-    editor.commands.setContent(cleaned, { emitUpdate: true });
-  }, [editor]);
-
   if (!editor) {
     return <div>Loading editor...</div>;
   }
@@ -106,7 +90,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   return (
-    <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800" onPaste={preprocessPaste ? handlePaste : undefined}>
+    <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
       {/* Toolbar */}
       <div className="bg-gray-50 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 p-3 flex flex-wrap gap-1 sticky top-0 z-10">
         {/* Text Formatting */}
