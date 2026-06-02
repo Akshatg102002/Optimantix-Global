@@ -56,17 +56,20 @@ export const RichContent: React.FC<RichContentProps> = ({ content, variant = 'bl
         components={{
           // Anchor styling, external-link detection + safe rel + icon
           a: ({ node, href, children, ...props }) => {
-            const url = href || '';
-            const isExternal = /^https?:\/\//i.test(url) && !url.toLowerCase().includes(SITE_HOST);
+            const url = href?.trim() || '';
+            // If href is empty, render as plain text
+            if (!url) return <span>{children}</span>;
+            // Check if URL is internal: starts with /, or is from our domain
+            const isInternal = url.startsWith('/') || url.toLowerCase().includes(SITE_HOST);
             return (
               <a
                 {...props}
                 href={url}
-                target={isExternal ? '_blank' : props.target}
-                rel={isExternal ? 'noopener noreferrer' : props.rel}
+                target={isInternal ? props.target : '_blank'}
+                rel={isInternal ? props.rel : 'noopener noreferrer'}
               >
                 {children}
-                {isExternal && <ExternalLink size={14} className="external-link-icon" aria-hidden="true" />}
+                {!isInternal && <ExternalLink size={14} className="external-link-icon" aria-hidden="true" />}
               </a>
             );
           },

@@ -869,9 +869,8 @@ export const AdminDashboard: React.FC = () => {
                         <div className="bg-white dark:bg-dark-card p-6 rounded-xl border border-gray-200 dark:border-gray-800 space-y-4">
                              <h2 className="text-lg font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 flex items-center gap-2"><Tag size={18} /> SEO Settings</h2>
                              <div>
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Title <span className="text-xs text-gray-500">({(pageForm.metaTitle || '').length}/60)</span></label>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Title</label>
                                 <input
-                                    maxLength={60}
                                     className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                                     placeholder="SEO Title"
                                     value={pageForm.metaTitle}
@@ -879,9 +878,8 @@ export const AdminDashboard: React.FC = () => {
                                 />
                              </div>
                              <div>
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Description <span className="text-xs text-gray-500">({(pageForm.metaDescription || '').length}/160)</span></label>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Meta Description</label>
                                 <textarea
-                                    maxLength={160}
                                     rows={2}
                                     className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                                     placeholder="SEO Description"
