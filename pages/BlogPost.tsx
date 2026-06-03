@@ -22,7 +22,8 @@ export const BlogPost: React.FC = () => {
   // Get max 4 recent blogs excluding the current one
   const recentBlogs = blogs.filter(b => b.slug !== slug).slice(0, 4);
 
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const siteOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://optimantix.com';
+  const currentUrl = `${siteOrigin}/blog/${blog.slug}`;
   
   // JSON-LD for Breadcrumbs
   const breadcrumbSchema = {
@@ -92,12 +93,13 @@ export const BlogPost: React.FC = () => {
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      <SEO 
-        title={blog.metaTitle || blog.title} 
+      <SEO
+        title={blog.metaTitle || blog.title}
         description={blog.metaDescription || blog.excerpt}
         type="article"
         image={blog.imageUrl}
         url={currentUrl}
+        canonical={currentUrl}
         author={blog.author}
         publishedTime={blog.date}
       />

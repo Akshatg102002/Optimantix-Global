@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useData } from '../context/DataContext';
 import { useLocation } from 'react-router-dom';
-import { validateMetaDescription, validatePageTitle, generateCanonicalUrl, SEO_CONFIG } from '../utils/seoConfig';
+import { validateMetaDescription, validatePageTitle, SEO_CONFIG } from '../utils/seoConfig';
 
 interface SEOProps {
   title: string;
@@ -95,8 +95,17 @@ export const SEO: React.FC<SEOProps> = ({
   const finalDescription = useMemo(() => validateMetaDescription(rawDescription), [rawDescription]);
   const finalOgDescription = useMemo(() => validateMetaDescription(ogDescription), [ogDescription]);
 
-  // Determine current clean url without trailing slashes
-  const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : SEO_CONFIG.siteUrl);
+  // Determine current clean url without trailing slashes or query parameters.
+  // Uses only origin + pathname so tracking params (?utm_source=...) never
+  // leak into the canonical and cause duplicate-content issues.
+  const getCleanFallbackUrl = () => {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}${window.location.pathname}`;
+    }
+    return SEO_CONFIG.siteUrl;
+  };
+
+  const rawCurrentUrl = url || getCleanFallbackUrl();
   const currentUrl = useMemo(() => rawCurrentUrl.replace(/\/+$/, ''), [rawCurrentUrl]);
 
   // Auto-generate canonical URL: use provided canonical, SEO override, or construct from current location
@@ -108,11 +117,10 @@ export const SEO: React.FC<SEOProps> = ({
     // If url was explicitly passed, use it; otherwise construct from window.location
     if (url) return currentUrl;
 
-    // Construct canonical from current location: base URL + pathname (without trailing slash)
+    // Construct canonical from current location: origin + pathname (no query params)
     if (typeof window !== 'undefined') {
-      const baseUrl = `${window.location.protocol}//${window.location.host}`;
       const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
-      return `${baseUrl}${pathname}`;
+      return `${window.location.origin}${pathname}`;
     }
 
     return SEO_CONFIG.siteUrl;
