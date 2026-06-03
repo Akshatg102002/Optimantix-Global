@@ -99,10 +99,24 @@ export const SEO: React.FC<SEOProps> = ({
   const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : SEO_CONFIG.siteUrl);
   const currentUrl = useMemo(() => rawCurrentUrl.replace(/\/+$/, ''), [rawCurrentUrl]);
 
-  // Auto-generate canonical URL if not provided and canonicalAuto is true
+  // Auto-generate canonical URL: use provided canonical, SEO override, or construct from current location
   const canonicalUrl = useMemo(() => {
-    return finalCanonical || (canonicalAuto ? generateCanonicalUrl(currentPath) : currentUrl);
-  }, [finalCanonical, canonicalAuto, currentPath, currentUrl]);
+    // Priority: 1) explicit canonical prop, 2) SEO override, 3) construct from location
+    if (finalCanonical) return finalCanonical;
+    if (seoOverride?.canonicalUrl?.trim()) return seoOverride.canonicalUrl;
+
+    // If url was explicitly passed, use it; otherwise construct from window.location
+    if (url) return currentUrl;
+
+    // Construct canonical from current location: base URL + pathname (without trailing slash)
+    if (typeof window !== 'undefined') {
+      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+      return `${baseUrl}${pathname}`;
+    }
+
+    return SEO_CONFIG.siteUrl;
+  }, [finalCanonical, seoOverride?.canonicalUrl, url, currentUrl]);
 
   // Normalize schemas (handle both single object and array)
   const schemas = useMemo(() => {
@@ -135,7 +149,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="revisit-after" content="7 days" />
 
       {/* Canonical Link - Should be first after title */}
-      <link rel="canonical" href={canonicalUrl} />
+      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
