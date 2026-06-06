@@ -3,6 +3,14 @@ import { useData } from '../context/DataContext';
 import { useLocation } from 'react-router-dom';
 import { validateMetaDescription, validatePageTitle, generateCanonicalUrl, SEO_CONFIG } from '../utils/seoConfig';
 
+const normalizePath = (path?: string): string => {
+  if (!path) return '/';
+
+  const [pathname] = path.split(/[?#]/);
+  const withLeadingSlash = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  return withLeadingSlash.length > 1 ? withLeadingSlash.replace(/\/+$/, '') : '/';
+};
+
 interface SeoMetadata {
   title: string;
   description: string;
@@ -45,13 +53,13 @@ export const useSeoMetadata = ({
   const location = useLocation();
 
   const metadata = useMemo(() => {
-    const rawPath = location.pathname || '/';
-    const currentPath = rawPath.endsWith('/') && rawPath.length > 1 ? rawPath.slice(0, -1) : rawPath;
+    const currentPath = normalizePath(location.pathname);
 
     // Find matching SEO override
     const seoOverride = seoPages?.find(page => {
-      const definedPath = page.path?.endsWith('/') && page.path.length > 1 ? page.path.slice(0, -1) : page.path;
-      return definedPath === currentPath || page.id === currentPath;
+      const definedPath = normalizePath(page.path);
+      const definedId = page.id ? normalizePath(page.id) : '';
+      return definedPath === currentPath || definedId === currentPath;
     });
 
     // Apply overrides or use defaults
@@ -83,10 +91,10 @@ export const useSeoMetadata = ({
       ? seoOverride.canonicalUrl
       : canonical;
 
-    const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : SEO_CONFIG.siteUrl);
-    const currentUrl = rawCurrentUrl.replace(/\/+$/, '');
+    const rawCurrentUrl = url || generateCanonicalUrl(currentPath);
+    const currentUrl = rawCurrentUrl.split(/[?#]/)[0].replace(/\/+$/, '') || SEO_CONFIG.siteUrl;
 
-    const canonicalUrl = finalCanonical || (canonicalAuto ? generateCanonicalUrl(currentPath) : currentUrl);
+    const canonicalUrl = finalCanonical?.trim() || (canonicalAuto ? generateCanonicalUrl(currentPath) : currentUrl);
 
     return {
       title: validatePageTitle(finalTitle),

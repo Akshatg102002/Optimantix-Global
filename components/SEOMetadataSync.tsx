@@ -1,105 +1,102 @@
 /**
  * SEO Metadata Sync Component
- * Ensures that dynamically loaded SEO metadata from admin panel is properly synchronized
- * to the document head, even after initial page load.
  *
- * This component works in conjunction with React Helmet to handle edge cases
- * where metadata changes after the page has already rendered.
+ * Keeps route-level SEO data from the admin panel synchronized with the real
+ * document <head>. React Helmet owns the declarative tags; this component is a
+ * safety net for asynchronously loaded Firebase SEO settings and guarantees a
+ * single canonical link exists after initial load and after client-side route
+ * changes.
  */
 
-import { useEffect } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { useData } from '../context/DataContext';
 import { useLocation } from 'react-router-dom';
+import { generateCanonicalUrl } from '../utils/seoConfig';
+
+const normalizePath = (path?: string): string => {
+  if (!path) return '/';
+
+  const [pathname] = path.split(/[?#]/);
+  const withLeadingSlash = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  return withLeadingSlash.length > 1 ? withLeadingSlash.replace(/\/+$/, '') : '/';
+};
+
+const upsertMeta = (selector: string, createAttributes: Record<string, string>, content?: string) => {
+  if (!content?.trim()) return;
+
+  let element = document.querySelector<HTMLMetaElement>(selector);
+  if (!element) {
+    element = document.createElement('meta');
+    Object.entries(createAttributes).forEach(([name, value]) => element?.setAttribute(name, value));
+    document.head.appendChild(element);
+  }
+  element.setAttribute('content', content.trim());
+};
+
+const syncCanonical = (href: string) => {
+  const canonicalHref = href.trim();
+  if (!canonicalHref) return;
+
+  const canonicalLinks = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]'));
+  const canonical = canonicalLinks[0] ?? document.createElement('link');
+
+  canonical.setAttribute('rel', 'canonical');
+  canonical.setAttribute('href', canonicalHref);
+
+  if (!canonical.parentElement) {
+    document.head.appendChild(canonical);
+  }
+
+  canonicalLinks.slice(1).forEach(link => link.remove());
+};
 
 export const SEOMetadataSync: React.FC = () => {
   const { seoPages } = useData();
   const location = useLocation();
 
-  useEffect(() => {
-    if (!seoPages || seoPages.length === 0) return;
+  const currentPath = useMemo(() => normalizePath(location.pathname), [location.pathname]);
 
-    const rawPath = location.pathname || '/';
-    const currentPath = rawPath.endsWith('/') && rawPath.length > 1 ? rawPath.slice(0, -1) : rawPath;
-
-    const seoOverride = seoPages.find(page => {
-      const definedPath = page.path?.endsWith('/') && page.path.length > 1 ? page.path.slice(0, -1) : page.path;
-      return definedPath === currentPath || page.id === currentPath;
+  const seoOverride = useMemo(() => {
+    return seoPages?.find(page => {
+      const definedPath = normalizePath(page.path);
+      const definedId = page.id ? normalizePath(page.id) : '';
+      return definedPath === currentPath || definedId === currentPath;
     });
+  }, [currentPath, seoPages]);
 
-    if (!seoOverride) return;
+  useLayoutEffect(() => {
+    const canonicalUrl = seoOverride?.canonicalUrl?.trim() || generateCanonicalUrl(currentPath);
 
-    // Sync metadata to DOM directly as a fallback/supplement to React Helmet
-    // This ensures search engine crawlers see the correct metadata
+    const applyMetadata = () => {
+      // Always keep exactly one canonical URL available, even while admin SEO
+      // settings are still loading or when no explicit canonical has been saved.
+      syncCanonical(canonicalUrl);
 
-    // Update meta description
-    if (seoOverride.metaDescription) {
-      let metaDescription = document.querySelector('meta[name="description"]');
-      if (!metaDescription) {
-        metaDescription = document.createElement('meta');
-        metaDescription.setAttribute('name', 'description');
-        document.head.appendChild(metaDescription);
+      // Admin-managed metadata overrides are applied when present. Page-level
+      // Helmet tags remain responsible for static fallbacks such as route titles.
+      if (seoOverride?.metaTitle?.trim()) {
+        document.title = seoOverride.metaTitle.trim();
+        upsertMeta('meta[property="og:title"]', { property: 'og:title' }, seoOverride.ogTitle || seoOverride.metaTitle);
+        upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title' }, seoOverride.ogTitle || seoOverride.metaTitle);
       }
-      metaDescription.setAttribute('content', seoOverride.metaDescription);
-    }
 
-    // Update meta keywords
-    if (seoOverride.keywords) {
-      let metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (!metaKeywords) {
-        metaKeywords = document.createElement('meta');
-        metaKeywords.setAttribute('name', 'keywords');
-        document.head.appendChild(metaKeywords);
-      }
-      metaKeywords.setAttribute('content', seoOverride.keywords);
-    }
+      upsertMeta('meta[name="description"]', { name: 'description' }, seoOverride?.metaDescription);
+      upsertMeta('meta[name="keywords"]', { name: 'keywords' }, seoOverride?.keywords);
+      upsertMeta('meta[property="og:description"]', { property: 'og:description' }, seoOverride?.ogDescription || seoOverride?.metaDescription);
+      upsertMeta('meta[property="og:image"]', { property: 'og:image' }, seoOverride?.ogImage);
+      upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description' }, seoOverride?.ogDescription || seoOverride?.metaDescription);
+      upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image' }, seoOverride?.ogImage);
+      upsertMeta('meta[property="og:url"]', { property: 'og:url' }, canonicalUrl);
+      upsertMeta('meta[name="twitter:url"]', { name: 'twitter:url' }, canonicalUrl);
+    };
 
-    // Update canonical URL
-    if (seoOverride.canonicalUrl) {
-      let canonical = document.querySelector('link[rel="canonical"]');
-      if (!canonical) {
-        canonical = document.createElement('link');
-        canonical.setAttribute('rel', 'canonical');
-        document.head.appendChild(canonical);
-      }
-      canonical.setAttribute('href', seoOverride.canonicalUrl);
-    }
+    applyMetadata();
+    const timer = window.setTimeout(applyMetadata, 0);
 
-    // Update OG tags
-    if (seoOverride.ogTitle) {
-      let ogTitle = document.querySelector('meta[property="og:title"]');
-      if (!ogTitle) {
-        ogTitle = document.createElement('meta');
-        ogTitle.setAttribute('property', 'og:title');
-        document.head.appendChild(ogTitle);
-      }
-      ogTitle.setAttribute('content', seoOverride.ogTitle);
-    }
+    return () => window.clearTimeout(timer);
+  }, [currentPath, seoOverride]);
 
-    if (seoOverride.ogDescription) {
-      let ogDescription = document.querySelector('meta[property="og:description"]');
-      if (!ogDescription) {
-        ogDescription = document.createElement('meta');
-        ogDescription.setAttribute('property', 'og:description');
-        document.head.appendChild(ogDescription);
-      }
-      ogDescription.setAttribute('content', seoOverride.ogDescription);
-    }
-
-    if (seoOverride.ogImage) {
-      let ogImage = document.querySelector('meta[property="og:image"]');
-      if (!ogImage) {
-        ogImage = document.createElement('meta');
-        ogImage.setAttribute('property', 'og:image');
-        document.head.appendChild(ogImage);
-      }
-      ogImage.setAttribute('content', seoOverride.ogImage);
-    }
-
-    // Log for debugging
-    console.log('SEO Metadata Synced for path:', currentPath, seoOverride);
-  }, [seoPages, location.pathname]);
-
-  return null; // This component doesn't render anything visible
+  return null;
 };
 
 export default SEOMetadataSync;
