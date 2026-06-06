@@ -1,10 +1,37 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from 'path';
+import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const SITE_ORIGIN = 'https://optimantix.com';
+
+const normalizePath = (requestPath: string) => {
+  const normalized = requestPath.split(/[?#]/)[0] || '/';
+  return normalized.length > 1 ? normalized.replace(/\/+$/, '') : '/';
+};
+
+const canonicalFromRequestPath = (requestPath: string) => {
+  const normalizedPath = normalizePath(requestPath);
+  return normalizedPath === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${normalizedPath}`;
+};
+
+const escapeHtmlAttribute = (value: string) =>
+  value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const injectFallbackCanonical = (html: string, requestPath: string) => {
+  const canonicalUrl = escapeHtmlAttribute(canonicalFromRequestPath(requestPath));
+  const canonicalTag = `<link id="canonical-link" rel="canonical" href="${canonicalUrl}" data-managed-by="route-seo" />`;
+
+  if (html.includes('<!--SEO_CANONICAL-->')) {
+    return html.replace('<!--SEO_CANONICAL-->', canonicalTag);
+  }
+
+  return html.replace('</head>', `  ${canonicalTag}\n</head>`);
+};
 
 async function startServer() {
   const app = express();
@@ -33,10 +60,20 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // Serve static files in production
-    app.use(express.static(path.join(__dirname, 'dist')));
-    app.use((req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    // Serve static files in production. HTML requests get a route-aware fallback
+    // canonical tag immediately; the React SEO layer replaces it with any
+    // Admin-configured canonical URL after hydration.
+    const distPath = path.join(__dirname, 'dist');
+    const indexHtmlPath = path.join(distPath, 'index.html');
+
+    app.use(express.static(distPath));
+    app.use(async (req, res, next) => {
+      try {
+        const html = await readFile(indexHtmlPath, 'utf8');
+        res.type('html').send(injectFallbackCanonical(html, req.path));
+      } catch (error) {
+        next(error);
+      }
     });
   }
 

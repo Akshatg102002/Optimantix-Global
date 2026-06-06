@@ -6,6 +6,7 @@ import { DataProvider } from './context/DataContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { RouteSEO } from './components/RouteSEO';
 
 // Lazy load pages to enable loading animation and code splitting
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
@@ -35,6 +36,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <DataProvider>
         <Router>
+          <RouteSEO />
           <ScrollToTop />
           <Layout>
             <Suspense fallback={<LoadingSpinner />}>
