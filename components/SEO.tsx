@@ -1,8 +1,7 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useData } from '../context/DataContext';
-import { useLocation } from 'react-router-dom';
-import { validateMetaDescription, validatePageTitle, SEO_CONFIG } from '../utils/seoConfig';
+import { SEO_CONFIG } from '../utils/seoConfig';
+import { useSeoMetadata } from '../hooks/useSeoMetadata';
 
 interface SEOProps {
   title: string;
@@ -39,92 +38,16 @@ export const SEO: React.FC<SEOProps> = ({
   canonicalAuto = true,
   debug = false,
 }) => {
-  const { seoPages } = useData();
-  const location = useLocation();
-
-  // Find dynamic SEO override for the current page
-  const rawPath = location.pathname || '/';
-  const currentPath = useMemo(() => {
-    return rawPath.endsWith('/') && rawPath.length > 1 ? rawPath.slice(0, -1) : rawPath;
-  }, [rawPath]);
-
-  const seoOverride = useMemo(() => {
-    if (!seoPages || seoPages.length === 0) return undefined;
-
-    return seoPages.find(page => {
-      const definedPath = page.path?.endsWith('/') && page.path.length > 1 ? page.path.slice(0, -1) : page.path;
-      return definedPath === currentPath || page.id === currentPath;
-    });
-  }, [seoPages, currentPath]);
-
-  // Apply overrides with memoization
-  const finalTitle = useMemo(() => {
-    return (seoOverride?.metaTitle && seoOverride.metaTitle.trim() !== '') ? seoOverride.metaTitle : title;
-  }, [seoOverride?.metaTitle, title]);
-
-  const rawDescription = useMemo(() => {
-    return (seoOverride?.metaDescription && seoOverride.metaDescription.trim() !== '') ? seoOverride.metaDescription : description;
-  }, [seoOverride?.metaDescription, description]);
-
-  const ogTitle = useMemo(() => {
-    return (seoOverride?.ogTitle && seoOverride.ogTitle.trim() !== '')
-      ? seoOverride.ogTitle
-      : ((seoOverride?.metaTitle && seoOverride.metaTitle.trim() !== '') ? seoOverride.metaTitle : title);
-  }, [seoOverride?.ogTitle, seoOverride?.metaTitle, title]);
-
-  const ogDescription = useMemo(() => {
-    return (seoOverride?.ogDescription && seoOverride.ogDescription.trim() !== '') ? seoOverride.ogDescription : rawDescription;
-  }, [seoOverride?.ogDescription, rawDescription]);
-
-  const ogImage = useMemo(() => {
-    return (seoOverride?.ogImage && seoOverride.ogImage.trim() !== '') ? seoOverride.ogImage : image;
-  }, [seoOverride?.ogImage, image]);
-
-  const finalKeywords = useMemo(() => {
-    return seoOverride?.keywords || keywords;
-  }, [seoOverride?.keywords, keywords]);
-
-  const finalCanonical = useMemo(() => {
-    return (seoOverride?.canonicalUrl && seoOverride.canonicalUrl.trim() !== '') ? seoOverride.canonicalUrl : canonical;
-  }, [seoOverride?.canonicalUrl, canonical]);
-
-  // Validate and trim title (max 60 chars with suffix)
-  const processedTitle = useMemo(() => validatePageTitle(finalTitle), [finalTitle]);
-
-  // Validate and trim description (max 160 chars)
-  const finalDescription = useMemo(() => validateMetaDescription(rawDescription), [rawDescription]);
-  const finalOgDescription = useMemo(() => validateMetaDescription(ogDescription), [ogDescription]);
-
-  // Determine current clean url without trailing slashes or query parameters.
-  // Uses only origin + pathname so tracking params (?utm_source=...) never
-  // leak into the canonical and cause duplicate-content issues.
-  const getCleanFallbackUrl = () => {
-    if (typeof window !== 'undefined') {
-      return `${window.location.origin}${window.location.pathname}`;
-    }
-    return SEO_CONFIG.siteUrl;
-  };
-
-  const rawCurrentUrl = url || getCleanFallbackUrl();
-  const currentUrl = useMemo(() => rawCurrentUrl.replace(/\/+$/, ''), [rawCurrentUrl]);
-
-  // Auto-generate canonical URL: use provided canonical, SEO override, or construct from current location
-  const canonicalUrl = useMemo(() => {
-    // Priority: 1) explicit canonical prop, 2) SEO override, 3) construct from location
-    if (finalCanonical) return finalCanonical;
-    if (seoOverride?.canonicalUrl?.trim()) return seoOverride.canonicalUrl;
-
-    // If url was explicitly passed, use it; otherwise construct from window.location
-    if (url) return currentUrl;
-
-    // Construct canonical from current location: origin + pathname (no query params)
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
-      return `${window.location.origin}${pathname}`;
-    }
-
-    return SEO_CONFIG.siteUrl;
-  }, [finalCanonical, seoOverride?.canonicalUrl, url, currentUrl]);
+  const metadata = useSeoMetadata({
+    title,
+    description,
+    keywords,
+    canonical,
+    image,
+    robots,
+    url,
+    canonicalAuto,
+  });
 
   // Normalize schemas (handle both single object and array)
   const schemas = useMemo(() => {
@@ -134,46 +57,39 @@ export const SEO: React.FC<SEOProps> = ({
   // Debug logging
   useEffect(() => {
     if (debug) {
-      console.log('SEO Component Updated:', {
-        path: currentPath,
-        hasOverride: !!seoOverride,
-        title: processedTitle,
-        description: finalDescription,
-        canonical: canonicalUrl,
-        ogImage: ogImage,
-      });
+      console.log('SEO Component Updated:', metadata);
     }
-  }, [debug, currentPath, seoOverride, processedTitle, finalDescription, canonicalUrl, ogImage]);
+  }, [debug, metadata]);
 
   return (
-    <Helmet>
+    <Helmet prioritizeSeoTags>
       {/* Primary Meta Tags */}
       <html lang={language} />
-      <title>{processedTitle}</title>
-      <meta name="description" content={finalDescription} />
-      {finalKeywords && <meta name="keywords" content={finalKeywords} />}
-      <meta name="robots" content={robots || SEO_CONFIG.robotsOptions.googleBot} />
+      <title>{metadata.title}</title>
+      <meta name="description" content={metadata.description} />
+      {metadata.keywords && <meta name="keywords" content={metadata.keywords} />}
+      <meta name="robots" content={metadata.robots} />
       <meta name="language" content={language} />
       <meta name="revisit-after" content="7 days" />
 
-      {/* Canonical Link - Should be first after title */}
-      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+      {/* Canonical Link */}
+      <link rel="canonical" href={metadata.canonical} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:title" content={ogTitle} />
-      <meta property="og:description" content={finalOgDescription} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:url" content={metadata.canonical} />
+      <meta property="og:title" content={metadata.ogTitle} />
+      <meta property="og:description" content={metadata.ogDescription} />
+      <meta property="og:image" content={metadata.ogImage} />
       <meta property="og:site_name" content={SEO_CONFIG.siteName} />
       <meta property="og:locale" content={SEO_CONFIG.languageRegion} />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={canonicalUrl} />
-      <meta name="twitter:title" content={ogTitle} />
-      <meta name="twitter:description" content={finalOgDescription} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:url" content={metadata.canonical} />
+      <meta name="twitter:title" content={metadata.ogTitle} />
+      <meta name="twitter:description" content={metadata.ogDescription} />
+      <meta name="twitter:image" content={metadata.ogImage} />
       {twitterHandle && <meta name="twitter:creator" content={twitterHandle} />}
 
       {/* Article Specific Meta Tags */}
