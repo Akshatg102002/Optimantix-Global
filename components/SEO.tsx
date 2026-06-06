@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useData } from '../context/DataContext';
 import { useLocation } from 'react-router-dom';
+import { resolveCanonicalUrl } from '../utils/seo';
 
 interface SEOProps {
   title: string;
@@ -45,7 +46,7 @@ export const SEO: React.FC<SEOProps> = ({
   const ogDescription = (seoOverride?.ogDescription && seoOverride.ogDescription.trim() !== '') ? seoOverride.ogDescription : rawDescription;
   const ogImage = (seoOverride?.ogImage && seoOverride.ogImage.trim() !== '') ? seoOverride.ogImage : image;
   const keywords = seoOverride?.keywords || '';
-  const finalCanonical = (seoOverride?.canonicalUrl && seoOverride.canonicalUrl.trim() !== '') ? seoOverride.canonicalUrl : canonical;
+  const finalCanonical = resolveCanonicalUrl(seoPages, location.pathname, canonical);
 
   // 5. Trim title to ≤60 chars logic (accounting for appending | Optimantix Global)
   // Base title max length to prevent truncation in SERP
@@ -71,9 +72,9 @@ export const SEO: React.FC<SEOProps> = ({
     finalOgDescription = `${finalOgDescription.substring(0, 152)}...`;
   }
 
-  // Determine current clean url without trailing slashes
-  const rawCurrentUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://optimantix.com');
-  const currentUrl = rawCurrentUrl.replace(/\/+$/, ''); // Remove trailing slashes for canonicalizing
+  // Canonical links are centralized in RouteSEO so every route has exactly one tag.
+  const rawCurrentUrl = url || finalCanonical;
+  const currentUrl = rawCurrentUrl.replace(/\/+$/, '');
 
   return (
     <Helmet>
@@ -82,10 +83,6 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="description" content={finalDescription} />
       {keywords && <meta name="keywords" content={keywords} />}
       
-      {/* Canonical Link */}
-      {finalCanonical && <link rel="canonical" href={finalCanonical.replace(/\/+$/, '')} />}
-      {!finalCanonical && <link rel="canonical" href={currentUrl} />}
-
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={finalCanonical || currentUrl} />

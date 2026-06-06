@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Papa from 'papaparse';
-import { Upload, FileText, AlertCircle, CheckCircle, Loader2, Download } from 'lucide-react';
+import { Upload, FileText, AlertCircle, Loader2, Download } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { PageSEO } from '../types';
 
@@ -96,7 +96,7 @@ export const SeoCSVImport: React.FC = () => {
             try {
               await updateSeoPage(seoData);
               setProgress(p => p ? { ...p, completed: p.completed + 1 } : p);
-            } catch (err) {
+            } catch {
               errors.push(`Row ${rowNum} (${path}): Failed to save to database`);
               setProgress(p => p ? { ...p, failed: p.failed + 1, errors } : p);
             }
