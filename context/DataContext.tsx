@@ -247,15 +247,24 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const getSeoDocId = (path: string) => encodeURIComponent(path);
 
+  const decodeSeoDocId = (docId: string) => {
+    try {
+      return decodeURIComponent(docId);
+    } catch {
+      return docId;
+    }
+  };
+
   const fetchSeoPages = async () => {
     try {
       const querySnapshot = await db.collection("seo_pages").get();
       if (!querySnapshot.empty) {
         const fetchedSeoPages: PageSEO[] = querySnapshot.docs.map(doc => {
           const data = doc.data();
+          const decodedDocId = decodeSeoDocId(doc.id);
           return {
-            id: data.id || data.path || doc.id,
-            path: data.path || '',
+            id: data.id || data.path || decodedDocId,
+            path: data.path || decodedDocId,
             metaTitle: data.metaTitle || '',
             metaDescription: data.metaDescription || '',
             keywords: data.keywords || '',
