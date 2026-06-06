@@ -41,15 +41,10 @@ const syncCanonical = (href: string) => {
   const canonical = canonicalLinks[0] ?? document.createElement('link');
 
   canonical.setAttribute('rel', 'canonical');
-  canonical.setAttribute('data-seo-managed', 'true');
   canonical.setAttribute('href', canonicalHref);
 
   if (!canonical.parentElement) {
-    const insertionPoint = document.querySelector('meta[name="google-site-verification"]')
-      || document.querySelector('link[rel="sitemap"]')
-      || document.head.firstElementChild;
-
-    document.head.insertBefore(canonical, insertionPoint);
+    document.head.appendChild(canonical);
   }
 
   canonicalLinks.slice(1).forEach(link => link.remove());
