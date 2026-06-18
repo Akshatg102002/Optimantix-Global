@@ -21,6 +21,21 @@ interface SEOProps {
   debug?: boolean;
 }
 
+const ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Optimantix Global',
+  url: 'https://optimantix-marketplace-h94c.arcada.app/',
+  logo: 'https://optimantix-marketplace-h94c.arcada.app/logo.png',
+  description: 'End-to-end marketplace management agency across Amazon, Flipkart, Meesho, Myntra, Nykaa, Ajio and more.',
+  sameAs: [],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    availableLanguage: 'English',
+  },
+};
+
 export const SEO: React.FC<SEOProps> = ({
   title,
   description,
@@ -51,7 +66,16 @@ export const SEO: React.FC<SEOProps> = ({
 
   // Normalize schemas (handle both single object and array)
   const schemas = useMemo(() => {
-    return Array.isArray(schemaMarkup) ? schemaMarkup : schemaMarkup ? [schemaMarkup] : [];
+    const pageSchemas = Array.isArray(schemaMarkup) ? schemaMarkup : schemaMarkup ? [schemaMarkup] : [];
+    const hasOrganizationSchema = pageSchemas.some(
+      (schema) =>
+        typeof schema === 'object' &&
+        schema !== null &&
+        '@type' in schema &&
+        (schema as { '@type'?: string })['@type'] === 'Organization'
+    );
+
+    return hasOrganizationSchema ? pageSchemas : [ORGANIZATION_SCHEMA, ...pageSchemas];
   }, [schemaMarkup]);
 
   // Debug logging
