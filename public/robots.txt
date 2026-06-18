@@ -1,38 +1,40 @@
-# Optimantix Global - robots.txt
-# SEO Configuration for search engine crawlers
-
-# Default rules for all crawlers
 User-agent: *
 Allow: /
+Allow: /free-tools/
 Disallow: /admin
 Disallow: /api
 Disallow: /admin/
 Disallow: /_next/
 Disallow: /node_modules/
 Disallow: /.git/
-
-# Prevent crawling of tracking parameters
 Disallow: /*?utm_*
 Disallow: /*?fbclid=*
 Disallow: /*?gclid=*
 Disallow: /*?msclkid=*
-
-# Crawl-delay and request-rate for all crawlers
 Crawl-delay: 1
 Request-rate: 10/1s
 
-# Specific rules for Googlebot
+User-agent: GPTBot
+Allow: /free-tools/
+
+User-agent: ClaudeBot
+Allow: /free-tools/
+
+User-agent: PerplexityBot
+Allow: /free-tools/
+
+User-agent: anthropic-ai
+Allow: /free-tools/
+
 User-agent: Googlebot
 Allow: /
 Disallow: /admin
 
-# Specific rules for Bingbot
 User-agent: Bingbot
 Allow: /
 Disallow: /admin
 Crawl-delay: 1
 
-# Disallow bad bots
 User-agent: MJ12bot
 Disallow: /
 
@@ -42,5 +44,4 @@ Crawl-delay: 10
 User-agent: SemrushBot
 Crawl-delay: 10
 
-# Sitemap references
-Sitemap: https://optimantix.com/sitemap.xml
+Sitemap: https://optimantix-marketplace-h94c.arcada.app/sitemap.xml
