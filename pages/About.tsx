@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 const TEAM = [
   {
     name: "Rahul Chauhan",
-    role: "Founder & CEO",
+    role: "Director",
     image: null, // Will use avatar
     linkedin: "https://linkedin.com/company/optimantix",
     initials: "RC"
@@ -19,7 +19,7 @@ const TEAM = [
 
   {
     name: "Deepak Yadav",
-    role: "Marketplace Manager",
+    role: "Director",
     image: null,
     linkedin: "https://linkedin.com/company/optimantix",
     initials: "DY"
