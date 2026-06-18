@@ -27,6 +27,8 @@ const SeoAudit = lazy(() => import('./pages/SeoAudit').then(module => ({ default
 const PageTemplate = lazy(() => import('./pages/PageTemplate').then(module => ({ default: module.PageTemplate })));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
 const AdminLogin = lazy(() => import('./pages/Admin/Login').then(module => ({ default: module.AdminLogin })));
+const FreeToolsHub = lazy(() => import('./pages/FreeToolsHub').then(module => ({ default: module.FreeToolsHub })));
+const ToolPage = lazy(() => import('./pages/ToolPage').then(module => ({ default: module.ToolPage })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -47,6 +49,8 @@ const App: React.FC = () => {
               <Route path="/services/:slug" element={<ServiceTemplate />} />
               <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />
               <Route path="/free-seo-audit" element={<SeoAudit />} />
+              <Route path="/free-tools" element={<FreeToolsHub />} />
+              <Route path="/free-tools/:slug" element={<ToolPage />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/pages/:slug" element={<PageTemplate />} />
