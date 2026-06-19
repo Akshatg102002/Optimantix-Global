@@ -10,8 +10,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { createFAQPage } from '../utils/schemaGenerator';
-import { truncateDescription, SITE_URL } from '../data/seoData';
+import { SITE_URL } from '../data/seoData';
+import { buildPageSeo, findSeoOverride } from '../utils/buildPageSeo';
+import { buildPageSchema } from '../utils/buildPageSchema';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import type { SubService } from '../types';
 
@@ -96,7 +97,7 @@ const SectionHeader: React.FC<{
 // ─── Main component ────────────────────────────────────────────────────────────
 export const SubServiceTemplate: React.FC = () => {
   const { slug, subSlug } = useParams<{ slug: string; subSlug: string }>();
-  const { services } = useData();
+  const { services, seoPages } = useData();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const service = services.find(s => s.slug === slug);
@@ -131,70 +132,14 @@ export const SubServiceTemplate: React.FC = () => {
       statCount === 3 ? 'sm:grid-cols-3' :
         'sm:grid-cols-4';
 
-  // Generate FAQ schema from faq_section if available
-  let faqSchema = undefined;
-  if (subService.faq_section?.questions && subService.faq_section.questions.length > 0) {
-    const faqs = subService.faq_section.questions.map(q => ({
-      question: q.question,
-      answer: q.answer,
-    }));
-    faqSchema = createFAQPage(faqs);
-  } else {
-    // Generate default FAQs if none provided
-    const defaultFAQs = [
-      {
-        question: `What is ${title}?`,
-        answer: subService.intro_section?.description || subtitle || 'Expert service to help your business grow.',
-      },
-      {
-        question: `How can ${title} benefit my business?`,
-        answer: `${title} helps improve your online presence and achieve your business objectives. We use proven strategies to deliver measurable results.`,
-      },
-      {
-        question: `What's your approach to ${title}?`,
-        answer: 'We use a data-driven, customized approach based on thorough analysis of your business needs and goals.',
-      },
-      {
-        question: `How soon will I see results?`,
-        answer: 'Results vary based on your starting point. Most clients see improvements within 3-6 months of implementation.',
-      },
-    ];
-    faqSchema = createFAQPage(defaultFAQs);
-  }
-
-  const canonical = `${SITE_URL}/services/${service.slug}/${subService.slug}`;
-  const seoTitle = subService.seo?.meta_title || `${title} Services | Optimantix Global`;
-  const seoDescription = truncateDescription(subService.seo?.meta_description || subtitle || subService.fullDescription || '', 155);
-
-  const serviceSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: title,
-    description: seoDescription,
-    provider: {
-      '@type': 'Organization',
-      name: 'Optimantix Global',
-      url: SITE_URL,
-    },
-    url: canonical,
-    areaServed: 'IN',
-    parentService: {
-      '@type': 'Service',
-      name: service.title,
-      url: `${SITE_URL}/services/${service.slug}`,
-    },
-  };
-
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` },
-      { '@type': 'ListItem', position: 3, name: service.title, item: `${SITE_URL}/services/${service.slug}` },
-      { '@type': 'ListItem', position: 4, name: title, item: canonical },
-    ],
-  };
+  const path = `/services/${service.slug}/${subService.slug}`;
+  const canonical = `${SITE_URL}${path}`;
+  const override = findSeoOverride(seoPages, path);
+  const fallback = buildPageSeo(path);
+  const seoTitle = override?.metaTitle || fallback.title;
+  const seoDescription = override?.metaDescription || fallback.description;
+  const schema = buildPageSchema(path, seoTitle, seoDescription);
+  const schemas = Array.isArray(schema) ? schema : [schema];
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen pt-16">
@@ -206,9 +151,9 @@ export const SubServiceTemplate: React.FC = () => {
         <meta property="og:description" content={seoDescription} />
         <meta property="og:url" content={canonical} />
         <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        {schemas.map((entry, idx) => (
+          <script key={idx} type="application/ld+json">{JSON.stringify(entry)}</script>
+        ))}
       </Helmet>
 
       {/* ── BANNER IMAGE ───────────────────────────────────────────────────── */}

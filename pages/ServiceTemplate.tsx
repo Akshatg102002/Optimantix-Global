@@ -6,15 +6,16 @@ import { Icon } from '../components/Icon';
 import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { createFAQPage } from '../utils/schemaGenerator';
-import { seoData, truncateDescription, SITE_URL } from '../data/seoData';
+import { SITE_URL } from '../data/seoData';
+import { buildPageSeo, findSeoOverride } from '../utils/buildPageSeo';
+import { buildPageSchema } from '../utils/buildPageSchema';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { PortfolioSlider } from '../components/PortfolioSlider';
 
 export const ServiceTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { services } = useData();
+  const { services, seoPages } = useData();
   const service = services.find(s => s.slug === slug);
   
   const MotionDiv = motion.div as React.ElementType;
@@ -43,48 +44,14 @@ export const ServiceTemplate: React.FC = () => {
   const hasBenefits = service.benefits && service.benefits.length > 0;
   const hasDeliverables = service.deliverables && service.deliverables.length > 0;
 
-  // Generate service-specific FAQs
-  const serviceFAQs = [
-    {
-      question: `What is ${service.title}?`,
-      answer: service.fullDescription || service.shortDescription,
-    },
-    {
-      question: `Why is ${service.title} important for my business?`,
-      answer: `${service.title} helps businesses improve their online presence, increase visibility, and achieve their digital goals. Our approach focuses on delivering measurable results and sustainable growth.`,
-    },
-    {
-      question: `How do we approach ${service.title}?`,
-      answer: `We use a data-driven, customized approach tailored to your business needs. Our team conducts thorough analysis, implements proven strategies, and continuously optimizes for better performance.`,
-    },
-    {
-      question: `What results can I expect from ${service.title}?`,
-      answer: `Results vary based on your starting point and goals. Typically, clients see improvements in visibility, engagement, traffic, and conversions within 3-6 months of implementing our strategies.`,
-    },
-    {
-      question: `How long does ${service.title} take to show results?`,
-      answer: `While some results may appear within weeks, comprehensive improvements typically manifest over 3-6 months. We focus on sustainable, long-term growth rather than quick fixes.`,
-    },
-  ];
-
-  const canonical = `${SITE_URL}/services/${service.slug}`;
-  const override = seoData[`/services/${service.slug}`];
-  const seoTitle = override?.title ?? service.metaTitle ?? `${service.title} | Optimantix Global`;
-  const seoDescription = override?.description ?? truncateDescription(service.metaDescription || service.shortDescription, 155);
-  const serviceSchema = override?.schema ?? {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: service.title,
-    description: seoDescription,
-    provider: {
-      '@type': 'Organization',
-      name: 'Optimantix Global',
-      url: SITE_URL,
-    },
-    url: canonical,
-    areaServed: 'IN',
-  };
-  const faqSchema = createFAQPage(serviceFAQs);
+  const path = `/services/${service.slug}`;
+  const canonical = `${SITE_URL}${path}`;
+  const override = findSeoOverride(seoPages, path);
+  const fallback = buildPageSeo(path);
+  const seoTitle = override?.metaTitle || fallback.title;
+  const seoDescription = override?.metaDescription || fallback.description;
+  const schema = buildPageSchema(path, seoTitle, seoDescription);
+  const schemas = Array.isArray(schema) ? schema : [schema];
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
@@ -96,8 +63,9 @@ export const ServiceTemplate: React.FC = () => {
         <meta property="og:description" content={seoDescription} />
         <meta property="og:url" content={canonical} />
         <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        {schemas.map((entry, idx) => (
+          <script key={idx} type="application/ld+json">{JSON.stringify(entry)}</script>
+        ))}
       </Helmet>
 
       <ParallaxHero 
