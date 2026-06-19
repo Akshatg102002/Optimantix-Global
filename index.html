@@ -5,7 +5,117 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title></title>
+  <!--
+    Static fallback tags below render in the pre-hydration HTML shell, so
+    crawlers that don't execute JS (Facebook, Twitter, LinkedIn, WhatsApp,
+    some SEO tools) always see real brand metadata instead of a blank page.
+    react-helmet-async (via components/RouteSEO.tsx) overrides every one of
+    these per-route once the app hydrates.
+  -->
+  <title>Optimantix Global – Digital Marketing Agency in Noida</title>
+  <meta name="description" content="Grow faster with expert SEO, Google Ads, Meta Ads & Marketplace Management. Trusted by 100s of brands. 10+ years of proven results." />
+  <link rel="canonical" href="https://optimantix.com/" />
+
+  <meta property="og:title" content="Optimantix Global – Digital Marketing Agency" />
+  <meta property="og:description" content="Expert digital marketing services including SEO, PPC, Meta Ads, and marketplace management." />
+  <meta property="og:image" content="https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://optimantix.com" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Optimantix Global – Digital Marketing Agency" />
+  <meta name="twitter:description" content="Expert SEO, PPC, Meta Ads & marketplace management. 10+ years of results." />
+  <meta name="twitter:image" content="https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png" />
+
+  <!-- Static homepage Organization + WebSite schema fallback (mirrors data/seoData.ts) -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Optimantix Global",
+      "description": "Optimantix Global is a premier digital marketing, web development, and performance scaling agency. Transform your digital presence with expert SEO, Google Ads, Meta Ads, E-commerce, and Web Development services. Trusted by 100s of brands with 10+ years of proven results.",
+      "url": "https://optimantix.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png",
+        "width": 200,
+        "height": 200,
+        "name": "Optimantix Global Logo"
+      },
+      "image": "https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png",
+      "email": "contact@optimantix.com",
+      "telephone": "+91-9910343016",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "Customer Service",
+          "telephone": "+91-9910343016",
+          "email": "contact@optimantix.com",
+          "areaServed": ["IN", "Global"],
+          "availableLanguage": ["en", "hi"]
+        },
+        {
+          "@type": "ContactPoint",
+          "contactType": "Sales",
+          "telephone": "+91-9910343016",
+          "email": "sales@optimantix.com",
+          "areaServed": ["IN"],
+          "availableLanguage": ["en", "hi"]
+        },
+        {
+          "@type": "ContactPoint",
+          "contactType": "Support",
+          "telephone": "+91-9910343016",
+          "email": "support@optimantix.com",
+          "areaServed": ["IN"],
+          "availableLanguage": ["en", "hi"]
+        }
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Noida, Uttar Pradesh",
+        "addressLocality": "Noida",
+        "addressRegion": "Uttar Pradesh",
+        "postalCode": "201301",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://www.facebook.com/optimantix",
+        "https://www.instagram.com/optimantix",
+        "https://in.linkedin.com/company/optimantix",
+        "https://in.pinterest.com/OptimantiXglobal1"
+      ],
+      "foundingDate": "2010-01-01",
+      "areaServed": ["India", "United States", "United Kingdom", "Canada", "Australia", "Dubai", "Global"],
+      "knowsAbout": [
+        "Search Engine Optimization",
+        "Google Ads Management",
+        "Meta Ads Management",
+        "E-commerce Management",
+        "Web Development",
+        "Web Design",
+        "Performance Scaling",
+        "Marketplace Management"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Optimantix Global",
+      "url": "https://optimantix.com",
+      "description": "Digital marketing, web development & performance scaling agency",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://optimantix.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+  </script>
 
   <!-- Google Search Console Verification -->
   <meta name="google-site-verification" content="Fv4YicX392wMw9Ke1O15AjauwpZMedHoqQHQDsFonRc" />
@@ -18,9 +128,6 @@
   <link rel="icon" type="image/png" sizes="96x96" href="https://res.cloudinary.com/dusvykklu/image/upload/v1780136083/favicon-96x96_wyozi2.png" />
   <link rel="shortcut icon" href="https://res.cloudinary.com/dusvykklu/image/upload/v1780136083/favicon_j42zup.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/dusvykklu/image/upload/v1780136083/apple-touch-icon_frt4sc.png" />
-
-  <!-- Open Graph Metadata -->
-  <meta property="og:image" content="https://i.ibb.co/FkFfTxxC/opti.png" />
 
   <!-- Polyfill/interceptor to prevent Uncaught TypeError: Cannot set property fetch of #<Window> -->
   <script>
