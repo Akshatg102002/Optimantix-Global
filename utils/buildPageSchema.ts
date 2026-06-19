@@ -73,10 +73,65 @@ function buildBreadcrumb(pathname: string): Record<string, unknown> | null {
   return createBreadcrumbList(items) as unknown as Record<string, unknown>;
 }
 
+// Data needed to build schema for a custom admin page (Firestore `pages`
+// collection) at /services/{slug} that doesn't match an INITIAL_SERVICES slug.
+export interface CustomPageSchemaInput {
+  schemaType: 'Article' | 'WebPage' | 'Service';
+  imageUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+function buildCustomPageSchema(
+  page: CustomPageSchemaInput,
+  canonical: string,
+  title: string,
+  description: string
+): Record<string, unknown> {
+  if (page.schemaType === 'Service') {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: title,
+      description,
+      provider: {
+        '@type': 'Organization',
+        name: 'Optimantix Global',
+        url: SITE_URL,
+      },
+      url: canonical,
+      areaServed: 'IN',
+    };
+  }
+
+  if (page.schemaType === 'Article') {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: title,
+      description,
+      image: page.imageUrl,
+      author: {
+        '@type': 'Organization',
+        name: 'Optimantix Global',
+      },
+      datePublished: page.createdAt,
+      dateModified: page.updatedAt,
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': canonical,
+      },
+    };
+  }
+
+  return createWebPageSchema({ url: canonical, name: title, description }) as unknown as Record<string, unknown>;
+}
+
 export function buildPageSchema(
   pathname: string,
   title: string,
-  description: string
+  description: string,
+  customPage?: CustomPageSchemaInput
 ): Record<string, unknown> | Record<string, unknown>[] {
   const path = normalizePath(pathname);
   const canonical = `${SITE_URL}${path === '/' ? '/' : path}`;
@@ -159,6 +214,11 @@ export function buildPageSchema(
     if (breadcrumb) schemas.push(breadcrumb);
 
     return schemas.length === 1 ? schemas[0] : schemas;
+  }
+
+  if (customPage) {
+    const pageSchema = buildCustomPageSchema(customPage, canonical, title, description);
+    return breadcrumb ? [pageSchema, breadcrumb] : pageSchema;
   }
 
   const webPage = createWebPageSchema({
