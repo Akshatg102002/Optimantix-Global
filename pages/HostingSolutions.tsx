@@ -2,7 +2,6 @@
 import React from 'react';
 import { Check, Shield, Users, Globe, Database, Lock, HelpCircle, HardDrive, Cpu, Activity, RefreshCw, Star, Quote } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { SEO } from '../components/SEO';
 
 interface HostingPlan {
   name: string;
@@ -207,12 +206,7 @@ export const HostingSolutions: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-dark min-h-screen">
-      <SEO 
-        title="Hosting Plans Built for Indian Businesses | VPS & Cloud Hosting" 
-        description="Fast, secure, and scalable hosting billed in INR. 99.99% uptime SLA, free SSL, and 24/7 India-based support. Explore VPS and Cloud plans."
-      />
-
-      {/* Hero Section */}
+{/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-b from-indigo-50 to-white dark:from-gray-900 dark:to-dark">
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">

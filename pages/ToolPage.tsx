@@ -6,11 +6,10 @@ import {
   Building2, Briefcase, ShoppingBag, Loader2, ShieldCheck, 
   BarChart3, Cpu, Search, Layers
 } from 'lucide-react';
-import { SEO } from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
 import { FREE_TOOLS, getCategoryAnchor, getToolBySlug } from '../data/freeTools';
 import type { FreeTool } from '../data/freeTools';
-
-const BASE_URL = 'https://optimantix-marketplace-h94c.arcada.app';
+import { SITE_URL, truncateDescription } from '../data/seoData';
 
 type ToolMode = 'analyse' | 'generate' | 'check' | 'calculate' | 'plan';
 
@@ -333,9 +332,21 @@ export const ToolPage: React.FC = () => {
     }
   }, [input, isSchemaGen, tool]);
 
+  const canonical = `${SITE_URL}/free-tools/${tool.slug}`;
+  const seoTitle = `${tool.name} — Professional Utility Asset | Optimantix Global`;
+  const seoDescription = truncateDescription(tool.description, 155);
+
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-900 dark:text-slate-100 font-sans antialiased">
-      <SEO title={`${tool.name} — Professional Utility Asset`} description={tool.description} canonical={`${BASE_URL}/free-tools/${tool.slug}/`} />
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="website" />
+      </Helmet>
 
       <section className="pt-28 pb-20 bg-[#070A13] text-white border-b border-slate-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/20 via-transparent to-transparent"></div>

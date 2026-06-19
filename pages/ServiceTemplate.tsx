@@ -5,8 +5,9 @@ import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { SEO } from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
 import { createFAQPage } from '../utils/schemaGenerator';
+import { seoData, truncateDescription, SITE_URL } from '../data/seoData';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { PortfolioSlider } from '../components/PortfolioSlider';
@@ -66,17 +67,39 @@ export const ServiceTemplate: React.FC = () => {
     },
   ];
 
+  const canonical = `${SITE_URL}/services/${service.slug}`;
+  const override = seoData[`/services/${service.slug}`];
+  const seoTitle = override?.title ?? service.metaTitle ?? `${service.title} | Optimantix Global`;
+  const seoDescription = override?.description ?? truncateDescription(service.metaDescription || service.shortDescription, 155);
+  const serviceSchema = override?.schema ?? {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.title,
+    description: seoDescription,
+    provider: {
+      '@type': 'Organization',
+      name: 'Optimantix Global',
+      url: SITE_URL,
+    },
+    url: canonical,
+    areaServed: 'IN',
+  };
+  const faqSchema = createFAQPage(serviceFAQs);
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      {/* Meta title/description fall back to the service record's own SEO fields;
-          the SEO component also overlays any per-path overrides set in the
-          admin "SEO Management" tab and emits canonical + Open Graph tags. */}
-      <SEO
-        title={service.metaTitle || service.title}
-        description={service.metaDescription || service.shortDescription}
-        schemaMarkup={createFAQPage(serviceFAQs)}
-      />
-      
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
+
       <ParallaxHero 
         title={service.title}
         subtitle={service.shortDescription}

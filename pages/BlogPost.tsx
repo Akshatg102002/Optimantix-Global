@@ -3,12 +3,11 @@ import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
-import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ShareButtons } from '../components/ShareButtons';
 import { RichContent } from '../components/RichContent';
 import { Helmet } from 'react-helmet-async';
-import { SEO_CONFIG } from '../utils/seoConfig';
+import { SITE_URL, truncateDescription } from '../data/seoData';
 
 export const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -22,9 +21,10 @@ export const BlogPost: React.FC = () => {
   // Get max 4 recent blogs excluding the current one
   const recentBlogs = blogs.filter(b => b.slug !== slug).slice(0, 4);
 
-  const siteOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://optimantix.com';
-  const currentUrl = `${siteOrigin}/blog/${blog.slug}`;
-  
+  const currentUrl = `${SITE_URL}/blog/${blog.slug}`;
+  const seoTitle = blog.metaTitle || blog.title;
+  const seoDescription = truncateDescription(blog.metaDescription || blog.excerpt, 155);
+
   // JSON-LD for Breadcrumbs
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -34,13 +34,13 @@ export const BlogPost: React.FC = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": typeof window !== 'undefined' ? window.location.origin : ''
+        "item": `${SITE_URL}/`
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": typeof window !== 'undefined' ? `${window.location.origin}/blog` : ''
+        "item": `${SITE_URL}/blog`
       },
       {
         "@type": "ListItem",
@@ -51,24 +51,16 @@ export const BlogPost: React.FC = () => {
     ]
   };
 
-  // JSON-LD for BlogPosting
-  const blogSchema = {
+  // JSON-LD for Article
+  const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "Article",
     "headline": blog.title,
-    "description": blog.metaDescription || blog.excerpt,
+    "description": seoDescription,
     "image": blog.imageUrl,
     "author": {
       "@type": "Organization",
-      "name": SEO_CONFIG.siteName
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": SEO_CONFIG.siteName,
-      "logo": {
-        "@type": "ImageObject",
-        "url": SEO_CONFIG.defaultOgImage
-      }
+      "name": "Optimantix Global"
     },
     "datePublished": blog.date,
     "dateModified": blog.date,
@@ -83,7 +75,7 @@ export const BlogPost: React.FC = () => {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": blog.author,
-    "url": typeof window !== 'undefined' ? `${window.location.origin}/about` : '',
+    "url": `${SITE_URL}/about`,
     "jobTitle": "Digital Marketing & Technology Expert",
     "worksFor": {
       "@type": "Organization",
@@ -93,19 +85,17 @@ export const BlogPost: React.FC = () => {
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      <SEO
-        title={blog.metaTitle || blog.title}
-        description={blog.metaDescription || blog.excerpt}
-        type="article"
-        image={blog.imageUrl}
-        url={currentUrl}
-        canonical={currentUrl}
-        author={blog.author}
-        publishedTime={blog.date}
-      />
       <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={currentUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={blog.imageUrl} />
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(blogSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(personSchema)}</script>
       </Helmet>
 

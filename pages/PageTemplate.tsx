@@ -2,12 +2,11 @@ import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
-import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ShareButtons } from '../components/ShareButtons';
 import { RichContent } from '../components/RichContent';
 import { Helmet } from 'react-helmet-async';
-import { SEO_CONFIG } from '../utils/seoConfig';
+import { SITE_URL, truncateDescription } from '../data/seoData';
 
 export const PageTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -26,7 +25,9 @@ export const PageTemplate: React.FC = () => {
     return <Navigate to="/404" replace />;
   }
 
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const currentUrl = `${SITE_URL}/pages/${page.slug}`;
+  const seoTitle = page.metaTitle || page.title;
+  const seoDescription = truncateDescription(page.metaDescription || page.excerpt, 155);
 
   // JSON-LD for Breadcrumbs
   const breadcrumbSchema = {
@@ -37,7 +38,7 @@ export const PageTemplate: React.FC = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": typeof window !== 'undefined' ? window.location.origin : ''
+        "item": `${SITE_URL}/`
       },
       {
         "@type": "ListItem",
@@ -53,11 +54,11 @@ export const PageTemplate: React.FC = () => {
     "@context": "https://schema.org",
     "@type": page.schemaType || "Article",
     "headline": page.title,
-    "description": page.metaDescription || page.excerpt,
+    "description": seoDescription,
     "image": page.imageUrl,
     "author": {
       "@type": "Organization",
-      "name": SEO_CONFIG.siteName
+      "name": "Optimantix Global"
     },
     "datePublished": page.createdAt,
     "dateModified": page.updatedAt,
@@ -69,13 +70,15 @@ export const PageTemplate: React.FC = () => {
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      <SEO
-        title={page.metaTitle || page.title}
-        description={page.metaDescription || page.excerpt}
-        image={page.imageUrl}
-        url={currentUrl}
-      />
       <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={currentUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={page.imageUrl} />
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(contentSchema)}</script>
       </Helmet>

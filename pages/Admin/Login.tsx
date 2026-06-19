@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { Lock, LogIn, ShieldCheck } from 'lucide-react';
-import { SEO } from '../../components/SEO';
+import { Helmet } from 'react-helmet-async';
 
 export const AdminLogin: React.FC = () => {
   const [password, setPassword] = useState('');
@@ -31,7 +31,10 @@ export const AdminLogin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-dark flex items-center justify-center p-4">
-      <SEO title="Admin Login" description="Secure login area for Optimantix Global staff." />
+      <Helmet>
+        <title>Admin Login | Optimantix Global</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-xl w-full max-w-sm border border-gray-200 dark:border-gray-700">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">

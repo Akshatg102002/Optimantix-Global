@@ -9,8 +9,9 @@ import {
   ShoppingCart, Code, FileText, Clock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SEO } from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
 import { createFAQPage } from '../utils/schemaGenerator';
+import { truncateDescription, SITE_URL } from '../data/seoData';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import type { SubService } from '../types';
 
@@ -161,13 +162,54 @@ export const SubServiceTemplate: React.FC = () => {
     faqSchema = createFAQPage(defaultFAQs);
   }
 
+  const canonical = `${SITE_URL}/services/${service.slug}/${subService.slug}`;
+  const seoTitle = subService.seo?.meta_title || `${title} Services | Optimantix Global`;
+  const seoDescription = truncateDescription(subService.seo?.meta_description || subtitle || subService.fullDescription || '', 155);
+
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: title,
+    description: seoDescription,
+    provider: {
+      '@type': 'Organization',
+      name: 'Optimantix Global',
+      url: SITE_URL,
+    },
+    url: canonical,
+    areaServed: 'IN',
+    parentService: {
+      '@type': 'Service',
+      name: service.title,
+      url: `${SITE_URL}/services/${service.slug}`,
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` },
+      { '@type': 'ListItem', position: 3, name: service.title, item: `${SITE_URL}/services/${service.slug}` },
+      { '@type': 'ListItem', position: 4, name: title, item: canonical },
+    ],
+  };
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen pt-16">
-      <SEO
-        title={subService.seo?.meta_title || `${title} - ${service.title}`}
-        description={subService.seo?.meta_description || subtitle || ''}
-        schemaMarkup={faqSchema}
-      />
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
 
       {/* ── BANNER IMAGE ───────────────────────────────────────────────────── */}
       <div

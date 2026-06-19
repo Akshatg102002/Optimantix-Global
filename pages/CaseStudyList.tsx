@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Calendar, ArrowRight, Filter } from 'lucide-react';
-import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,10 +18,6 @@ export const CaseStudyList: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-light dark:bg-dark">
-      <SEO 
-        title="Case Studies" 
-        description="Explore our successful projects and see how we've helped businesses achieve their digital goals."
-      />
       
       <ParallaxHero 
          title="Case Studies"

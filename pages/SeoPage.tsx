@@ -1,16 +1,10 @@
 import React from 'react';
-import { SEO } from '../components/SEO';
 import { SEO_PDP_DATA } from '../data/seoConstants';
 import { Link } from 'react-router-dom';
 
 export const SeoPage: React.FC = () => {
   return (
     <div className="bg-white dark:bg-[#0a0a0a] min-h-screen text-gray-900 dark:text-gray-100">
-      <SEO 
-        title="SEO Services | Optimantix Global"
-        description={SEO_PDP_DATA.hero.description}
-      />
-      
       {/* HERO */}
       <section className="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-[#0a0a0a]">
         <div className="container mx-auto px-4 max-w-4xl text-center">

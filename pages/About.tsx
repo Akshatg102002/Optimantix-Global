@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { CheckCircle, Sparkles, Linkedin, Target, Eye, Award, Users, TrendingUp, BarChart } from 'lucide-react';
-import { SEO } from '../components/SEO';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -109,12 +108,7 @@ export const About: React.FC = () => {
 
   return (
     <div ref={containerRef} className="bg-light dark:bg-dark min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      <SEO
-        title="About Us - Digital Marketing Agency | Optimantix Global"
-        description="Learn about Optimantix Global - a dynamic digital marketing agency in Noida with 10+ years of experience in SEO, SEM, SMM, and Marketplace Management."
-      />
-
-      {/* Parallax Hero Section */}
+{/* Parallax Hero Section */}
       <div ref={heroRef} className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 h-[120%] -top-[10%]">
           <img

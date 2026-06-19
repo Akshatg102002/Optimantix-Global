@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { ArrowUpRight, BarChart3, ShieldCheck, Zap, Users } from 'lucide-react';
-import { SEO } from '../components/SEO';
-import { createFAQPage } from '../utils/schemaGenerator';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -92,39 +90,9 @@ export const ServicesPage: React.FC = () => {
         }
     };
 
-    // Generate FAQ schema for services page
-    const servicesFAQs = [
-      {
-        question: "What services does Optimantix Global offer?",
-        answer: "We offer comprehensive digital growth solutions including SEO, Website Development, Marketplace Management, Google Ads, Meta Ads, Social Media Marketing, Graphic Design, Email Marketing, and Web Hosting.",
-      },
-      {
-        question: "Which industries do you serve?",
-        answer: "We work with businesses across e-commerce, SaaS, healthcare, education, real estate, fashion, and more. Our expertise spans startups to established enterprises.",
-      },
-      {
-        question: "How do you choose the right service for my business?",
-        answer: "We conduct a thorough analysis of your business goals, current state, and target audience. Our team recommends a customized mix of services that will deliver the best ROI.",
-      },
-      {
-        question: "What makes Optimantix different from other agencies?",
-        answer: "We focus on data-driven strategies, transparent reporting, and measurable results. Our team stays updated with latest trends and combines proven methodologies with creative innovation.",
-      },
-      {
-        question: "How do I get started with your services?",
-        answer: "Contact us for a free consultation. We'll discuss your goals, analyze your current performance, and create a customized strategy tailored to your needs.",
-      },
-    ];
-
     return (
         <div ref={containerRef} className="bg-gray-50 dark:bg-[#050505] min-h-screen selection:bg-primary selection:text-white">
-            <SEO
-                title="Solutions & Services | Optimantix Global"
-                description="Explore our end-to-end digital growth solutions including SEO, Website Development, Marketplace Management, and Branding. We outperform, not just deliver."
-                schemaMarkup={createFAQPage(servicesFAQs)}
-            />
-
-            <ParallaxHero
+<ParallaxHero
                 title="End-to-End Digital Solutions"
                 subtitle="We blend creative innovation with hard data to build scalable systems that drive explosive growth for your business."
                 imageUrl="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000"

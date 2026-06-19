@@ -1,23 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Search } from 'lucide-react';
-import { SEO } from '../components/SEO';
 import { FREE_TOOL_CATEGORIES, FREE_TOOLS } from '../data/freeTools';
-
-const BASE_URL = 'https://optimantix-marketplace-h94c.arcada.app';
 
 export const FreeToolsHub: React.FC = () => {
   const [filter, setFilter] = useState('All');
-  const collectionSchema = {
-    '@context': 'https://schema.org', '@type': 'CollectionPage',
-    name: 'Free AEO & AI Visibility Tools | Optimantix Global',
-    description: 'Free tools for AEO auditing, AI visibility checking, schema generation, robots.txt validation, and more.',
-    url: `${BASE_URL}/free-tools/`,
-    hasPart: FREE_TOOLS.map(tool => ({ '@type': 'WebApplication', name: tool.name, url: `/free-tools/${tool.slug}/`, applicationCategory: 'UtilityApplication', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }))
-  };
 
   return <div className="bg-light dark:bg-dark text-slate-900 dark:text-gray-100">
-    <SEO title="Free AEO & AI Visibility Tools" description="Free tools for AEO auditing, AI visibility checking, schema generation, robots.txt validation, and more." canonical={`${BASE_URL}/free-tools/`} schemaMarkup={collectionSchema} />
     <section className="pt-20 pb-16 bg-[#020617] text-white text-center">
       <div className="container mx-auto px-4 max-w-4xl">
         <span className="text-primary font-bold uppercase tracking-widest text-sm">Free Tools</span>
