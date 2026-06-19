@@ -49,6 +49,8 @@ const RouteSEO: React.FC = () => {
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
       <meta property="og:type" content="website" />
+      <meta property="og:image" content={entry?.image ?? 'https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png'} />
+      <meta name="twitter:image" content={entry?.image ?? 'https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png'} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />

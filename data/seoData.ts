@@ -21,8 +21,95 @@ const ORGANIZATION_SAME_AS = [
 export interface PageSEOEntry {
   title: string;
   description: string;
-  schema: Record<string, unknown>;
+  schema: Record<string, unknown> | Record<string, unknown>[];
+  image?: string;
 }
+
+const HOME_ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Optimantix Global',
+  description: 'Optimantix Global is a premier digital marketing, web development, and performance scaling agency. Transform your digital presence with expert SEO, Google Ads, Meta Ads, E-commerce, and Web Development services. Trusted by 100s of brands with 10+ years of proven results.',
+  url: SITE_URL,
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png',
+    width: 200,
+    height: 200,
+    name: 'Optimantix Global Logo',
+  },
+  image: 'https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png',
+  email: 'contact@optimantix.com',
+  telephone: '+91-9910343016',
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Service',
+      telephone: '+91-9910343016',
+      email: 'contact@optimantix.com',
+      areaServed: ['IN', 'Global'],
+      availableLanguage: ['en', 'hi'],
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'Sales',
+      telephone: '+91-9910343016',
+      email: 'sales@optimantix.com',
+      areaServed: ['IN'],
+      availableLanguage: ['en', 'hi'],
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'Support',
+      telephone: '+91-9910343016',
+      email: 'support@optimantix.com',
+      areaServed: ['IN'],
+      availableLanguage: ['en', 'hi'],
+    },
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Noida, Uttar Pradesh',
+    addressLocality: 'Noida',
+    addressRegion: 'Uttar Pradesh',
+    postalCode: '201301',
+    addressCountry: 'IN',
+  },
+  sameAs: [
+    'https://www.facebook.com/optimantix',
+    'https://www.instagram.com/optimantix',
+    'https://in.linkedin.com/company/optimantix',
+    'https://in.pinterest.com/OptimantiXglobal1',
+  ],
+  foundingDate: '2010-01-01',
+  areaServed: ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Dubai', 'Global'],
+  knowsAbout: [
+    'Search Engine Optimization',
+    'Google Ads Management',
+    'Meta Ads Management',
+    'E-commerce Management',
+    'Web Development',
+    'Web Design',
+    'Performance Scaling',
+    'Marketplace Management',
+  ],
+};
+
+const HOME_WEBSITE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Optimantix Global',
+  url: SITE_URL,
+  description: 'Digital marketing, web development & performance scaling agency',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
 
 const organizationSchema = (description: string): Record<string, unknown> => ({
   '@context': 'https://schema.org',
@@ -52,9 +139,7 @@ export const seoData: Record<string, PageSEOEntry> = {
   '/': {
     title: 'Home | Optimantix Global – Digital Marketing Agency',
     description: 'Optimantix Global is a Noida-based digital marketing agency delivering SEO, Google Ads, Meta Ads, and marketplace growth for over 10 years.',
-    schema: organizationSchema(
-      'Optimantix Global is a premier digital marketing, web development, and performance scaling agency based in Noida, India.'
-    ),
+    schema: [HOME_ORGANIZATION_SCHEMA, HOME_WEBSITE_SCHEMA],
   },
   '/about': {
     title: 'About Us | Optimantix Global – Digital Marketing Agency',
