@@ -469,7 +469,10 @@ export interface Page {
   metaTitle: string;
   metaDescription: string;
   focusKeyword?: string;
-  schemaType: 'Article' | 'WebPage';
+  schemaType: 'Article' | 'WebPage' | 'Service';
+  // Slug of an INITIAL_SERVICES entry this page is grouped under, or null/undefined
+  // for a standalone page. Drives the admin "Category" column and sitemap grouping.
+  parentService?: string | null;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;

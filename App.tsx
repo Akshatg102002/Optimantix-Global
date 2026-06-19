@@ -1,12 +1,13 @@
 
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { DataProvider } from './context/DataContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import RouteSEO from './components/RouteSEO';
+import { INITIAL_SERVICES } from './constants';
 
 // Lazy load pages to enable loading animation and code splitting
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
@@ -34,6 +35,23 @@ const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 
+// /services/:slug is shared by two kinds of pages: built-in services defined
+// in INITIAL_SERVICES (ServiceTemplate) and custom admin-authored pages
+// stored in Firestore (PageTemplate, formerly at /pages/:slug). Dispatch on
+// the slug to render the right one.
+const ServiceSlugRouter: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const isBuiltInService = INITIAL_SERVICES.some((service) => service.slug === slug);
+  return isBuiltInService ? <ServiceTemplate /> : <PageTemplate />;
+};
+
+// Old custom-page URLs used the /pages/:slug prefix; redirect them to the
+// new /services/:slug location so previously published/indexed links keep working.
+const LegacyPageRedirect: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/services/${slug}`} replace />;
+};
+
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -48,14 +66,14 @@ const App: React.FC = () => {
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/digital-marketing/seo" element={<SeoPage />} />
-              <Route path="/services/:slug" element={<ServiceTemplate />} />
+              <Route path="/services/:slug" element={<ServiceSlugRouter />} />
               <Route path="/services/:slug/:subSlug" element={<SubServiceTemplate />} />
               <Route path="/free-seo-audit" element={<SeoAudit />} />
               <Route path="/free-tools" element={<FreeToolsHub />} />
               <Route path="/free-tools/:slug" element={<ToolPage />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/pages/:slug" element={<PageTemplate />} />
+              <Route path="/pages/:slug" element={<LegacyPageRedirect />} />
               <Route path="/case-studies" element={<CaseStudyList />} />
               <Route path="/case-studies/:slug" element={<CaseStudyTemplate />} />
               <Route path="/case" element={<CaseStudies />} />

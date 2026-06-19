@@ -9,6 +9,7 @@ import { MediaFile } from '../../hooks/useMedia';
 import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, Plus, ArrowLeft, Tag, Image as ImageIcon, Save, PieChart, ExternalLink, XCircle, Upload, BookOpen, Globe } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 import { BlogPost, CaseStudy, Service, SubService, Page } from '../../types';
+import { INITIAL_SERVICES } from '../../constants';
 import { BlogCSVImport } from '../../components/BlogCSVImport';
 import { RichTextEditor } from '../../components/RichTextEditor';
 
@@ -63,7 +64,7 @@ export const AdminDashboard: React.FC = () => {
   const initialPageForm: Partial<Page> = {
     title: '', slug: '', excerpt: '', content: '', imageUrl: '', imageAltText: '',
     metaTitle: '', metaDescription: '', focusKeyword: '', isPublished: true,
-    schemaType: 'WebPage'
+    schemaType: 'WebPage', parentService: null
   };
   const [pageForm, setPageForm] = useState<Partial<Page>>(initialPageForm);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
@@ -800,6 +801,7 @@ export const AdminDashboard: React.FC = () => {
                                 <tr>
                                     <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Title</th>
                                     <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Slug</th>
+                                    <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Category</th>
                                     <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Status</th>
                                     <th className="p-4 text-left font-bold text-gray-700 dark:text-gray-300">Created</th>
                                     <th className="p-4 text-right font-bold text-gray-700 dark:text-gray-300">Actions</th>
@@ -808,17 +810,18 @@ export const AdminDashboard: React.FC = () => {
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 {pages.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-gray-500">No pages yet. Create one to get started.</td>
+                                        <td colSpan={6} className="p-8 text-center text-gray-500">No pages yet. Create one to get started.</td>
                                     </tr>
                                 )}
                                 {pages.map(page => (
                                     <tr key={page.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                                         <td className="p-4 font-medium text-gray-900 dark:text-white">{page.title}</td>
                                         <td className="p-4 text-gray-600 dark:text-gray-400 font-mono text-xs">/{page.slug}</td>
+                                        <td className="p-4 text-gray-600 dark:text-gray-400 text-xs">{page.parentService ? (INITIAL_SERVICES.find(s => s.slug === page.parentService)?.title || '—') : '—'}</td>
                                         <td className="p-4"><span className={`px-3 py-1 rounded-full text-xs font-bold ${page.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'}`}>{page.isPublished ? 'Published' : 'Draft'}</span></td>
                                         <td className="p-4 text-sm text-gray-600 dark:text-gray-400">{new Date(page.createdAt).toLocaleDateString()}</td>
                                         <td className="p-4 text-right flex items-center justify-end gap-2">
-                                            <a href={`/pages/${page.slug}`} target="_blank" rel="noopener noreferrer" title="View live page" className="text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 p-2 rounded-lg transition inline-flex"><ExternalLink size={18} /></a>
+                                            <a href={`/services/${page.slug}`} target="_blank" rel="noopener noreferrer" title="View live page" className="text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 p-2 rounded-lg transition inline-flex"><ExternalLink size={18} /></a>
                                             <button onClick={() => handleEditPage(page)} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition"><Save size={18} /></button>
                                             <button onClick={() => handleDeletePage(page.id)} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition"><XCircle size={18} /></button>
                                         </td>
@@ -856,7 +859,7 @@ export const AdminDashboard: React.FC = () => {
                                     value={pageForm.slug}
                                     onChange={e => setPageForm({...pageForm, slug: generateSlug(e.target.value)})}
                                 />
-                                <p className="text-xs text-gray-400 mt-1">Will be accessible at /pages/{pageForm.slug}</p>
+                                <p className="text-xs text-gray-400 mt-1">Will be accessible at /services/{pageForm.slug}</p>
                             </div>
 
                             <div>
@@ -961,11 +964,27 @@ export const AdminDashboard: React.FC = () => {
                                 <select
                                     className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                                     value={pageForm.schemaType || 'WebPage'}
-                                    onChange={e => setPageForm({...pageForm, schemaType: e.target.value as 'Article' | 'WebPage'})}
+                                    onChange={e => setPageForm({...pageForm, schemaType: e.target.value as 'Article' | 'WebPage' | 'Service'})}
                                 >
                                     <option value="WebPage">WebPage</option>
                                     <option value="Article">Article</option>
+                                    <option value="Service">Service</option>
                                 </select>
+                             </div>
+
+                             <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Parent Service</label>
+                                <select
+                                    className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                    value={pageForm.parentService || ''}
+                                    onChange={e => setPageForm({...pageForm, parentService: e.target.value || null})}
+                                >
+                                    <option value="">None (standalone page)</option>
+                                    {INITIAL_SERVICES.map(service => (
+                                        <option key={service.slug} value={service.slug}>{service.title}</option>
+                                    ))}
+                                </select>
+                                <p className="text-xs text-gray-400 mt-1">Groups this page under a service category in the Pages list and sitemap.</p>
                              </div>
 
                              <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">

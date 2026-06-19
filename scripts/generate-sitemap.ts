@@ -169,18 +169,6 @@ async function generateSitemap() {
     }
   }
 
-  // ── Pages module (published) ─────────────────────────────────────────────
-  for (const page of pages) {
-    if (!page.slug) continue;
-    if (page.isPublished === false) continue;
-    entries.push({
-      loc: `${BASE_URL}/pages/${page.slug}`,
-      lastmod: toIsoDate(page.updatedAt || page.createdAt),
-      changefreq: 'weekly',
-      priority: '0.7',
-    });
-  }
-
   // ── De-duplicate by loc ──────────────────────────────────────────────────
   const seen = new Set<string>();
   const unique = entries.filter((e) => {
@@ -189,16 +177,62 @@ async function generateSitemap() {
     return true;
   });
 
-  const urlsXml = unique
-    .map(
-      (e) => `  <url>
+  const renderUrlBlock = (e: SitemapEntry) => `  <url>
     <loc>${xmlEscape(e.loc)}</loc>
     <lastmod>${e.lastmod}</lastmod>
     <changefreq>${e.changefreq}</changefreq>
     <priority>${e.priority}</priority>
-  </url>`
-    )
-    .join('\n');
+  </url>`;
+
+  // ── Pages module (published) at /services/{slug}, grouped by parentService
+  // so related pages appear together under a category comment ────────────
+  interface SitemapPage {
+    slug?: string;
+    isPublished?: boolean;
+    parentService?: string | null;
+    updatedAt?: string;
+    createdAt?: string;
+  }
+  const publishedPages = (pages as SitemapPage[]).filter((p) => p.slug && p.isPublished !== false);
+  const pagesByCategory = new Map<string, SitemapPage[]>();
+  for (const page of publishedPages) {
+    const key = typeof page.parentService === 'string' && page.parentService ? page.parentService : '';
+    if (!pagesByCategory.has(key)) pagesByCategory.set(key, []);
+    pagesByCategory.get(key)!.push(page);
+  }
+
+  // Group order: INITIAL_SERVICES order first, then standalone pages last.
+  const groupOrder = [...INITIAL_SERVICES.map((s) => s.slug), ''];
+  for (const key of pagesByCategory.keys()) {
+    if (!groupOrder.includes(key)) groupOrder.push(key);
+  }
+
+  const pageBlocks: string[] = [];
+  let pageUrlCount = 0;
+  for (const key of groupOrder) {
+    const group = pagesByCategory.get(key);
+    if (!group || group.length === 0) continue;
+
+    const categoryLabel = key ? INITIAL_SERVICES.find((s) => s.slug === key)?.title || key : 'Uncategorized';
+    pageBlocks.push(`  <!-- Category: ${xmlEscape(categoryLabel)} -->`);
+
+    for (const page of group) {
+      const loc = `${BASE_URL}/services/${page.slug}`;
+      if (seen.has(loc)) continue;
+      seen.add(loc);
+      pageBlocks.push(
+        renderUrlBlock({
+          loc,
+          lastmod: toIsoDate(page.updatedAt || page.createdAt),
+          changefreq: 'weekly',
+          priority: '0.7',
+        })
+      );
+      pageUrlCount += 1;
+    }
+  }
+
+  const urlsXml = [...unique.map(renderUrlBlock), ...pageBlocks].join('\n');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -212,7 +246,7 @@ ${urlsXml}
   }
 
   fs.writeFileSync(path.join(publicPath, 'sitemap.xml'), sitemap);
-  console.log(`Sitemap generated (${unique.length} URLs, data source: ${source}) at public/sitemap.xml`);
+  console.log(`Sitemap generated (${unique.length + pageUrlCount} URLs, data source: ${source}) at public/sitemap.xml`);
 
   // Force-exit: the Firebase client keeps the event loop alive otherwise.
   process.exit(0);

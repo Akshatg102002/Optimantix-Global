@@ -5,9 +5,12 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ShareButtons } from '../components/ShareButtons';
 import { RichContent } from '../components/RichContent';
-import { Helmet } from 'react-helmet-async';
-import { SITE_URL, truncateDescription } from '../data/seoData';
+import { SITE_URL } from '../data/seoData';
 
+// SEO (title/meta/canonical/JSON-LD) for this route is owned by RouteSEO,
+// which resolves custom admin pages via the three-tier system (Firebase
+// override > this page's own metaTitle/schemaType > fallback). See
+// components/RouteSEO.tsx and utils/buildPageSchema.ts.
 export const PageTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { pages, pagesLoaded } = useData();
@@ -25,64 +28,10 @@ export const PageTemplate: React.FC = () => {
     return <Navigate to="/404" replace />;
   }
 
-  const currentUrl = `${SITE_URL}/pages/${page.slug}`;
-  const seoTitle = page.metaTitle || page.title;
-  const seoDescription = truncateDescription(page.metaDescription || page.excerpt, 155);
-
-  // JSON-LD for Breadcrumbs
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": `${SITE_URL}/`
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": page.title,
-        "item": currentUrl
-      }
-    ]
-  };
-
-  // JSON-LD for Article/WebPage
-  const contentSchema = {
-    "@context": "https://schema.org",
-    "@type": page.schemaType || "Article",
-    "headline": page.title,
-    "description": seoDescription,
-    "image": page.imageUrl,
-    "author": {
-      "@type": "Organization",
-      "name": "Optimantix Global"
-    },
-    "datePublished": page.createdAt,
-    "dateModified": page.updatedAt,
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": currentUrl
-    }
-  };
+  const currentUrl = `${SITE_URL}/services/${page.slug}`;
 
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      <Helmet>
-        <title>{seoTitle}</title>
-        <meta name="description" content={seoDescription} />
-        <link rel="canonical" href={currentUrl} />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:url" content={currentUrl} />
-        <meta property="og:type" content="article" />
-        <meta property="og:image" content={page.imageUrl} />
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(contentSchema)}</script>
-      </Helmet>
-
       <ParallaxHero
         title={page.title}
         imageUrl={page.imageUrl}
