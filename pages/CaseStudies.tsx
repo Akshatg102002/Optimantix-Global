@@ -1,5 +1,4 @@
 import React from 'react';
-import { SEO } from '../components/SEO';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
@@ -10,12 +9,7 @@ export const CaseStudies: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-dark min-h-screen">
-      <SEO 
-        title="Case Studies | Real Results & Success Stories" 
-        description="Explore our authentic case studies showcasing how we deliver ROI through Google Ads, Influencer Marketing, SEO, and more."
-      />
-
-      {/* Hero Section */}
+{/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-dark relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
           <MotionDiv

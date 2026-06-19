@@ -1,11 +1,12 @@
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { SEO } from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import { RichContent } from '../components/RichContent';
 import { ShareButtons } from '../components/ShareButtons';
+import { SITE_URL, truncateDescription } from '../data/seoData';
 
 export const CaseDetails: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -18,13 +19,22 @@ export const CaseDetails: React.FC = () => {
 
   const MotionDiv = motion.div as React.ElementType;
 
+  const canonical = `${SITE_URL}/case/${study.slug}`;
+  const seoTitle = study.metaTitle || `${study.title} | Optimantix Global`;
+  const seoDescription = truncateDescription(study.metaDescription || study.excerpt, 155);
+
   return (
     <div className="bg-gray-50 dark:bg-[#0a0a0a] min-h-screen pt-24 pb-16">
-      <SEO 
-        title={study.metaTitle || study.title} 
-        description={study.metaDescription || study.excerpt}
-      />
-      
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="article" />
+      </Helmet>
+
       {/* Hero Header */}
       <div className="container mx-auto px-4 pt-8 pb-12 max-w-4xl text-center">
         <MotionDiv
@@ -87,9 +97,7 @@ export const CaseDetails: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
-                <ReactMarkdown>{study.content}</ReactMarkdown>
-            </div>
+            <RichContent content={study.content} variant="case-study" imageAlt={study.title} />
             
             <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800">
                 <ShareButtons title={study.title} url={window.location.href} />

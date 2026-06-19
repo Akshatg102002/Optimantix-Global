@@ -1,11 +1,9 @@
 import React from 'react';
 import { SeoAuditForm } from '../components/SeoAuditForm';
-import { SEO } from '../components/SEO';
 
 export const SeoAudit: React.FC = () => {
     return (
         <div className="bg-white min-h-screen font-sans text-gray-900 text-base leading-relaxed break-words">
-            <SEO title="Free SEO Audit | Optimantix Global" description="Get Your Free SEO Audit — Know Exactly Why You're Not Ranking" />
             <style dangerouslySetInnerHTML={{__html: `
             h1,h2,h3,h4,h5 { font-family: 'Syne', sans-serif; line-height: 1.2; }
             .hero-bg { background: #1a1a2e; }

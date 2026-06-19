@@ -1,12 +1,13 @@
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { SEO } from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
 import { ParallaxHero } from '../components/ParallaxHero';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import { RichContent } from '../components/RichContent';
 import { ShareButtons } from '../components/ShareButtons';
+import { SITE_URL, truncateDescription } from '../data/seoData';
 
 export const CaseStudyTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -23,17 +24,27 @@ export const CaseStudyTemplate: React.FC = () => {
 
   const MotionDiv = motion.div as React.ElementType;
 
+  const canonical = `${SITE_URL}/case-studies/${study.slug}`;
+  const seoTitle = study.metaTitle || `${study.title} | Optimantix Global`;
+  const seoDescription = truncateDescription(study.metaDescription || study.excerpt, 155);
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen">
-      <SEO 
-        title={study.metaTitle || study.title} 
-        description={study.metaDescription || study.excerpt}
-      />
-      
-      <ParallaxHero 
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="article" />
+      </Helmet>
+
+      <ParallaxHero
         title={study.title}
         subtitle={study.excerpt}
         imageUrl={study.imageUrl}
+        imageAltText={study.imageAltText}
       />
 
       <div className="container mx-auto px-4 md:px-6 py-16">
@@ -72,10 +83,8 @@ export const CaseStudyTemplate: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="prose dark:prose-invert max-w-none">
-                <ReactMarkdown>{study.content}</ReactMarkdown>
-                <ShareButtons title={study.title} url={window.location.href} />
-            </div>
+            <RichContent content={study.content} variant="case-study" imageAlt={study.title} />
+            <ShareButtons title={study.title} url={window.location.href} />
 
             {/* Tags */}
             {study.tags && study.tags.length > 0 && (

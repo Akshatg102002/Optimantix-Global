@@ -1,7 +1,6 @@
 import React from 'react';
 import { Check, Zap, Users, Globe, Layout, Database, HelpCircle, ArrowRight, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { SEO } from '../components/SEO';
 
 export const GoogleWorkspace: React.FC = () => {
   const benefits = [
@@ -150,12 +149,7 @@ export const GoogleWorkspace: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-dark min-h-screen">
-      <SEO
-        title="Google Workspace Reseller India | INR Billing & GST Invoices"
-        description="Optimantix is an authorized Google Workspace reseller in India. Get INR billing, GST invoices, free migration, and local support at best prices."
-      />
-
-      {/* Section 1: Hero */}
+{/* Section 1: Hero */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-dark">
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">

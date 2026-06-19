@@ -1,9 +1,10 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Service, BlogPost, Lead, Project, BlogCategory, CaseStudy, PageSEO } from '../types';
+import { Service, BlogPost, Lead, Project, BlogCategory, CaseStudy, PageSEO, Page } from '../types';
 import { INITIAL_SERVICES, INITIAL_PROJECTS } from '../constants';
 import { db, auth } from '../lib/firebase';
 import firebase from 'firebase/compat/app';
+import { sanitizeHTML } from '../utils/sanitize';
 
 interface DataContextType {
   services: Service[];
@@ -13,9 +14,16 @@ interface DataContextType {
   projects: Project[];
   caseStudies: CaseStudy[];
   seoPages: PageSEO[];
+  pages: Page[];
   fetchSeoPages: () => Promise<void>;
   updateSeoPage: (page: PageSEO) => Promise<void>;
   deleteSeoPage: (id: string) => Promise<void>;
+  // Page Actions
+  pagesLoaded: boolean;
+  fetchPages: () => Promise<void>;
+  addPage: (page: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updatePage: (page: Page) => Promise<void>;
+  deletePage: (id: string) => Promise<void>;
   isDark: boolean;
   toggleTheme: () => void;
   isAuthenticated: boolean;
@@ -44,7 +52,7 @@ interface DataContextType {
   // Service Actions
   fetchServices: () => Promise<void>;
   updateService: (service: Service) => Promise<void>;
-  
+
   updateLeadStatus: (id: string, status: Lead['status']) => void;
   // UI State
   globalLoading: boolean;
@@ -70,6 +78,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [seoPages, setSeoPages] = useState<PageSEO[]>([]);
+  const [pages, setPages] = useState<Page[]>([]);
+  const [pagesLoaded, setPagesLoaded] = useState(false);
   const [globalLoading, setGlobalLoading] = useState(false);
   
   // Helper to parse various date formats
@@ -237,15 +247,24 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const getSeoDocId = (path: string) => encodeURIComponent(path);
 
+  const decodeSeoDocId = (docId: string) => {
+    try {
+      return decodeURIComponent(docId);
+    } catch {
+      return docId;
+    }
+  };
+
   const fetchSeoPages = async () => {
     try {
       const querySnapshot = await db.collection("seo_pages").get();
       if (!querySnapshot.empty) {
         const fetchedSeoPages: PageSEO[] = querySnapshot.docs.map(doc => {
           const data = doc.data();
+          const decodedDocId = decodeSeoDocId(doc.id);
           return {
-            id: data.id || data.path || doc.id,
-            path: data.path || '',
+            id: data.id || data.path || decodedDocId,
+            path: data.path || decodedDocId,
             metaTitle: data.metaTitle || '',
             metaDescription: data.metaDescription || '',
             keywords: data.keywords || '',
@@ -296,12 +315,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setCurrentUser(user);
       if (user) {
         // If firebase user exists, we are "connected" to DB
-        fetchBlogs(); 
+        fetchBlogs();
         fetchCategories();
         fetchServices();
         fetchProjects();
         fetchCaseStudies();
         fetchSeoPages();
+        fetchPages();
       }
     });
     
@@ -324,6 +344,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       fetchProjects();
       fetchCaseStudies();
       fetchSeoPages();
+      fetchPages();
     }, 500); // Small delay to allow auth to initialize
 
     return () => {
@@ -581,6 +602,80 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  // --- PAGE ACTIONS ---
+  const fetchPages = async () => {
+    try {
+      const querySnapshot = await db.collection("pages").get();
+      if (!querySnapshot.empty) {
+        const fetchedPages: Page[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        } as Page));
+        setPages(fetchedPages);
+      }
+    } catch (error) {
+      console.warn("Fetching pages failed:", error);
+    } finally {
+      setPagesLoaded(true);
+    }
+  };
+
+  const addPage = async (pageData: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const tempId = 'temp-page-' + Date.now();
+    const now = new Date().toISOString();
+    const sanitizedContent = sanitizeHTML(pageData.content);
+    const newPage: Page = {
+      ...pageData,
+      id: tempId,
+      content: sanitizedContent,
+      createdAt: now,
+      updatedAt: now,
+    };
+    setPages(prev => [newPage, ...prev]);
+
+    try {
+      const docRef = await db.collection("pages").add({
+        ...pageData,
+        content: sanitizedContent,
+        createdAt: now,
+        updatedAt: now,
+      });
+      setPages(prev => prev.map(p => p.id === tempId ? { ...newPage, id: docRef.id } : p));
+    } catch (e) {
+      console.error("Error adding page: ", e);
+      alert("Note: Database write failed. Page saved locally for this session.");
+    }
+  };
+
+  const updatePage = async (page: Page) => {
+    const sanitizedContent = sanitizeHTML(page.content);
+    const updatedPage = {
+      ...page,
+      content: sanitizedContent,
+      updatedAt: new Date().toISOString(),
+    };
+    setPages(prev => prev.map(p => p.id === page.id ? updatedPage : p));
+    try {
+      if (!page.id.startsWith('temp-')) {
+        await db.collection("pages").doc(page.id).update(updatedPage);
+      }
+    } catch (e) {
+      console.error("Error updating page: ", e);
+      alert("Note: Database update failed. Page updated locally.");
+    }
+  };
+
+  const deletePage = async (id: string) => {
+    setPages(prev => prev.filter(p => p.id !== id));
+    try {
+      if (!id.startsWith('temp-')) {
+        await db.collection("pages").doc(id).delete();
+      }
+    } catch (e) {
+      console.error("Error deleting page: ", e);
+    }
+  };
+
   const deleteCaseStudy = async (id: string) => {
     setCaseStudies(prev => prev.filter(s => s.id !== id));
     try {
@@ -597,10 +692,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <DataContext.Provider value={{ 
-      services, blogs, blogCategories, leads, projects, caseStudies, seoPages,
+    <DataContext.Provider value={{
+      services, blogs, blogCategories, leads, projects, caseStudies, seoPages, pages, pagesLoaded,
       isDark, toggleTheme,
-      isAuthenticated, 
+      isAuthenticated,
       currentUser,
       login, logout,
       addLead, updateService, addBlogPost, deleteBlogPost, updateLeadStatus, updateBlogPost,
@@ -608,6 +703,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       addCaseStudy, updateCaseStudy, deleteCaseStudy,
       fetchProjects, fetchCaseStudies, fetchServices,
       fetchSeoPages, updateSeoPage, deleteSeoPage,
+      fetchPages, addPage, updatePage, deletePage,
       globalLoading, setGlobalLoading
     }}>
       {children}

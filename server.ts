@@ -1,33 +1,29 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
+import fs from 'fs';
 import path from 'path';
-import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_ORIGIN = 'https://optimantix.com';
+const SITE_URL = 'https://optimantix.com';
 
-const normalizePath = (requestPath: string) => {
-  const normalized = requestPath.split(/[?#]/)[0] || '/';
-  return normalized.length > 1 ? normalized.replace(/\/+$/, '') : '/';
+const normalizePath = (pathname: string): string => {
+  const cleanPath = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+  return cleanPath || '/';
 };
 
-const canonicalFromRequestPath = (requestPath: string) => {
-  const normalizedPath = normalizePath(requestPath);
-  return normalizedPath === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${normalizedPath}`;
+const buildCanonicalUrl = (pathname: string): string => {
+  const cleanPath = normalizePath(pathname);
+  return `${SITE_URL}${cleanPath === '/' ? '/' : cleanPath}`;
 };
 
-const escapeHtmlAttribute = (value: string) =>
-  value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const injectCanonical = (html: string, pathname: string): string => {
+  const canonicalTag = `<link rel="canonical" href="${buildCanonicalUrl(pathname)}" />`;
 
-const injectFallbackCanonical = (html: string, requestPath: string) => {
-  const canonicalUrl = escapeHtmlAttribute(canonicalFromRequestPath(requestPath));
-  const canonicalTag = `<link id="canonical-link" rel="canonical" href="${canonicalUrl}" data-managed-by="route-seo" />`;
-
-  if (html.includes('<!--SEO_CANONICAL-->')) {
-    return html.replace('<!--SEO_CANONICAL-->', canonicalTag);
+  if (html.includes('rel="canonical"')) {
+    return html.replace(/<link\s+rel=["']canonical["'][^>]*>/i, canonicalTag);
   }
 
   return html.replace('</head>', `  ${canonicalTag}\n</head>`);
@@ -60,20 +56,14 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // Serve static files in production. HTML requests get a route-aware fallback
-    // canonical tag immediately; the React SEO layer replaces it with any
-    // Admin-configured canonical URL after hydration.
+    // Serve static files in production
     const distPath = path.join(__dirname, 'dist');
-    const indexHtmlPath = path.join(distPath, 'index.html');
+    const indexPath = path.join(distPath, 'index.html');
 
     app.use(express.static(distPath));
-    app.use(async (req, res, next) => {
-      try {
-        const html = await readFile(indexHtmlPath, 'utf8');
-        res.type('html').send(injectFallbackCanonical(html, req.path));
-      } catch (error) {
-        next(error);
-      }
+    app.use((req, res) => {
+      const html = fs.readFileSync(indexPath, 'utf-8');
+      res.type('html').send(injectCanonical(html, req.path));
     });
   }
 

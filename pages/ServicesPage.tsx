@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Icon } from '../components/Icon';
 import { ArrowUpRight, BarChart3, ShieldCheck, Zap, Users } from 'lucide-react';
-import { SEO } from '../components/SEO';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -93,12 +92,7 @@ export const ServicesPage: React.FC = () => {
 
     return (
         <div ref={containerRef} className="bg-gray-50 dark:bg-[#050505] min-h-screen selection:bg-primary selection:text-white">
-            <SEO
-                title="Solutions & Services | Optimantix Global"
-                description="Explore our end-to-end digital growth solutions including SEO, Website Development, Marketplace Management, and Branding. We outperform, not just deliver."
-            />
-
-            <ParallaxHero
+<ParallaxHero
                 title="End-to-End Digital Solutions"
                 subtitle="We blend creative innovation with hard data to build scalable systems that drive explosive growth for your business."
                 imageUrl="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000"

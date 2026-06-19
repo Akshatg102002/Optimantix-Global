@@ -66,6 +66,10 @@ export const INITIAL_SERVICES: Service[] = [
             "google ads service india"
           ]
         },
+         "banners": {
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Pay_Per_Click_Banner_itlgjq.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Pay_Per_Click_Banner_itlgjq.webp"
+        },
         "hero_section": {
           "badge": "Performance Marketing · India's ROI Specialists",
           "headline": "Your Ads. Your Rules. Our Results.",
@@ -439,6 +443,10 @@ export const INITIAL_SERVICES: Service[] = [
             "b2b social media marketing",
             "social media marketing for startups"
           ]
+        },
+         "banners": {
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112698/Social_Media_marketing_banner_yyyibz.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112698/Social_Media_marketing_banner_yyyibz.webp"
         },
         "hero_section": {
           "badge": "Social Media Marketing",
@@ -1635,6 +1643,10 @@ export const INITIAL_SERVICES: Service[] = [
           "Account Health Monitoring",
           "Weekly Performance Reporting"
         ],
+        "banners": {
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112693/Blinkit_Zepto_banner_m2bsdz.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112693/Blinkit_Zepto_banner_m2bsdz.webp"
+        },
         "page_title": "Blinkit & Zepto Account Management",
         "seo": {
           "meta_title": "Blinkit & Zepto Account Management | Quick Commerce Brand Management | Optimantix",
@@ -1986,6 +1998,10 @@ export const INITIAL_SERVICES: Service[] = [
             "meesho seller management"
           ]
         },
+         "banners": {
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Meesho_Banner_mhydrh.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Meesho_Banner_mhydrh.webp"
+        },
         "hero_section": {
           "badge": "Meesho Account Management Services",
           "headline": "Meesho has 500 million shoppers. Most sellers barely reach a fraction of them.",
@@ -2273,6 +2289,10 @@ export const INITIAL_SERVICES: Service[] = [
             "myntra fashion brand management",
             "myntra management services"
           ]
+        },
+         "banners": {
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Myntra_Banner_zqqz5t.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Myntra_Banner_zqqz5t.webp"
         },
         "hero_section": {
           "badge": "Myntra Seller Account Management",
@@ -2642,8 +2662,8 @@ export const INITIAL_SERVICES: Service[] = [
           ]
         },
         "banners": {
-          "desktop": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=2000",
-          "mobile": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=800"
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112695/Ecommerce_Development_Banner_wjk6cg.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112695/Ecommerce_Development_Banner_wjk6cg.webp"
         },
         "hero_section": {
           "badge": "Ecommerce Development Experts",
@@ -2989,8 +3009,8 @@ export const INITIAL_SERVICES: Service[] = [
           ]
         },
         "banners": {
-          "desktop": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=2000",
-          "mobile": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=800"
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112698/WordPress_Development_Banner_arb9cc.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112698/WordPress_Development_Banner_arb9cc.webp"
         },
         "hero_section": {
           "badge": "Trusted by 200+ Growing Businesses",
@@ -4798,8 +4818,8 @@ export const INITIAL_SERVICES: Service[] = [
         ],
         "page_title": "Cloud Solutions – Optimantix Global",
         "banners": {
-          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1779557800/Clouds_q1molz.png",
-          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1779557800/Clouds_q1molz.png"
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112695/Cloud_Solutions_Banner_vnxewu.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112695/Cloud_Solutions_Banner_vnxewu.webp"
         },
         "seo": {
           "meta_title": "Cloud Solutions | Managed Cloud Hosting & VPS | Optimantix Global",
@@ -5199,6 +5219,10 @@ export const INITIAL_SERVICES: Service[] = [
             "email marketing lead generation",
             "personalized email marketing"
           ]
+        },
+         "banners": {
+          "desktop": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Email_Marketing_Banner_heosyt.webp",
+          "mobile": "https://res.cloudinary.com/dusvykklu/image/upload/v1781112697/Email_Marketing_Banner_heosyt.webp"
         },
         "hero_section": {
           "badge": "India's #1 Email Growth Partner",

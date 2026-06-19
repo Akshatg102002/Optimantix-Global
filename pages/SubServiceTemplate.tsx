@@ -9,7 +9,10 @@ import {
   ShoppingCart, Code, FileText, Clock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SEO } from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '../data/seoData';
+import { buildPageSeo, findSeoOverride } from '../utils/buildPageSeo';
+import { buildPageSchema } from '../utils/buildPageSchema';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import type { SubService } from '../types';
 
@@ -94,7 +97,7 @@ const SectionHeader: React.FC<{
 // ─── Main component ────────────────────────────────────────────────────────────
 export const SubServiceTemplate: React.FC = () => {
   const { slug, subSlug } = useParams<{ slug: string; subSlug: string }>();
-  const { services } = useData();
+  const { services, seoPages } = useData();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const service = services.find(s => s.slug === slug);
@@ -129,12 +132,29 @@ export const SubServiceTemplate: React.FC = () => {
       statCount === 3 ? 'sm:grid-cols-3' :
         'sm:grid-cols-4';
 
+  const path = `/services/${service.slug}/${subService.slug}`;
+  const canonical = `${SITE_URL}${path}`;
+  const override = findSeoOverride(seoPages, path);
+  const fallback = buildPageSeo(path);
+  const seoTitle = override?.metaTitle || fallback.title;
+  const seoDescription = override?.metaDescription || fallback.description;
+  const schema = buildPageSchema(path, seoTitle, seoDescription);
+  const schemas = Array.isArray(schema) ? schema : [schema];
+
   return (
     <div className="bg-light dark:bg-dark min-h-screen pt-16">
-      <SEO
-        title={subService.seo?.meta_title || `${title} - ${service.title}`}
-        description={subService.seo?.meta_description || subtitle || ''}
-      />
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="website" />
+        {schemas.map((entry, idx) => (
+          <script key={idx} type="application/ld+json">{JSON.stringify(entry)}</script>
+        ))}
+      </Helmet>
 
       {/* ── BANNER IMAGE ───────────────────────────────────────────────────── */}
       <div

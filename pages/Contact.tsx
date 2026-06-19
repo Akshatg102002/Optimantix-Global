@@ -1,17 +1,11 @@
 import React from 'react';
-import { SEO } from '../components/SEO';
 import { MapPin, Phone, MessageSquare, Clock, Globe2, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const Contact = () => {
   return (
     <div className="bg-white dark:bg-dark min-h-screen">
-      <SEO
-        title="Contact Us"
-        description="Get in touch with Optimantix Global. We're here to help you with your next project. Explore our global offices."
-      />
-
-      {/* Hero Section */}
+{/* Hero Section */}
       <section className="pt-12 pb-12 md:pt-32 md:pb-2 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-dark relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
           <motion.h1

@@ -1,96 +1,72 @@
-import React, { useEffect, useMemo } from 'react';
+// Global SEO injector for statically routed pages.
+// Dynamic detail routes manage their own <Helmet> inline and are excluded below.
+//
+// Three-tier resolution:
+//   Tier 1 — Firebase admin overrides (seoPages, managed via the admin SEO panel)
+//   Tier 2 — constants.ts service/sub-service fields (via buildPageSeo)
+//   Tier 3 — data/seoData.ts static fallbacks (via buildPageSeo)
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { findRouteSeoConfig, resolveCanonicalUrl } from '../utils/seo';
+import { seoData, SITE_URL } from '../data/seoData';
+import { buildPageSeo, findSeoOverride, normalizePath } from '../utils/buildPageSeo';
+import { buildPageSchema } from '../utils/buildPageSchema';
 
-const DEFAULT_TITLE = 'Optimantix Global: Digital Marketing Agency in Noida';
-const DEFAULT_DESCRIPTION = 'Optimantix Global is a premier digital marketing, web development, and performance scaling agency. Transform your digital presence today.';
-const DEFAULT_IMAGE = 'https://optimantix.com/default-og-image.jpg';
-const TITLE_SUFFIX = ' | Optimantix Global';
+// Prefixes for routes that render their own inline SEO via Helmet.
+const SELF_MANAGED_PREFIXES = [
+  '/services/', // /services/:slug and /services/:slug/:subSlug
+  '/blog/',
+  '/free-tools/',
+  '/case/',
+  '/pages/',
+  '/case-studies/',
+];
 
-const formatTitle = (title: string): string => {
-  const trimmedTitle = title.trim();
+const DEFAULT_IMAGE = 'https://res.cloudinary.com/dusvykklu/image/upload/v1779950090/opti_cvkbla.png';
 
-  if (!trimmedTitle) return DEFAULT_TITLE;
-  if (trimmedTitle.includes('Optimantix Global')) return trimmedTitle;
-
-  const maxLength = 60;
-  let processedTitle = trimmedTitle;
-
-  if (processedTitle.length + TITLE_SUFFIX.length > maxLength) {
-    const availableLength = maxLength - TITLE_SUFFIX.length - 3;
-    if (availableLength > 0) {
-      processedTitle = `${processedTitle.substring(0, availableLength).trim()}...`;
-    }
-  }
-
-  return `${processedTitle}${TITLE_SUFFIX}`;
-};
-
-const truncateDescription = (description: string): string => {
-  const trimmedDescription = description.trim();
-  return trimmedDescription.length > 155 ? `${trimmedDescription.substring(0, 152)}...` : trimmedDescription;
-};
-
-export const RouteSEO: React.FC = () => {
-  const { seoPages } = useData();
+const RouteSEO: React.FC = () => {
   const location = useLocation();
+  const { seoPages } = useData();
+  const path = normalizePath(location.pathname);
 
-  const resolvedSeo = useMemo(() => {
-    const seoOverride = findRouteSeoConfig(seoPages, location.pathname);
-    const canonicalUrl = resolveCanonicalUrl(seoPages, location.pathname);
-    const title = seoOverride?.metaTitle?.trim() || DEFAULT_TITLE;
-    const description = seoOverride?.metaDescription?.trim() || DEFAULT_DESCRIPTION;
-    const finalDescription = truncateDescription(description);
-    const ogTitle = seoOverride?.ogTitle?.trim() || seoOverride?.metaTitle?.trim() || title;
-    const ogDescription = truncateDescription(seoOverride?.ogDescription?.trim() || description);
-    const ogImage = seoOverride?.ogImage?.trim() || DEFAULT_IMAGE;
+  // Explicit static entries always win, even if they share a prefix with a
+  // self-managed dynamic route (e.g. /services/digital-marketing/seo vs /services/:slug).
+  const isSelfManaged = !seoData[path] && SELF_MANAGED_PREFIXES.some((prefix) => path.startsWith(prefix));
+  if (isSelfManaged) return null;
 
-    return {
-      canonicalUrl,
-      title: formatTitle(title),
-      description: finalDescription,
-      keywords: seoOverride?.keywords?.trim() || '',
-      ogTitle,
-      ogDescription,
-      ogImage,
-    };
-  }, [location.pathname, seoPages]);
+  const override = findSeoOverride(seoPages, path);
+  const { title: fallbackTitle, description: fallbackDescription } = buildPageSeo(path);
 
-  useEffect(() => {
-    const canonicalLinks = Array.from(document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]'));
-    const managedCanonical = canonicalLinks.find(link => link.dataset.managedBy === 'route-seo') || canonicalLinks[0] || document.createElement('link');
-
-    canonicalLinks.forEach(link => {
-      if (link !== managedCanonical) {
-        link.remove();
-      }
-    });
-
-    managedCanonical.rel = 'canonical';
-    managedCanonical.href = resolvedSeo.canonicalUrl;
-    managedCanonical.id = 'canonical-link';
-    managedCanonical.dataset.managedBy = 'route-seo';
-
-    if (!managedCanonical.parentElement) {
-      document.head.appendChild(managedCanonical);
-    }
-  }, [resolvedSeo.canonicalUrl]);
+  const title = override?.metaTitle || fallbackTitle;
+  const description = override?.metaDescription || fallbackDescription;
+  const canonical = override?.canonicalUrl || (path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`);
+  const ogTitle = override?.ogTitle || title;
+  const ogDescription = override?.ogDescription || description;
+  const ogImage = override?.ogImage || DEFAULT_IMAGE;
+  const schema = buildPageSchema(path, title, description);
+  const schemas = Array.isArray(schema) ? schema : [schema];
 
   return (
     <Helmet>
-      <title>{resolvedSeo.title}</title>
-      <meta name="description" content={resolvedSeo.description} />
-      {resolvedSeo.keywords && <meta name="keywords" content={resolvedSeo.keywords} />}
-      <meta property="og:url" content={resolvedSeo.canonicalUrl} />
-      <meta property="og:title" content={resolvedSeo.ogTitle} />
-      <meta property="og:description" content={resolvedSeo.ogDescription} />
-      <meta property="og:image" content={resolvedSeo.ogImage} />
-      <meta name="twitter:url" content={resolvedSeo.canonicalUrl} />
-      <meta name="twitter:title" content={resolvedSeo.ogTitle} />
-      <meta name="twitter:description" content={resolvedSeo.ogDescription} />
-      <meta name="twitter:image" content={resolvedSeo.ogImage} />
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      {override?.keywords && <meta name="keywords" content={override.keywords} />}
+      <link rel="canonical" href={canonical} />
+      <meta property="og:title" content={ogTitle} />
+      <meta property="og:description" content={ogDescription} />
+      <meta property="og:url" content={canonical} />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content={ogImage} />
+      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={ogTitle} />
+      <meta name="twitter:description" content={ogDescription} />
+      {schemas.map((entry, idx) => (
+        <script key={idx} type="application/ld+json">{JSON.stringify(entry)}</script>
+      ))}
     </Helmet>
   );
 };
+
+export default RouteSEO;

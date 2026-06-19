@@ -1,69 +1,210 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 import { INITIAL_SERVICES, INITIAL_BLOGS } from '../constants';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function generateSitemap() {
-  const baseUrl = 'https://optimantix.com';
-  let urls = `
-    <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-    <url><loc>${baseUrl}/services</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-    <url><loc>${baseUrl}/services/digital-marketing/seo</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-    <url><loc>${baseUrl}/free-seo-audit</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-    <url><loc>${baseUrl}/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-    <url><loc>${baseUrl}/case-studies</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-    <url><loc>${baseUrl}/google-workspace</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>${baseUrl}/hosting</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>${baseUrl}/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  `;
+const BASE_URL = 'https://optimantix.com';
 
-  // Add Services
+// Public Firebase client config (same as the web app).
+const firebaseConfig = {
+  apiKey: 'AIzaSyAAkkYGflaBbPyR6teV9fXEsf-JuoUibYE',
+  authDomain: 'optimantix-bff51.firebaseapp.com',
+  projectId: 'optimantix-bff51',
+  storageBucket: 'optimantix-bff51.firebasestorage.app',
+  messagingSenderId: '48103744786',
+  appId: '1:48103744786:web:c0b7e410a2d3f1fb1e3fcb',
+  measurementId: 'G-SPQNCSY9V9',
+};
+
+interface SitemapEntry {
+  loc: string;
+  lastmod?: string;
+  changefreq: 'weekly' | 'monthly' | 'yearly';
+  priority: string;
+}
+
+const toIsoDate = (value: unknown): string => {
+  if (!value) return new Date().toISOString().split('T')[0];
+  const d = new Date(value as string);
+  if (isNaN(d.getTime())) return new Date().toISOString().split('T')[0];
+  return d.toISOString().split('T')[0];
+};
+
+const xmlEscape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * Fetch published documents from Firestore at build time so newly published
+ * blogs, case studies and pages are automatically included on every build.
+ * Falls back gracefully to bundled static data if the network/DB is
+ * unavailable (e.g. offline CI), so the build never fails.
+ */
+async function fetchFirestoreContent() {
+  const result: {
+    blogs: any[];
+    caseStudies: any[];
+    pages: any[];
+    source: 'firestore' | 'static-fallback';
+  } = { blogs: [], caseStudies: [], pages: [], source: 'firestore' };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // The web app reads these collections via anonymous auth; mirror that here.
+    try {
+      await signInAnonymously(getAuth(app));
+    } catch {
+      // Non-fatal — proceed in case the collections allow public reads.
+    }
+
+    const withTimeout = <T>(p: Promise<T>, ms = 20000): Promise<T> =>
+      Promise.race([
+        p,
+        new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), ms)),
+      ]);
+
+    const [blogsSnap, csSnap, pagesSnap] = await withTimeout(
+      Promise.all([
+        getDocs(collection(db, 'blogs')),
+        getDocs(collection(db, 'case_studies')),
+        getDocs(collection(db, 'pages')),
+      ])
+    );
+
+    result.blogs = blogsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    result.caseStudies = csSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    result.pages = pagesSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  } catch (err) {
+    console.warn('Sitemap: Firestore fetch failed, using static fallback.', (err as Error)?.message);
+    result.source = 'static-fallback';
+  }
+
+  // Always merge static bundled data as a baseline so nothing is ever missed.
+  if (result.blogs.length === 0) result.blogs = INITIAL_BLOGS as any[];
+  if (result.caseStudies.length === 0) result.caseStudies = AUTHENTIC_CASE_STUDIES as any[];
+
+  return result;
+}
+
+async function generateSitemap() {
+  const today = new Date().toISOString().split('T')[0];
+  const entries: SitemapEntry[] = [];
+
+  // ── Static / core routes ─────────────────────────────────────────────────
+  entries.push({ loc: `${BASE_URL}/`, lastmod: today, changefreq: 'weekly', priority: '1.0' });
+  entries.push({ loc: `${BASE_URL}/services`, lastmod: today, changefreq: 'monthly', priority: '0.8' });
+  entries.push({ loc: `${BASE_URL}/services/digital-marketing/seo`, lastmod: today, changefreq: 'monthly', priority: '0.8' });
+  entries.push({ loc: `${BASE_URL}/blog`, lastmod: today, changefreq: 'weekly', priority: '0.7' });
+  entries.push({ loc: `${BASE_URL}/case-studies`, lastmod: today, changefreq: 'weekly', priority: '0.7' });
+  entries.push({ loc: `${BASE_URL}/about`, lastmod: today, changefreq: 'monthly', priority: '0.5' });
+  entries.push({ loc: `${BASE_URL}/contact`, lastmod: today, changefreq: 'monthly', priority: '0.5' });
+  entries.push({ loc: `${BASE_URL}/free-seo-audit`, lastmod: today, changefreq: 'monthly', priority: '0.5' });
+  entries.push({ loc: `${BASE_URL}/google-workspace`, lastmod: today, changefreq: 'monthly', priority: '0.5' });
+  entries.push({ loc: `${BASE_URL}/hosting`, lastmod: today, changefreq: 'monthly', priority: '0.5' });
+
+  // ── Service pages (+ sub-services) ───────────────────────────────────────
   for (const service of INITIAL_SERVICES) {
     if (!service.slug) continue;
-    urls += `
-      <url>
-        <loc>${baseUrl}/services/${service.slug}</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-      </url>
-    `;
-    
-    // Add Sub-services if any exist in the process steps or feature list logic
-    // We can skip deep sub-services if not easily mapable here
+    entries.push({
+      loc: `${BASE_URL}/services/${service.slug}`,
+      lastmod: today,
+      changefreq: 'monthly',
+      priority: '0.8',
+    });
+    if (Array.isArray(service.subServices)) {
+      for (const sub of service.subServices) {
+        if (!sub.slug) continue;
+        entries.push({
+          loc: `${BASE_URL}/services/${service.slug}/${sub.slug}`,
+          lastmod: today,
+          changefreq: 'monthly',
+          priority: '0.7',
+        });
+      }
+    }
   }
 
-  // Add Blogs
-  for (const blog of INITIAL_BLOGS) {
+  const { blogs, caseStudies, pages, source } = await fetchFirestoreContent();
+
+  // ── Blog posts (published) ───────────────────────────────────────────────
+  for (const blog of blogs) {
     if (!blog.slug) continue;
-    urls += `
-      <url>
-        <loc>${baseUrl}/blog/${blog.slug}</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-      </url>
-    `;
+    if (blog.isPublished === false) continue;
+    entries.push({
+      loc: `${BASE_URL}/blog/${blog.slug}`,
+      lastmod: toIsoDate(blog.updatedAt || blog.date),
+      changefreq: 'weekly',
+      priority: '0.7',
+    });
   }
 
-  // Add Case Studies
+  // ── Case studies ─────────────────────────────────────────────────────────
+  // Static authentic case studies live at /case/:slug
   for (const study of AUTHENTIC_CASE_STUDIES) {
     if (!study.slug) continue;
-    urls += `
-      <url>
-        <loc>${baseUrl}/case/${study.slug}</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-      </url>
-    `;
+    entries.push({
+      loc: `${BASE_URL}/case/${study.slug}`,
+      lastmod: toIsoDate(study.date),
+      changefreq: 'weekly',
+      priority: '0.7',
+    });
   }
+  // Firestore-managed case studies live at /case-studies/:slug
+  if (source === 'firestore') {
+    for (const study of caseStudies) {
+      if (!study.slug) continue;
+      entries.push({
+        loc: `${BASE_URL}/case-studies/${study.slug}`,
+        lastmod: toIsoDate(study.updatedAt || study.date),
+        changefreq: 'weekly',
+        priority: '0.7',
+      });
+    }
+  }
+
+  // ── Pages module (published) ─────────────────────────────────────────────
+  for (const page of pages) {
+    if (!page.slug) continue;
+    if (page.isPublished === false) continue;
+    entries.push({
+      loc: `${BASE_URL}/pages/${page.slug}`,
+      lastmod: toIsoDate(page.updatedAt || page.createdAt),
+      changefreq: 'weekly',
+      priority: '0.7',
+    });
+  }
+
+  // ── De-duplicate by loc ──────────────────────────────────────────────────
+  const seen = new Set<string>();
+  const unique = entries.filter((e) => {
+    if (seen.has(e.loc)) return false;
+    seen.add(e.loc);
+    return true;
+  });
+
+  const urlsXml = unique
+    .map(
+      (e) => `  <url>
+    <loc>${xmlEscape(e.loc)}</loc>
+    <lastmod>${e.lastmod}</lastmod>
+    <changefreq>${e.changefreq}</changefreq>
+    <priority>${e.priority}</priority>
+  </url>`
+    )
+    .join('\n');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls}
-</urlset>`;
+${urlsXml}
+</urlset>
+`;
 
   const publicPath = path.resolve(__dirname, '../public');
   if (!fs.existsSync(publicPath)) {
@@ -71,7 +212,13 @@ ${urls}
   }
 
   fs.writeFileSync(path.join(publicPath, 'sitemap.xml'), sitemap);
-  console.log('Sitemap generated successfully at public/sitemap.xml');
+  console.log(`Sitemap generated (${unique.length} URLs, data source: ${source}) at public/sitemap.xml`);
+
+  // Force-exit: the Firebase client keeps the event loop alive otherwise.
+  process.exit(0);
 }
 
-generateSitemap().catch(console.error);
+generateSitemap().catch((err) => {
+  console.error('Sitemap generation error:', err);
+  process.exit(0); // Never fail the build because of the sitemap.
+});

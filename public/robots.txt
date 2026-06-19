@@ -1,4 +1,47 @@
 User-agent: *
 Allow: /
+Allow: /free-tools/
+Disallow: /admin
+Disallow: /api
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /*?utm_*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
+Disallow: /*?msclkid=*
+Crawl-delay: 1
+Request-rate: 10/1s
 
-Sitemap: https://optimantix.com/sitemap.xml
+User-agent: GPTBot
+Allow: /free-tools/
+
+User-agent: ClaudeBot
+Allow: /free-tools/
+
+User-agent: PerplexityBot
+Allow: /free-tools/
+
+User-agent: anthropic-ai
+Allow: /free-tools/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Crawl-delay: 1
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+Sitemap: https://optimantix-marketplace-h94c.arcada.app/sitemap.xml

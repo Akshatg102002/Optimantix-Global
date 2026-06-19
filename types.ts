@@ -397,6 +397,7 @@ export interface BlogPost {
   author: string;
   date: string;
   imageUrl: string;
+  imageAltText?: string;
   // New fields
   categoryId?: string;
   metaTitle?: string;
@@ -424,6 +425,7 @@ export interface CaseStudy {
   excerpt: string;
   content: string;
   imageUrl: string;
+  imageAltText?: string;
   serviceId?: string;
   subServiceId?: string;
   metaTitle?: string;
@@ -454,6 +456,23 @@ export interface PageSEO {
   ogTitle: string;
   ogDescription: string;
   ogImage: string;
+}
+
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  imageUrl: string;
+  imageAltText?: string;
+  metaTitle: string;
+  metaDescription: string;
+  focusKeyword?: string;
+  schemaType: 'Article' | 'WebPage';
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type IconName = 'Megaphone' | 'ShoppingBag' | 'Code' | 'Palette' | 'Server' | 'MessageCircle';

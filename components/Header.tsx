@@ -1,14 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ArrowRight, Sun, Moon, ChevronRight as ChevronRightIcon, Home, Briefcase, FileText, Globe, Server } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight, Sun, Moon, ChevronRight as ChevronRightIcon, Home, Briefcase, FileText, Globe, Server, Wrench } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Icon } from './Icon';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FREE_TOOL_CATEGORIES, FREE_TOOLS } from '../data/freeTools';
 
 export const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [activeServiceId, setActiveServiceId] = useState<string | null>(null);
   const { services, isDark, toggleTheme, setGlobalLoading } = useData();
   const location = useLocation();
@@ -20,6 +22,7 @@ export const Header: React.FC = () => {
     const timer = setTimeout(() => {
       setIsOpen(false);
       setIsServicesOpen(false);
+      setIsToolsOpen(false);
     }, 0);
     return () => clearTimeout(timer);
   }, [location]);
@@ -37,6 +40,7 @@ export const Header: React.FC = () => {
   const handleNavClick = () => {
       // 1. Close Menu Immediately
       setIsServicesOpen(false);
+      setIsToolsOpen(false);
       setIsOpen(false);
       
       // 2. Trigger Global Loading Animation to simulate page transition
@@ -202,10 +206,38 @@ export const Header: React.FC = () => {
                 <Server className="w-4 h-4" />
                 <span>Hosting</span>
               </Link>
-              <Link to="/blog" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
-                <FileText className="w-4 h-4" />
-                <span>Blog</span>
-              </Link>
+
+              <div
+                className="group h-full flex items-center"
+                onMouseEnter={() => setIsToolsOpen(true)}
+                onMouseLeave={() => setIsToolsOpen(false)}
+              >
+                <Link to="/free-tools" onClick={handleNavClick} className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200 ${isToolsOpen ? 'text-primary bg-gray-100 dark:bg-gray-800' : 'text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+                  <Wrench className="w-4 h-4" />
+                  <span>Free Tools</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`} />
+                </Link>
+                <AnimatePresence>
+                  {isToolsOpen && (
+                    <MotionDiv initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="absolute left-0 top-full w-full z-50 pt-4 px-4">
+                      <div className="max-w-6xl mx-auto bg-[#020617] rounded-xl shadow-2xl border border-gray-800 p-8 grid grid-cols-4 gap-6">
+                        {FREE_TOOL_CATEGORIES.map(category => (
+                          <div key={category.title}>
+                            <Link to={`/free-tools/#${category.anchor}`} onClick={handleNavClick} className="block text-primary text-xs font-bold uppercase tracking-widest mb-4">{category.title}</Link>
+                            <div className="space-y-3">
+                              {FREE_TOOLS.filter(tool => tool.category === category.title).map(tool => (
+                                <Link key={tool.slug} to={`/free-tools/${tool.slug}/`} onClick={handleNavClick} className="flex items-center gap-2 text-sm text-white hover:text-primary transition-colors">
+                                  <span>{tool.icon}</span><span>{tool.name}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </MotionDiv>
+                  )}
+                </AnimatePresence>
+              </div>
               <Link to="/case" onClick={handleNavClick} className="flex items-center gap-2 px-4 py-2 rounded-full font-medium text-gray-700 dark:text-gray-200 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
                 <Briefcase className="w-4 h-4" />
                 <span>Case Studies</span>
@@ -320,6 +352,20 @@ export const Header: React.FC = () => {
                 <span>Hosting Solutions</span>
               </Link>
 
+
+              <div>
+                <button onClick={() => setIsToolsOpen(!isToolsOpen)} className="flex items-center justify-between w-full text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                  <div className="flex items-center gap-3"><Wrench className="w-5 h-5 text-primary" /><span>Free Tools</span></div>
+                  <ChevronDown className={`h-5 w-5 transition-transform ${isToolsOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isToolsOpen && <div className="mt-2 ml-4 space-y-4 border-l-2 border-gray-200 dark:border-gray-700 pl-4">
+                  <Link to="/free-tools" onClick={handleNavClick} className="block text-sm font-medium text-primary p-2">View All Free Tools</Link>
+                  {FREE_TOOL_CATEGORIES.map(category => <div key={category.title}>
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary px-2 mb-1">{category.title}</p>
+                    {FREE_TOOLS.filter(tool => tool.category === category.title).map(tool => <Link key={tool.slug} to={`/free-tools/${tool.slug}/`} onClick={handleNavClick} className="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary p-2">{tool.icon} {tool.name}</Link>)}
+                  </div>)}
+                </div>}
+              </div>
               <Link to="/blog" onClick={handleNavClick} className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-gray-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
                 <FileText className="w-5 h-5 text-primary" />
                 <span>Blog</span>

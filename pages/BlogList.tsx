@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { SEO } from '../components/SEO';
 import { ParallaxHero } from '../components/ParallaxHero';
 
 export const BlogList: React.FC = () => {
@@ -10,12 +9,7 @@ export const BlogList: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-light dark:bg-dark pt-16">
-      <SEO
-        title="Blog"
-        description="Latest insights, trends, and strategies in digital marketing and technology from the Optimantix Global team."
-      />
-
-      <ParallaxHero
+<ParallaxHero
         title="Our Blog"
         subtitle="Insights, updates, and expert advice on digital marketing, development, and business growth."
         imageUrl="https://plus.unsplash.com/premium_photo-1683211783920-8c66ab120c09"
@@ -33,7 +27,7 @@ export const BlogList: React.FC = () => {
         <div className="aspect-[16/9] overflow-hidden flex-shrink-0">
           <img
             src={blog.imageUrl}
-            alt={blog.title}
+            alt={blog.imageAltText || blog.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>

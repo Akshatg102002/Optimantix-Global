@@ -3,6 +3,32 @@ import { useData } from '../../context/DataContext';
 import { PageSEO } from '../../types';
 import { Check, Edit, X, Trash2 } from 'lucide-react';
 import { SeoCSVImport } from '../../components/SeoCSVImport';
+import { buildPageSchema } from '../../utils/buildPageSchema';
+import { matchServiceRoute } from '../../utils/buildPageSeo';
+
+// Read-only preview of the schema type(s) that buildPageSchema will generate
+// for the route currently being edited, plus whether a FAQPage will auto-attach.
+const SeoSchemaPreview: React.FC<{ path: string; title: string; description: string }> = ({ path, title, description }) => {
+  if (!path) return null;
+  const schema = buildPageSchema(path, title || 'Untitled', description || '');
+  const schemas = Array.isArray(schema) ? schema : [schema];
+  const types = schemas.map((entry) => String(entry['@type'] ?? 'Unknown'));
+  const hasFaq = types.includes('FAQPage');
+  const match = matchServiceRoute(path);
+  const faqAvailable = !!match?.subService?.faq_section?.questions?.length;
+
+  return (
+    <div className="md:col-span-2 bg-blue-50 dark:bg-slate-900 border border-blue-100 dark:border-slate-800 rounded-lg p-3 text-xs space-y-1">
+      <p className="font-semibold text-gray-700 dark:text-gray-300">Schema preview (generated automatically, not saved)</p>
+      <p className="text-gray-600 dark:text-gray-400">
+        Will generate: <span className="font-mono text-primary">{types.join(' + ')}</span>
+      </p>
+      <p className="text-gray-600 dark:text-gray-400">
+        FAQPage schema: {hasFaq ? 'Yes' : faqAvailable ? 'Available but not attached' : 'No FAQ data for this route'}
+      </p>
+    </div>
+  );
+};
 
 export const AdminSeoPages: React.FC = () => {
   const { seoPages, updateSeoPage, deleteSeoPage } = useData();
@@ -201,6 +227,11 @@ export const AdminSeoPages: React.FC = () => {
                           <label className="text-xs font-semibold text-gray-500">Open Graph Description</label>
                           <textarea name="ogDescription" value={formState.ogDescription || ''} onChange={handleChange} rows={2} className="w-full p-2 bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded text-sm" placeholder="Defaults to Meta Description" />
                         </div>
+                        <SeoSchemaPreview
+                          path={formState.path || ''}
+                          title={formState.metaTitle || ''}
+                          description={formState.metaDescription || ''}
+                        />
                       </div>
                     </div>
                   </td>
