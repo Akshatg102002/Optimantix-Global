@@ -157,14 +157,20 @@ export const SubServiceTemplate: React.FC = () => {
       </Helmet>
 
       {/* ── BANNER IMAGE ───────────────────────────────────────────────────── */}
+      {/* ── BANNER IMAGE ───────────────────────────────────────────────────── */}
+      {/* Desktop */}
       <div
         className="hidden md:block w-full h-[400px] bg-cover bg-center"
         style={{ backgroundImage: `url(${subService.banners?.desktop || getServiceImage(service.slug)})` }}
       />
-      <div
-        className="md:hidden w-full h-[260px] bg-cover bg-center"
-        style={{ backgroundImage: `url(${subService.banners?.mobile || getServiceImage(service.slug)})` }}
-      />
+      {/* Mobile — use <img> so the full image scales without cropping */}
+      <div className="md:hidden w-full overflow-hidden">
+        <img
+          src={subService.banners?.mobile || subService.banners?.desktop || getServiceImage(service.slug)}
+          alt={title}
+          className="w-full h-auto object-contain"
+        />
+      </div>
 
       {/* ── HERO / TITLE ───────────────────────────────────────────────────── */}
       <div className="bg-white dark:bg-dark text-center py-10 px-4 flex flex-col items-center relative overflow-hidden">
@@ -368,8 +374,8 @@ export const SubServiceTemplate: React.FC = () => {
                             <th
                               key={i}
                               className={`px-5 py-4 text-center font-semibold ${isLast
-                                  ? 'text-primary bg-primary/5 dark:bg-primary/10'
-                                  : 'text-gray-500 dark:text-gray-400'
+                                ? 'text-primary bg-primary/5 dark:bg-primary/10'
+                                : 'text-gray-500 dark:text-gray-400'
                                 }`}
                             >
                               {col}
