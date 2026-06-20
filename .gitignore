@@ -5,3 +5,8 @@ node_modules/
 dist/
 dist.zip/
 public/sitemap.xml
+
+# Environment variables
+.env
+.env.local
+.env.*.local

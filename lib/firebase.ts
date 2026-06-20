@@ -4,14 +4,24 @@ import "firebase/compat/firestore";
 import "firebase/compat/analytics";
 import "firebase/compat/auth";
 
+const REQUIRED = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET',
+  'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  'VITE_FIREBASE_APP_ID',
+];
+REQUIRED.forEach(k => { if (!import.meta.env[k]) console.warn(`[Firebase] Missing env var: ${k}`); });
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAAkkYGflaBbPyR6teV9fXEsf-JuoUibYE",
-  authDomain: "optimantix-bff51.firebaseapp.com",
-  projectId: "optimantix-bff51",
-  storageBucket: "optimantix-bff51.firebasestorage.app",
-  messagingSenderId: "48103744786",
-  appId: "1:48103744786:web:c0b7e410a2d3f1fb1e3fcb",
-  measurementId: "G-SPQNCSY9V9"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase

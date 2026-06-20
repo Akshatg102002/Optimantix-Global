@@ -37,13 +37,30 @@ export function matchServiceRoute(pathname: string): ServiceRouteMatch | null {
   return { service, subService };
 }
 
-// Tier 1 — find a Firebase admin override for the given path.
+// Tier 1 — find a Firebase admin override for the given path. Defensive against
+// documents that key on path/id/route/slug/url, with or without a leading slash.
 export function findSeoOverride(seoPages: PageSEO[], pathname: string): PageSEO | undefined {
   const normalized = normalizePath(pathname);
+  const withoutLeading = normalized.replace(/^\//, '');
+
   return seoPages.find((page) => {
-    const definedPath = normalizePath(page.path);
-    const definedId = page.id ? normalizePath(page.id) : '';
-    return definedPath === normalized || definedId === normalized;
+    const loose = page as unknown as Record<string, unknown>;
+    const candidates = [
+      page.path,
+      page.id,
+      loose['route'],
+      loose['slug'],
+      loose['url'],
+    ].filter((v): v is string => typeof v === 'string' && v.length > 0);
+
+    return candidates.some((candidate) => {
+      const normalizedCandidate = normalizePath(candidate);
+      return (
+        normalizedCandidate === normalized ||
+        normalizedCandidate === withoutLeading ||
+        normalizedCandidate === `/${withoutLeading}`
+      );
+    });
   });
 }
 

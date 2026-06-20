@@ -7,7 +7,7 @@ import { Check, Star, Settings, Package, TrendingUp, ArrowRight } from 'lucide-r
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from '../data/seoData';
-import { buildPageSeo, findSeoOverride } from '../utils/buildPageSeo';
+import { buildPageSeo, findSeoOverride, normalizePath } from '../utils/buildPageSeo';
 import { buildPageSchema } from '../utils/buildPageSchema';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import { ParallaxHero } from '../components/ParallaxHero';
@@ -45,11 +45,11 @@ export const ServiceTemplate: React.FC = () => {
   const hasDeliverables = service.deliverables && service.deliverables.length > 0;
 
   const path = `/services/${service.slug}`;
-  const canonical = `${SITE_URL}${path}`;
   const override = findSeoOverride(seoPages, path);
   const fallback = buildPageSeo(path);
   const seoTitle = override?.metaTitle || fallback.title;
   const seoDescription = override?.metaDescription || fallback.description;
+  const canonical = override?.canonicalUrl || `${SITE_URL}${normalizePath(path)}`;
   const schema = buildPageSchema(path, seoTitle, seoDescription);
   const schemas = Array.isArray(schema) ? schema : [schema];
 

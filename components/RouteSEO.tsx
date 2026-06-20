@@ -40,8 +40,12 @@ function isServicesSelfManaged(path: string): boolean {
 
 const RouteSEO: React.FC = () => {
   const location = useLocation();
-  const { seoPages, pages } = useData();
+  const { seoPages, seoPageLoading, pages } = useData();
   const path = normalizePath(location.pathname);
+
+  // Wait for the Firebase admin overrides to resolve before injecting any SEO
+  // tags, so the fallback title never flashes ahead of a Tier 1 override.
+  if (seoPageLoading) return null;
 
   // Explicit static entries always win, even if they share a prefix with a
   // self-managed dynamic route (e.g. /services/digital-marketing/seo vs /services/:slug).

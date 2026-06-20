@@ -803,7 +803,7 @@ const SchemaGeneratorForm: React.FC<{ onUpdate: (json: string) => void }> = ({ o
     Event: { name: '', startDate: '', endDate: '', location: '', description: '', url: '' },
   });
 
-  const updateField = useCallback(<T extends SchemaType>(field: keyof SchemaFormData[T], value: unknown) => {
+  const updateField = useCallback((field: string, value: unknown) => {
     setData(prev => ({ ...prev, [schemaType]: { ...prev[schemaType], [field]: value } }));
   }, [schemaType]);
 

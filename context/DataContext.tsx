@@ -14,6 +14,7 @@ interface DataContextType {
   projects: Project[];
   caseStudies: CaseStudy[];
   seoPages: PageSEO[];
+  seoPageLoading: boolean;
   pages: Page[];
   fetchSeoPages: () => Promise<void>;
   updateSeoPage: (page: PageSEO) => Promise<void>;
@@ -78,6 +79,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [seoPages, setSeoPages] = useState<PageSEO[]>([]);
+  const [seoPageLoading, setSeoPageLoading] = useState(true);
   const [pages, setPages] = useState<Page[]>([]);
   const [pagesLoaded, setPagesLoaded] = useState(false);
   const [globalLoading, setGlobalLoading] = useState(false);
@@ -278,6 +280,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     } catch (error) {
       console.warn("Fetching seo pages failed:", error);
+    } finally {
+      setSeoPageLoading(false);
     }
   };
 
@@ -693,7 +697,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <DataContext.Provider value={{
-      services, blogs, blogCategories, leads, projects, caseStudies, seoPages, pages, pagesLoaded,
+      services, blogs, blogCategories, leads, projects, caseStudies, seoPages, seoPageLoading, pages, pagesLoaded,
       isDark, toggleTheme,
       isAuthenticated,
       currentUser,

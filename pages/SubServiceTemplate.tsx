@@ -11,7 +11,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from '../data/seoData';
-import { buildPageSeo, findSeoOverride } from '../utils/buildPageSeo';
+import { buildPageSeo, findSeoOverride, normalizePath } from '../utils/buildPageSeo';
 import { buildPageSchema } from '../utils/buildPageSchema';
 import { AUTHENTIC_CASE_STUDIES } from '../data/caseStudies';
 import type { SubService } from '../types';
@@ -133,11 +133,11 @@ export const SubServiceTemplate: React.FC = () => {
         'sm:grid-cols-4';
 
   const path = `/services/${service.slug}/${subService.slug}`;
-  const canonical = `${SITE_URL}${path}`;
   const override = findSeoOverride(seoPages, path);
   const fallback = buildPageSeo(path);
   const seoTitle = override?.metaTitle || fallback.title;
   const seoDescription = override?.metaDescription || fallback.description;
+  const canonical = override?.canonicalUrl || `${SITE_URL}${normalizePath(path)}`;
   const schema = buildPageSchema(path, seoTitle, seoDescription);
   const schemas = Array.isArray(schema) ? schema : [schema];
 
