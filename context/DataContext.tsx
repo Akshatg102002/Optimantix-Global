@@ -55,9 +55,6 @@ interface DataContextType {
   updateService: (service: Service) => Promise<void>;
 
   updateLeadStatus: (id: string, status: Lead['status']) => void;
-  // UI State
-  globalLoading: boolean;
-  setGlobalLoading: (loading: boolean) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -82,8 +79,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [seoPageLoading, setSeoPageLoading] = useState(true);
   const [pages, setPages] = useState<Page[]>([]);
   const [pagesLoaded, setPagesLoaded] = useState(false);
-  const [globalLoading, setGlobalLoading] = useState(false);
-  
+
   // Helper to parse various date formats
   const parseDate = (dateStr: string) => {
     if (!dateStr) return 0;
@@ -708,7 +704,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       fetchProjects, fetchCaseStudies, fetchServices,
       fetchSeoPages, updateSeoPage, deleteSeoPage,
       fetchPages, addPage, updatePage, deletePage,
-      globalLoading, setGlobalLoading
     }}>
       {children}
     </DataContext.Provider>

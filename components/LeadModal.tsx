@@ -15,7 +15,7 @@ export const LeadModal: React.FC = () => {
         setIsOpen(true);
         sessionStorage.setItem('leadModalShown', 'true');
       }
-    }, 15000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 

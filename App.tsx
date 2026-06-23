@@ -3,7 +3,6 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { DataProvider } from './context/DataContext';
-import { LoadingSpinner } from './components/LoadingSpinner';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import RouteSEO from './components/RouteSEO';
@@ -60,7 +59,7 @@ const App: React.FC = () => {
           <RouteSEO />
           <ScrollToTop />
           <Layout>
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={null}>
               <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />

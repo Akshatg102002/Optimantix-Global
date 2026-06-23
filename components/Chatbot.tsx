@@ -26,7 +26,7 @@ export const Chatbot: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [inputText, setInputText] = useState('');
   
-  const { services, setGlobalLoading } = useData();
+  const { services } = useData();
   const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -74,11 +74,7 @@ export const Chatbot: React.FC = () => {
 
     if (option.action === 'navigate' && option.payload) {
         setIsOpen(false);
-        setGlobalLoading(true);
-        setTimeout(() => {
-            navigate(option.payload!);
-            setGlobalLoading(false);
-        }, 800);
+        navigate(option.payload);
         return;
     }
 

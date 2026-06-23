@@ -67,6 +67,17 @@ export const Footer: React.FC = () => {
     },
   ];
 
+  const marketplaces = [
+    { label: 'Amazon', href: '/services/marketplace-management/amazon' },
+    { label: 'Flipkart', href: '/services/marketplace-management/flipkart' },
+    { label: 'Meesho', href: '/services/marketplace-management/meesho' },
+    { label: 'Myntra', href: '/services/marketplace-management/myntra' },
+    { label: 'Nykaa', href: '/services/marketplace-management/nykaa' },
+    { label: 'Ajio', href: '/services/marketplace-management' },
+    { label: 'Walmart', href: '/services/marketplace-management' },
+    { label: 'eBay', href: '/services/marketplace-management' },
+  ];
+
   const freeTools = [
     { label: 'AEO Checker', href: '/free-tools/aeo-checker/' },
     { label: 'Schema Generator', href: '/free-tools/schema-generator/' },
@@ -84,7 +95,7 @@ export const Footer: React.FC = () => {
             <div className="flex space-x-4 text-gray-400"><a href="https://www.facebook.com/optimantix" target="_blank" rel="noreferrer" className="hover:text-white transition"><Facebook size={18} /></a><a href="https://in.linkedin.com/company/optimantix" target="_blank" rel="noreferrer" className="hover:text-white transition"><Linkedin size={18} /></a><a href="https://www.instagram.com/optimantix/" target="_blank" rel="noreferrer" className="hover:text-white transition"><Instagram size={18} /></a></div>
           </div>
           <div><h4 className="text-sm font-bold mb-4 text-primary uppercase tracking-wider">Services</h4><ul className="space-y-2">{services.slice(0,4).map(s => <li key={s.href}><Link to={s.href} className="footer-link text-sm">{s.label}</Link></li>)}</ul></div>
-          <div><h4 className="text-sm font-bold mb-4 text-primary uppercase tracking-wider">Marketplaces</h4><ul className="space-y-2">{['Amazon','Flipkart','Meesho','Myntra','Nykaa','Ajio','Walmart','eBay'].map(m => <li key={m}><Link to="/services/marketplace-management" className="footer-link text-sm">{m}</Link></li>)}</ul></div>
+          <div><h4 className="text-sm font-bold mb-4 text-primary uppercase tracking-wider">Marketplaces</h4><ul className="space-y-2">{marketplaces.map(m => <li key={m.label}><Link to={m.href} className="footer-link text-sm">{m.label}</Link></li>)}</ul></div>
           <div><h4 className="text-sm font-bold mb-4 text-primary uppercase tracking-wider">Company</h4><ul className="space-y-2"><li><button onClick={(e) => handleNavigation(e, '/about')} className="footer-link text-sm">About Us</button></li><li><button onClick={(e) => handleNavigation(e, '/case')} className="footer-link text-sm">Case Studies</button></li><li><button onClick={(e) => handleNavigation(e, '/blog')} className="footer-link text-sm">Blog</button></li><li><button onClick={(e) => handleNavigation(e, '/contact')} className="footer-link text-sm">Contact</button></li></ul></div>
           <div><h4 className="text-sm font-bold mb-4 text-primary uppercase tracking-wider">Free Tools</h4><ul className="space-y-2"><li><Link to="/free-tools/" className="footer-link text-sm">All Free Tools</Link></li>{freeTools.map(t => <li key={t.href}><Link to={t.href} className="footer-link text-sm">{t.label}</Link></li>)}</ul></div>
         </div>

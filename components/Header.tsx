@@ -12,7 +12,7 @@ export const Header: React.FC = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [activeServiceId, setActiveServiceId] = useState<string | null>(null);
-  const { services, isDark, toggleTheme, setGlobalLoading } = useData();
+  const { services, isDark, toggleTheme } = useData();
   const location = useLocation();
 
   const MotionDiv = motion.div as React.ElementType;
@@ -38,16 +38,9 @@ export const Header: React.FC = () => {
   }, [services, activeServiceId]);
 
   const handleNavClick = () => {
-      // 1. Close Menu Immediately
       setIsServicesOpen(false);
       setIsToolsOpen(false);
       setIsOpen(false);
-      
-      // 2. Trigger Global Loading Animation to simulate page transition
-      setGlobalLoading(true);
-      setTimeout(() => {
-          setGlobalLoading(false);
-      }, 800); // 0.8s fake load time
   };
 
   return (
