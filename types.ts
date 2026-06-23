@@ -462,7 +462,7 @@ export interface Page {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;
+  excerpt?: string;
   content: string;
   imageUrl: string;
   imageAltText?: string;

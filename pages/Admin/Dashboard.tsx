@@ -873,9 +873,8 @@ export const AdminDashboard: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Short Excerpt</label>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Short Excerpt <span className="font-normal text-gray-400">(Optional)</span></label>
                                 <textarea
-                                    required
                                     rows={3}
                                     className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 p-3 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                                     placeholder="Brief summary..."
