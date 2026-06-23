@@ -65,7 +65,7 @@ const RouteSEO: React.FC = () => {
   const { title: fallbackTitle, description: fallbackDescription } = customPage
     ? {
         title: customPage.metaTitle || customPage.title,
-        description: truncateDescription(customPage.metaDescription || customPage.excerpt, 155),
+        description: truncateDescription(customPage.metaDescription || customPage.excerpt || '', 155),
       }
     : buildPageSeo(path);
 
